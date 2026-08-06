@@ -111,6 +111,7 @@ const state = {
   view: 'home',
   moduleId: null,
   theoryIndex: 0,
+  theoryRevealed: {},
   exLevel: 'facile',
   exIndex: 0,
   exState: 'question', // question | checked | levelComplete
@@ -129,7 +130,15 @@ function goHome() { state.view = 'home'; state.moduleId = null; render(); }
 function openModule(id) { state.moduleId = id; state.view = 'module-menu'; render(); }
 function backToModuleMenu() { state.view = 'module-menu'; render(); }
 
-function openTheory() { state.view = 'theory'; state.theoryIndex = 0; render(); }
+function openTheory() { state.view = 'theory'; state.theoryIndex = 0; state.theoryRevealed = {}; render(); }
+function revealStep(idx) {
+  const m = getModule(state.moduleId);
+  const slide = m.theory[idx];
+  if (!slide || slide.type !== 'steps') return;
+  const current = state.theoryRevealed[idx] || 1;
+  state.theoryRevealed[idx] = Math.min(current + 1, slide.steps.length);
+  render();
+}
 function markTheorySeen() { ensureModuleProgress(state.moduleId).theorySeen = true; saveProgress(); }
 function moveSlide(delta) {
   const m = getModule(state.moduleId);
@@ -297,9 +306,30 @@ function renderModuleMenu() {
 }
 
 /* ===== Rendering: Teoria ===== */
+function renderStepsPostcard(s, idx) {
+  const revealed = state.theoryRevealed[idx] || 1;
+  const total = s.steps.length;
+  const items = s.steps.slice(0, revealed).map((text, i) => `
+    <div class="step-item ${i === revealed - 1 ? 'step-item--enter' : ''}">
+      <span class="step-item__badge">${i + 1}</span>
+      <span class="step-item__connector" aria-hidden="true"></span>
+      <p class="step-item__text">${text}</p>
+    </div>`).join('');
+  const isDone = revealed >= total;
+  const footer = isDone
+    ? `<p class="step-item__done">✓ Hai visto tutti i passaggi</p>`
+    : `<button class="btn btn--primary" data-action="reveal-step" data-slide-index="${idx}" type="button">Passo successivo (${revealed}/${total}) →</button>`;
+  return `
+    <article class="postcard postcard--steps">
+      <p class="postcard__label">Appunti di viaggio</p>
+      <h2 class="postcard__title">${s.title}</h2>
+      <div class="step-list">${items}</div>
+      ${footer}
+    </article>`;
+}
 function renderTheory() {
   const m = getModule(state.moduleId);
-  const slides = m.theory.map(s => `
+  const slides = m.theory.map((s, i) => s.type === 'steps' ? renderStepsPostcard(s, i) : `
     <article class="postcard">
       <p class="postcard__label">Appunti di viaggio</p>
       <h2 class="postcard__title">${s.title}</h2>
@@ -633,6 +663,7 @@ appEl.addEventListener('click', (e) => {
     case 'open-quiz': openQuiz(); break;
     case 'prev-slide': moveSlide(-1); break;
     case 'next-slide': moveSlide(1); break;
+    case 'reveal-step': revealStep(Number(btn.dataset.slideIndex)); break;
     case 'theory-done': markTheorySeen(); openExercises('facile'); break;
     case 'show-hint': showHint(); break;
     case 'check-answer': checkCurrentAnswer(); break;
