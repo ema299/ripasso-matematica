@@ -60,6 +60,21 @@ h1, h2, p { margin: 0; }
   box-shadow: var(--shadow);
 }
 .topbar--home { padding-bottom: 30px; }
+.topbar--home .eyebrow { padding-right: 78px; }
+.diary-link {
+  position: absolute;
+  top: calc(20px + var(--safe-top));
+  right: 24px;
+  border: none;
+  background: rgba(255,255,255,0.14);
+  color: var(--white);
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 8px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.diary-link:active { background: rgba(255,255,255,0.26); }
 .eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -330,6 +345,74 @@ h1, h2, p { margin: 0; }
 .quiz-option.is-correct { border-color: var(--ok); background: rgba(46,139,87,0.14); }
 .quiz-option.is-wrong { border-color: var(--bad); background: rgba(193,72,31,0.12); }
 .quiz-option[disabled] { cursor: default; }
+
+/* ===== Tag logica ===== */
+.exercise-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(217,154,43,0.16);
+  color: var(--gold-dark);
+  font-size: 10.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  vertical-align: middle;
+}
+
+/* ===== Diario di viaggio ===== */
+.diary-wrap { padding: 22px; flex: 1; }
+.diary-summary {
+  background: var(--navy);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 20px 22px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 22px;
+  box-shadow: var(--shadow);
+}
+.diary-summary__big { font-size: 32px; font-weight: 800; color: var(--gold); }
+.diary-summary__label { font-size: 13px; color: rgba(255,255,255,0.8); line-height: 1.4; }
+.diary-section-title { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 800; color: var(--muted); margin: 22px 4px 12px; }
+.diary-row {
+  display: flex;
+  gap: 12px;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 12px -8px rgba(15,42,61,0.3);
+}
+.diary-row__icon { font-size: 20px; flex: none; }
+.diary-row__body { flex: 1; min-width: 0; }
+.diary-row__top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.diary-row__title { font-size: 13.5px; font-weight: 700; color: var(--ink); }
+.diary-row__pct { font-size: 13.5px; font-weight: 800; color: var(--teal-dark); }
+.diary-bar { height: 6px; border-radius: 999px; background: var(--paper); margin-top: 8px; overflow: hidden; }
+.diary-bar__fill { height: 100%; border-radius: 999px; background: var(--teal); }
+.diary-bar__fill--coral { background: var(--coral); }
+.diary-bar__fill--gold { background: var(--gold); }
+.diary-row__meta { display: block; font-size: 11px; color: var(--muted); margin-top: 6px; }
+.diary-mistakes { display: flex; flex-direction: column; gap: 10px; }
+.diary-mistake {
+  background: rgba(232,96,60,0.08);
+  border: 1px solid rgba(232,96,60,0.18);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+}
+.diary-mistake__module { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--coral-dark); margin-bottom: 4px; }
+.diary-mistake__q { font-size: 13.5px; color: var(--ink); line-height: 1.4; }
+.diary-empty {
+  text-align: center;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  padding: 40px 26px;
+  box-shadow: var(--shadow);
+  margin-top: 10px;
+}
 
 /* ===== Boarding pass (risultato) ===== */
 .pass-wrap { padding: 26px 22px; flex: 1; }

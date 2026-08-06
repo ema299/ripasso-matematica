@@ -1,348 +1,2076 @@
-// Contenuti didattici: 6 tappe del viaggio di ripasso matematica
-// Ogni esercizio: { q, answer, hint, unit? , type: 'expr' per risposte algebriche }
-// answer numerico: stringa (accetta anche frazioni "a/b", confrontate con tolleranza)
-// answer type 'expr': array di stringhe accettate (normalizzate senza spazi)
-
 const MODULES = [
   {
-    id: 'numeri',
-    icon: '🧭',
-    accent: 'teal',
-    title: 'Numeri Interi e Razionali',
-    tagline: 'La prima tappa: si parte da qui',
-    theory: [
+    "id": "numeri",
+    "icon": "🧭",
+    "accent": "teal",
+    "title": "Numeri Interi e Razionali",
+    "tagline": "La prima tappa: si parte da qui",
+    "theory": [
       {
-        title: 'I numeri interi (Z)',
-        body: "I numeri interi comprendono i numeri positivi, i numeri negativi e lo zero: ... -3, -2, -1, 0, 1, 2, 3 ...\n\nSulla retta numerica, i numeri crescono andando verso destra e diminuiscono andando verso sinistra."
+        "title": "I numeri interi (Z)",
+        "body": "I numeri interi comprendono i numeri positivi, i numeri negativi e lo zero: ... -3, -2, -1, 0, 1, 2, 3 ...\n\nSulla retta numerica, i numeri crescono andando verso destra e diminuiscono andando verso sinistra."
       },
       {
-        title: 'Le regole dei segni',
-        body: "Addizione e sottrazione: se i segni sono uguali si sommano i valori e si tiene il segno; se sono diversi si sottraggono e si tiene il segno del numero più grande.\n\nMoltiplicazione e divisione: segni uguali → risultato positivo (+). Segni diversi → risultato negativo (−).\n\nEsempio: (−3) · (−2) = +6   mentre   (−3) · 2 = −6"
+        "title": "Le regole dei segni",
+        "body": "Addizione e sottrazione: se i segni sono uguali si sommano i valori e si tiene il segno; se sono diversi si sottraggono e si tiene il segno del numero più grande.\n\nMoltiplicazione e divisione: segni uguali → risultato positivo (+). Segni diversi → risultato negativo (−).\n\nEsempio: (−3) · (−2) = +6   mentre   (−3) · 2 = −6"
       },
       {
-        title: "L'ordine delle operazioni",
-        body: "Quando in un'espressione ci sono più operazioni, si segue quest'ordine:\n\n1. Parentesi (tonde, poi quadre, poi graffe)\n2. Potenze\n3. Moltiplicazioni e divisioni (da sinistra a destra)\n4. Addizioni e sottrazioni (da sinistra a destra)"
+        "title": "L'ordine delle operazioni",
+        "body": "Quando in un'espressione ci sono più operazioni, si segue quest'ordine:\n\n1. Parentesi (tonde, poi quadre, poi graffe)\n2. Potenze\n3. Moltiplicazioni e divisioni (da sinistra a destra)\n4. Addizioni e sottrazioni (da sinistra a destra)"
       },
       {
-        title: 'I numeri razionali (Q)',
-        body: "I numeri razionali includono anche le frazioni e i numeri decimali: 1/2, −3/4, 0,75 ...\n\nOgni numero decimale limitato o periodico può essere scritto come frazione, e viceversa."
+        "title": "I numeri razionali (Q)",
+        "body": "I numeri razionali includono anche le frazioni e i numeri decimali: 1/2, −3/4, 0,75 ...\n\nOgni numero decimale limitato o periodico può essere scritto come frazione, e viceversa."
+      },
+      {
+        "title": "Esempio svolto",
+        "body": "Calcoliamo insieme: −4 + 3 × (−2) − (−5)\n\n1) Prima la moltiplicazione: 3 × (−2) = −6\n−4 + (−6) − (−5)\n\n2) Il doppio segno meno diventa più: − (−5) = +5\n−4 − 6 + 5\n\n3) Da sinistra a destra: −4 − 6 = −10, poi −10 + 5 = −5"
       }
     ],
-    exercises: {
-      facile: [
-        { q: '(−5) + 8 = ?', answer: '3', hint: 'Sulla retta numerica parti da −5 e vai avanti di 8 passi verso destra.' },
-        { q: '12 − 20 = ?', answer: '-8', hint: 'Segni diversi: sottrai i valori (20−12) e tieni il segno del numero più grande in valore assoluto.' },
-        { q: '(−4) · (−3) = ?', answer: '12', hint: 'Segni uguali → risultato positivo.' },
-        { q: '(−15) : 5 = ?', answer: '-3', hint: 'Segni diversi → risultato negativo.' },
-        { q: '(−7) + (−6) = ?', answer: '-13', hint: 'Segni uguali: somma i valori e tieni il segno meno.' }
+    "exercises": {
+      "facile": [
+        {
+          "q": "(-8) + (-14) = ?",
+          "answer": "-22",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        },
+        {
+          "q": "(-8) × (14) = ?",
+          "answer": "-112",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        },
+        {
+          "q": "(6) × (-3) = ?",
+          "answer": "-18",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        },
+        {
+          "q": "-20 : (-4) = ?",
+          "answer": "5",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        },
+        {
+          "q": "6 : (-6) = ?",
+          "answer": "-1",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        },
+        {
+          "q": "(10) + (-5) = ?",
+          "answer": "5",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        },
+        {
+          "q": "(9) × (-9) = ?",
+          "answer": "-81",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        },
+        {
+          "q": "(-8) − (-7) = ?",
+          "answer": "-1",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        },
+        {
+          "q": "Sono un numero compreso tra 10 e 20: sono multiplo di 3 ma sono dispari. Chi sono?",
+          "answer": "15",
+          "hint": "Elenca i multipli di 3 tra 10 e 20, poi scarta quelli pari.",
+          "logic": true
+        },
+        {
+          "q": "Qual è il numero successivo nella sequenza: 3, 7, 11, 15, ... ?",
+          "answer": "19",
+          "hint": "Guarda di quanto aumenta ogni volta rispetto al numero precedente.",
+          "logic": true
+        },
+        {
+          "q": "Un pullman turistico ha 48 posti. Sono già stati prenotati 31 posti. Quanti posti restano liberi?",
+          "answer": "17",
+          "hint": "Sottrai i posti già prenotati dal totale."
+        },
+        {
+          "q": "(-1) + (1) = ?",
+          "answer": "0",
+          "hint": "Applica le regole dei segni: segni uguali → risultato positivo, segni diversi → risultato negativo."
+        }
       ],
-      medio: [
-        { q: '3 + 2 · (−4) = ?', answer: '-5', hint: 'Prima la moltiplicazione: 2·(−4) = −8, poi 3 + (−8).' },
-        { q: '(5 − 8) · (−2) = ?', answer: '6', hint: 'Prima risolvi la parentesi: 5−8 = −3, poi moltiplica per −2.' },
-        { q: '−6 + 3 · 2 − 1 = ?', answer: '-1', hint: 'Prima la moltiplicazione (3·2=6), poi somme e sottrazioni da sinistra a destra.' },
-        { q: '20 : (−4) + 3 = ?', answer: '-2', hint: 'Prima la divisione: 20:(−4) = −5, poi somma 3.' },
-        { q: '−10 + 4 · (−2) − (−6) = ?', answer: '-12', hint: 'Occhio al doppio segno: − (−6) diventa +6. Fai prima la moltiplicazione.' }
+      "medio": [
+        {
+          "q": "-40 : 8 + -6 = ?",
+          "answer": "-11",
+          "hint": "Ricorda l'ordine delle operazioni: prima moltiplicazioni/divisioni, poi addizioni/sottrazioni (o risolvi prima la parentesi)."
+        },
+        {
+          "q": "-36 : 6 + 10 = ?",
+          "answer": "4",
+          "hint": "Ricorda l'ordine delle operazioni: prima moltiplicazioni/divisioni, poi addizioni/sottrazioni (o risolvi prima la parentesi)."
+        },
+        {
+          "q": "7 + 8 × 4 = ?",
+          "answer": "39",
+          "hint": "Ricorda l'ordine delle operazioni: prima moltiplicazioni/divisioni, poi addizioni/sottrazioni (o risolvi prima la parentesi)."
+        },
+        {
+          "q": "4 − -5 × 6 = ?",
+          "answer": "34",
+          "hint": "Ricorda l'ordine delle operazioni: prima moltiplicazioni/divisioni, poi addizioni/sottrazioni (o risolvi prima la parentesi)."
+        },
+        {
+          "q": "(-7 − 3) × 5 = ?",
+          "answer": "-50",
+          "hint": "Ricorda l'ordine delle operazioni: prima moltiplicazioni/divisioni, poi addizioni/sottrazioni (o risolvi prima la parentesi)."
+        },
+        {
+          "q": "(-4 − -5) × 3 = ?",
+          "answer": "3",
+          "hint": "Ricorda l'ordine delle operazioni: prima moltiplicazioni/divisioni, poi addizioni/sottrazioni (o risolvi prima la parentesi)."
+        },
+        {
+          "q": "-1 − 1 × 5 = ?",
+          "answer": "-6",
+          "hint": "Ricorda l'ordine delle operazioni: prima moltiplicazioni/divisioni, poi addizioni/sottrazioni (o risolvi prima la parentesi)."
+        },
+        {
+          "q": "-72 : 8 + 4 = ?",
+          "answer": "-5",
+          "hint": "Ricorda l'ordine delle operazioni: prima moltiplicazioni/divisioni, poi addizioni/sottrazioni (o risolvi prima la parentesi)."
+        },
+        {
+          "q": "Il fruttivendolo Renato confeziona le arance in vassoi da 12 o in vassoi da 21: in entrambi i casi, riempiendo i vassoi al massimo, gli avanza sempre 1 arancia. Sapendo che ha meno di 100 arance, quante sono esattamente?",
+          "answer": "85",
+          "hint": "Il numero di arance meno 1 deve essere multiplo sia di 12 sia di 21: cerca il loro minimo comune multiplo.",
+          "logic": true
+        },
+        {
+          "q": "Un orologio digitale mostra ore e minuti (es. le 15:23 → cifre 1,5,2,3). Qual è, in un giorno intero, il valore massimo possibile della somma delle 4 cifre mostrate?",
+          "type": "choice",
+          "options": [
+            "21",
+            "22",
+            "23",
+            "24",
+            "25"
+          ],
+          "correct": 3,
+          "hint": "Le ore vanno da 00 a 23 e i minuti da 00 a 59: cerca l'orario con le cifre più \"grandi\" possibile.",
+          "logic": true
+        },
+        {
+          "q": "In un hotel, le camere sul lato mare hanno solo numeri dispari. Quante camere dispari ci sono tra la 101 e la 199 (compresi)?",
+          "answer": "50",
+          "hint": "Conta quanti numeri dispari ci sono in quell'intervallo: puoi pensare a coppie (101,103), (105,107)...",
+          "logic": true
+        },
+        {
+          "q": "In uno stabilimento balneare ci sono 6 file da 9 ombrelloni ciascuna. Se 5 sono rotti e vengono tolti, quanti ombrelloni restano?",
+          "answer": "49",
+          "hint": "Calcola prima il totale degli ombrelloni, poi sottrai quelli rotti."
+        }
       ],
-      difficile: [
-        { q: '(−3 − 5) · (2 − 6) : (−4) = ?', answer: '-8', hint: 'Risolvi prima le due parentesi separatamente, poi moltiplica e infine dividi.' },
-        { q: '15 − [8 − (12 − 20)] = ?', answer: '-1', hint: 'Parti dalla parentesi più interna: 12−20, poi risolvi quella quadra.' },
-        { q: '(−2) · [(−3 + 7) − (5 − 9)] = ?', answer: '-16', hint: 'Risolvi prima le due tonde dentro la quadra, poi la sottrazione tra i risultati.' },
-        { q: '[(−18) : (−3) − 4] · (−2) = ?', answer: '-4', hint: 'Prima la divisione dentro la quadra, poi la sottrazione, infine moltiplica.' },
-        { q: '−5 + [(−2) · 3 − (−4 − 2)] = ?', answer: '-5', hint: 'Nella quadra: prima la moltiplicazione, poi la sottrazione (occhio al doppio segno finale).' }
+      "difficile": [
+        {
+          "q": "[-12 : 4 − 3] × (−6) = ?",
+          "answer": "36",
+          "hint": "Risolvi sempre prima le parentesi più interne, poi procedi verso le più esterne."
+        },
+        {
+          "q": "[9 : 3 − -3] × (−1) = ?",
+          "answer": "-6",
+          "hint": "Risolvi sempre prima le parentesi più interne, poi procedi verso le più esterne."
+        },
+        {
+          "q": "[28 : 4 − 6] × (−3) = ?",
+          "answer": "-3",
+          "hint": "Risolvi sempre prima le parentesi più interne, poi procedi verso le più esterne."
+        },
+        {
+          "q": "(3 − -3) × (5 − 2) = ?",
+          "answer": "18",
+          "hint": "Risolvi sempre prima le parentesi più interne, poi procedi verso le più esterne."
+        },
+        {
+          "q": "[27 : 3 − -3] × (−1) = ?",
+          "answer": "-12",
+          "hint": "Risolvi sempre prima le parentesi più interne, poi procedi verso le più esterne."
+        },
+        {
+          "q": "8 − [-5 − (-5 − 4)] = ?",
+          "answer": "4",
+          "hint": "Risolvi sempre prima le parentesi più interne, poi procedi verso le più esterne."
+        },
+        {
+          "q": "2 − [-9 − (-6 − 3)] = ?",
+          "answer": "2",
+          "hint": "Risolvi sempre prima le parentesi più interne, poi procedi verso le più esterne."
+        },
+        {
+          "q": "-2 − [4 − (2 − 4)] = ?",
+          "answer": "-8",
+          "hint": "Risolvi sempre prima le parentesi più interne, poi procedi verso le più esterne."
+        },
+        {
+          "q": "In una gara con 4 concorrenti, Jacopo dice: \"Sono arrivato primo\". Luca dice: \"Non sono né primo né ultimo\". Michele dice: \"Non sono ultimo\". Nando dice: \"Sono arrivato quarto\". Solo uno di loro ha mentito: chi?",
+          "type": "choice",
+          "options": [
+            "Jacopo",
+            "Luca",
+            "Michele",
+            "Nando"
+          ],
+          "correct": 0,
+          "hint": "Supponi, uno alla volta, che ciascuno abbia mentito, e controlla se le altre tre affermazioni possono essere tutte vere insieme.",
+          "logic": true
+        },
+        {
+          "q": "Un albergo numera le camere da 1 a 200. Quante di queste contengono almeno una cifra 7 (es. 7, 17, 71, 173...)?",
+          "answer": "38",
+          "hint": "Conta separatamente i numeri da 1 a 99 con almeno un 7 (sono 19), poi quelli da 100 a 200 con almeno un 7 (altri 19).",
+          "logic": true
+        },
+        {
+          "q": "Un dado a 6 facce viene lanciato due volte. In quanti modi diversi la somma dei due lanci può fare 8?",
+          "answer": "5",
+          "hint": "Elenca tutte le coppie (primo lancio, secondo lancio) che sommano a 8, con ciascun valore da 1 a 6.",
+          "logic": true
+        },
+        {
+          "q": "Una leggenda narra che l'inventore degli scacchi chiese come ricompensa 1 chicco di riso sulla prima casella, 2 sulla seconda, 4 sulla terza, raddoppiando ogni volta. Quanti chicchi ci sono sulla decima casella?",
+          "answer": "512",
+          "hint": "Ogni casella raddoppia la precedente: sulla casella n ci sono 2 elevato alla (n−1) chicchi.",
+          "logic": true
+        }
       ]
     },
-    quiz: [
-      { q: 'Quanto fa (−8) + 3?', options: ['−11', '−5', '5', '11'], correct: 1 },
-      { q: 'Quanto fa (−6) · (−7)?', options: ['−42', '−13', '13', '42'], correct: 3 },
-      { q: 'Quanto fa 24 : (−6)?', options: ['−4', '−18', '4', '18'], correct: 0 },
-      { q: 'Quanto fa 5 − (−9)?', options: ['−14', '−4', '4', '14'], correct: 3 },
-      { q: 'Quanto fa 4 + 2 · (−3)?', options: ['−18', '−2', '2', '18'], correct: 1 },
-      { q: 'Quanto fa (−3 − 4) · (−2)?', options: ['−14', '−1', '1', '14'], correct: 3 }
+    "quiz": [
+      {
+        "q": "Quanto fa (−8) + 3?",
+        "options": [
+          "−11",
+          "−5",
+          "5",
+          "11"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Quanto fa (−6) · (−7)?",
+        "options": [
+          "−42",
+          "−13",
+          "13",
+          "42"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "Quanto fa 24 : (−6)?",
+        "options": [
+          "−4",
+          "−18",
+          "4",
+          "18"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Quanto fa 5 − (−9)?",
+        "options": [
+          "−14",
+          "−4",
+          "4",
+          "14"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "Quanto fa 4 + 2 · (−3)?",
+        "options": [
+          "−18",
+          "−2",
+          "2",
+          "18"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Quanto fa (−3 − 4) · (−2)?",
+        "options": [
+          "−14",
+          "−1",
+          "1",
+          "14"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "Quanto fa (−9) × 4?",
+        "options": [
+          "−36",
+          "−13",
+          "13",
+          "36"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Quanto fa 5 − 3 × (−2)?",
+        "options": [
+          "1",
+          "−1",
+          "11",
+          "−11"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Quanto fa (−20) : 5 + 2?",
+        "options": [
+          "−2",
+          "−6",
+          "2",
+          "6"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Quanto fa (−4 − 6) × (−2)?",
+        "options": [
+          "−20",
+          "−16",
+          "16",
+          "20"
+        ],
+        "correct": 3
+      }
     ]
   },
-
   {
-    id: 'frazioni',
-    icon: '🍕',
-    accent: 'coral',
-    title: 'Frazioni e Percentuali',
-    tagline: 'Dividere in parti uguali',
-    theory: [
+    "id": "frazioni",
+    "icon": "🍕",
+    "accent": "coral",
+    "title": "Frazioni e Percentuali",
+    "tagline": "Dividere in parti uguali",
+    "theory": [
       {
-        title: "Cos'è una frazione",
-        body: "Una frazione a/b rappresenta una parte di un intero diviso in b parti uguali, di cui ne prendiamo a.\n\nEsempio: 3/4 di una pizza significa dividerla in 4 fette uguali e prenderne 3."
+        "title": "Cos'è una frazione",
+        "body": "Una frazione a/b rappresenta una parte di un intero diviso in b parti uguali, di cui ne prendiamo a.\n\nEsempio: 3/4 di una pizza significa dividerla in 4 fette uguali e prenderne 3."
       },
       {
-        title: 'Semplificare e confrontare',
-        body: "Una frazione si semplifica dividendo numeratore e denominatore per uno stesso numero.\n\nEsempio: 6/8 = 3/4 (dividendo entrambi per 2).\n\nPer sommare o confrontare frazioni con denominatori diversi serve trovare un denominatore comune (di solito il minimo comune multiplo)."
+        "title": "Semplificare e confrontare",
+        "body": "Una frazione si semplifica dividendo numeratore e denominatore per uno stesso numero.\n\nEsempio: 6/8 = 3/4 (dividendo entrambi per 2).\n\nPer sommare o confrontare frazioni con denominatori diversi serve trovare un denominatore comune (di solito il minimo comune multiplo)."
       },
       {
-        title: 'Operazioni con le frazioni',
-        body: "Somma/sottrazione: prima si riducono allo stesso denominatore, poi si sommano i numeratori.\n\nMoltiplicazione: numeratore per numeratore, denominatore per denominatore.\n\nDivisione: si moltiplica la prima frazione per il reciproco (capovolta) della seconda."
+        "title": "Operazioni con le frazioni",
+        "body": "Somma/sottrazione: prima si riducono allo stesso denominatore, poi si sommano i numeratori.\n\nMoltiplicazione: numeratore per numeratore, denominatore per denominatore.\n\nDivisione: si moltiplica la prima frazione per il reciproco (capovolta) della seconda."
       },
       {
-        title: 'Le percentuali',
-        body: "Una percentuale è una frazione con denominatore 100. Il 20% di un numero significa 20/100 di quel numero.\n\nPer calcolare il p% di un numero N: (N · p) : 100.\n\nEsempio: il 20% di 50 = (50 · 20) : 100 = 10."
+        "title": "Le percentuali",
+        "body": "Una percentuale è una frazione con denominatore 100. Il 20% di un numero significa 20/100 di quel numero.\n\nPer calcolare il p% di un numero N: (N · p) : 100.\n\nEsempio: il 20% di 50 = (50 · 20) : 100 = 10."
+      },
+      {
+        "title": "Esempio svolto",
+        "body": "Calcoliamo 2/3 + 1/4\n\nDenominatore comune: 12 (mcm di 3 e 4)\n2/3 = 8/12       1/4 = 3/12\n\n8/12 + 3/12 = 11/12"
       }
     ],
-    exercises: {
-      facile: [
-        { q: 'Semplifica la frazione 4/8', answer: '1/2', hint: 'Dividi numeratore e denominatore per 4.' },
-        { q: 'Quanto fa 1/4 + 1/4?', answer: '1/2', hint: 'Denominatore già uguale: somma solo i numeratori.' },
-        { q: 'Quanto fa il 20% di 50?', answer: '10', hint: '(50 · 20) : 100' },
-        { q: 'Scrivi 3/10 in percentuale (solo il numero, es. 25 per 25%)', answer: '30', unit: '%', hint: 'Moltiplica la frazione per 100: (3:10)·100.' },
-        { q: 'Quanto fa 1/2 · 1/3?', answer: '1/6', hint: 'Moltiplica numeratore per numeratore e denominatore per denominatore.' }
+    "exercises": {
+      "facile": [
+        {
+          "q": "Quanto fa il 40% di 60?",
+          "answer": "24",
+          "hint": "(numero × percentuale) : 100"
+        },
+        {
+          "q": "Quanto fa il 75% di 80?",
+          "answer": "60",
+          "hint": "(numero × percentuale) : 100"
+        },
+        {
+          "q": "Semplifica la frazione 2/6",
+          "answer": "1/3",
+          "hint": "Dividi numeratore e denominatore per lo stesso numero (il loro massimo comun divisore)."
+        },
+        {
+          "q": "Quanto fa il 10% di 80?",
+          "answer": "8",
+          "hint": "(numero × percentuale) : 100"
+        },
+        {
+          "q": "Semplifica la frazione 12/18",
+          "answer": "2/3",
+          "hint": "Dividi numeratore e denominatore per lo stesso numero (il loro massimo comun divisore)."
+        },
+        {
+          "q": "7/8 + 1/8 = ?",
+          "answer": "1",
+          "hint": "Stesso denominatore: somma solo i numeratori."
+        },
+        {
+          "q": "Quanto fa il 50% di 20?",
+          "answer": "10",
+          "hint": "(numero × percentuale) : 100"
+        },
+        {
+          "q": "1/8 + 5/8 = ?",
+          "answer": "3/4",
+          "hint": "Stesso denominatore: somma solo i numeratori."
+        },
+        {
+          "q": "Se 6 boscaioli segano 6 alberi in 6 ore, quanto tempo impiegheranno 10 boscaioli a segare 10 alberi?",
+          "answer": "6",
+          "unit": "ore",
+          "hint": "Il rapporto tra boscaioli e alberi resta lo stesso di prima: ogni boscaiolo continua a segare un albero nello stesso tempo.",
+          "logic": true
+        },
+        {
+          "q": "Un pacchetto vacanze a Rimini costa 480€, con lo sconto Early Booking del 15%. Quanto costa dopo lo sconto?",
+          "answer": "408",
+          "unit": "€",
+          "hint": "Calcola il 15% di 480 e sottrailo dal prezzo pieno."
+        },
+        {
+          "q": "In una spiaggia, 3/5 degli ombrelloni sono occupati. Se ci sono 40 ombrelloni in totale, quanti sono liberi?",
+          "answer": "16",
+          "hint": "Calcola prima quanti sono occupati (3/5 di 40), poi sottrai dal totale."
+        },
+        {
+          "q": "2/6 + 3/6 = ?",
+          "answer": "5/6",
+          "hint": "Stesso denominatore: somma solo i numeratori."
+        }
       ],
-      medio: [
-        { q: 'Quanto fa 2/3 + 1/6?', answer: '5/6', hint: 'Denominatore comune 6: trasforma 2/3 in 4/6.' },
-        { q: 'Quanto fa 3/4 − 1/2?', answer: '1/4', hint: 'Denominatore comune 4: trasforma 1/2 in 2/4.' },
-        { q: 'Quanto fa 5/6 : 1/3?', answer: '5/2', hint: 'Moltiplica 5/6 per il reciproco di 1/3, cioè 3/1.' },
-        { q: 'Quanto fa il 15% di 80?', answer: '12', hint: '(80 · 15) : 100' },
-        { q: 'Un pantalone costa 40€ con sconto del 25%. Quanti euro si risparmiano?', answer: '10', unit: '€', hint: 'Calcola il 25% di 40.' }
+      "medio": [
+        {
+          "q": "Calcola 4/6 di 24",
+          "answer": "16",
+          "hint": "Dividi il numero per il denominatore, poi moltiplica per il numeratore."
+        },
+        {
+          "q": "Calcola 3/6 di 48",
+          "answer": "24",
+          "hint": "Dividi il numero per il denominatore, poi moltiplica per il numeratore."
+        },
+        {
+          "q": "Uno zaino da viaggio costa 150€ con uno sconto del 15%. Quanti euro si risparmiano?",
+          "answer": "22.5",
+          "unit": "€",
+          "hint": "Calcola il 15% di 150."
+        },
+        {
+          "q": "Uno zaino da viaggio costa 120€ con uno sconto del 30%. Quanti euro si risparmiano?",
+          "answer": "36",
+          "unit": "€",
+          "hint": "Calcola il 30% di 120."
+        },
+        {
+          "q": "1/2 + 5/6 = ?",
+          "answer": "4/3",
+          "hint": "Trova il denominatore comune, poi somma i numeratori."
+        },
+        {
+          "q": "1/2 + 3/4 = ?",
+          "answer": "5/4",
+          "hint": "Trova il denominatore comune, poi somma i numeratori."
+        },
+        {
+          "q": "1/2 + 1/6 = ?",
+          "answer": "2/3",
+          "hint": "Trova il denominatore comune, poi somma i numeratori."
+        },
+        {
+          "q": "Calcola 2/4 di 16",
+          "answer": "8",
+          "hint": "Dividi il numero per il denominatore, poi moltiplica per il numeratore."
+        },
+        {
+          "q": "In una gara di cucina, la metà dei partecipanti prepara un dolce e 2/5 preparano un primo piatto: il resto (6 persone) prepara un antipasto. Quanti sono i partecipanti in totale?",
+          "answer": "60",
+          "hint": "Dolce e primo insieme sono 1/2 + 2/5 dei partecipanti: il resto (le 6 persone) è la parte rimanente della frazione totale.",
+          "logic": true
+        },
+        {
+          "q": "In agenzia, 5/6 dei clienti prenota un volo con bagaglio incluso. Su 120 clienti, quanti NON hanno il bagaglio incluso?",
+          "answer": "20",
+          "hint": "Calcola prima quanti hanno il bagaglio incluso (5/6 di 120), poi sottrai dal totale."
+        },
+        {
+          "q": "Un hotel aumenta il prezzo di una camera da 80€ del 25% in alta stagione. Poi, per chi prenota online, applica uno sconto del 10% sul nuovo prezzo. Quanto costa la camera prenotata online?",
+          "answer": "90",
+          "unit": "€",
+          "hint": "Prima aumenta 80€ del 25%, poi sconta il 10% sul NUOVO prezzo (non su 80)."
+        },
+        {
+          "q": "Il 3/8 di una classe di 32 studenti va in gita scolastica a Firenze. Quanti studenti restano a scuola?",
+          "answer": "20",
+          "hint": "Calcola prima quanti vanno in gita (3/8 di 32), poi sottrai dal totale."
+        }
       ],
-      difficile: [
-        { q: 'Quanto fa (2/3 + 1/4) : 5/6?', answer: '11/10', hint: 'Prima risolvi la somma in parentesi (denominatore comune 12), poi dividi per 5/6.' },
-        { q: 'Un prezzo di 50€ aumenta del 20% e poi lo stesso nuovo prezzo viene scontato del 20%. Prezzo finale?', answer: '48', unit: '€', hint: 'Aumenta prima 50 del 20%, poi applica lo sconto del 20% sul nuovo prezzo (non su 50).' },
-        { q: 'Calcola 3/5 di 120, poi aumenta il risultato del 10%', answer: '79.2', hint: 'Prima 3/5 di 120, poi aggiungi il 10% di quel risultato.' },
-        { q: 'Quanto fa (1/2 − 1/3) · 2/5?', answer: '1/15', hint: 'Denominatore comune 6 per la sottrazione, poi moltiplica.' },
-        { q: 'Un viaggio costa 350€. Con lo sconto "primo prenota" del 12% quanto si paga?', answer: '308', unit: '€', hint: 'Sottrai il 12% di 350 da 350, oppure moltiplica 350 per 0,88.' }
+      "difficile": [
+        {
+          "q": "Un viaggio costa 500€. Il prezzo aumenta del 60%, poi sul nuovo prezzo viene applicato uno sconto del 25%. Prezzo finale?",
+          "answer": "600",
+          "unit": "€",
+          "hint": "Aumenta prima 500 del 60%, poi applica lo sconto del 25% sul NUOVO prezzo (non su 500)."
+        },
+        {
+          "q": "Un viaggio costa 350€. Il prezzo aumenta del 20%, poi sul nuovo prezzo viene applicato uno sconto del 5%. Prezzo finale?",
+          "answer": "399",
+          "unit": "€",
+          "hint": "Aumenta prima 350 del 20%, poi applica lo sconto del 5% sul NUOVO prezzo (non su 350)."
+        },
+        {
+          "q": "Un pacchetto vacanza in agenzia costa 400€. Con lo sconto \"prenota prima\" del 10% quanto si paga?",
+          "answer": "360",
+          "unit": "€",
+          "hint": "Sottrai il 10% di 400 dal prezzo pieno."
+        },
+        {
+          "q": "Calcola 3/4 di 200, poi aumenta il risultato del 50%",
+          "answer": "225",
+          "hint": "Prima 3/4 di 200, poi aggiungi il 50% di quel risultato."
+        },
+        {
+          "q": "Un pacchetto vacanza in agenzia costa 450€. Con lo sconto \"prenota prima\" del 30% quanto si paga?",
+          "answer": "315",
+          "unit": "€",
+          "hint": "Sottrai il 30% di 450 dal prezzo pieno."
+        },
+        {
+          "q": "Un pacchetto vacanza in agenzia costa 300€. Con lo sconto \"prenota prima\" del 15% quanto si paga?",
+          "answer": "255",
+          "unit": "€",
+          "hint": "Sottrai il 15% di 300 dal prezzo pieno."
+        },
+        {
+          "q": "Un pacchetto vacanza in agenzia costa 450€. Con lo sconto \"prenota prima\" del 15% quanto si paga?",
+          "answer": "382.5",
+          "unit": "€",
+          "hint": "Sottrai il 15% di 450 dal prezzo pieno."
+        },
+        {
+          "q": "Un viaggio costa 300€. Il prezzo aumenta del 15%, poi sul nuovo prezzo viene applicato uno sconto del 30%. Prezzo finale?",
+          "answer": "241.5",
+          "unit": "€",
+          "hint": "Aumenta prima 300 del 15%, poi applica lo sconto del 30% sul NUOVO prezzo (non su 300)."
+        },
+        {
+          "q": "Il pacchetto vacanze a Rimini da 480€ ha lo sconto Early Booking del 15%. Pagando tutto in un'unica soluzione, si ha anche un ulteriore 5% di sconto sul prezzo già scontato. Quanto si paga in totale?",
+          "answer": "387.6",
+          "unit": "€",
+          "hint": "Applica prima il 15% su 480€, poi il 5% sul NUOVO prezzo ottenuto (non sui 480€ di partenza).",
+          "logic": true
+        },
+        {
+          "q": "Su un pullman turistico, 3/4 dei posti sono occupati da turisti italiani e i rimanenti da turisti stranieri. Se i turisti stranieri sono 15, quanti sono i posti totali sul pullman?",
+          "answer": "60",
+          "hint": "I turisti stranieri sono 1/4 del totale: se 1/4 corrisponde a 15, quanto vale il totale?"
+        },
+        {
+          "q": "In un negozio di souvenir, il 60% del prezzo di uno zaino è il costo di produzione. Se il costo di produzione è 24€, qual è il prezzo di vendita dello zaino?",
+          "answer": "40",
+          "unit": "€",
+          "hint": "Chiama P il prezzo di vendita: 0,60 × P = 24€. Isola P."
+        },
+        {
+          "q": "Il prezzo di un biglietto aereo è aumentato del 20% rispetto allo scorso anno, arrivando a 156€. Quanto costava l'anno scorso?",
+          "answer": "130",
+          "unit": "€",
+          "hint": "Chiama P il prezzo dello scorso anno: P aumentato del 20% diventa 1,20 × P = 156€."
+        }
       ]
     },
-    quiz: [
-      { q: 'Semplificando 6/9 si ottiene:', options: ['1/3', '2/3', '3/2', '6/9'], correct: 1 },
-      { q: '1/3 + 1/6 = ?', options: ['1/2', '2/9', '1/9', '2/6'], correct: 0 },
-      { q: 'Il 10% di 250 è:', options: ['2,5', '25', '250', '2500'], correct: 1 },
-      { q: '3/4 di 200 è:', options: ['50', '100', '150', '300'], correct: 2 },
-      { q: 'Un prezzo di 60€ scontato del 30% diventa:', options: ['18€', '30€', '42€', '48€'], correct: 2 },
-      { q: '2/5 : 1/10 = ?', options: ['1/25', '1/4', '4', '25'], correct: 2 }
+    "quiz": [
+      {
+        "q": "Semplificando 6/9 si ottiene:",
+        "options": [
+          "1/3",
+          "2/3",
+          "3/2",
+          "6/9"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "1/3 + 1/6 = ?",
+        "options": [
+          "1/2",
+          "2/9",
+          "1/9",
+          "2/6"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Il 10% di 250 è:",
+        "options": [
+          "2,5",
+          "25",
+          "250",
+          "2500"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "3/4 di 200 è:",
+        "options": [
+          "50",
+          "100",
+          "150",
+          "300"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Un prezzo di 60€ scontato del 30% diventa:",
+        "options": [
+          "18€",
+          "30€",
+          "42€",
+          "48€"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "2/5 : 1/10 = ?",
+        "options": [
+          "1/25",
+          "1/4",
+          "4",
+          "25"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "3/8 + 1/8 = ?",
+        "options": [
+          "1/2",
+          "4/16",
+          "3/8",
+          "1/4"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Il 50% di 84 è:",
+        "options": [
+          "21",
+          "42",
+          "84",
+          "168"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "5/6 − 1/6 = ?",
+        "options": [
+          "2/3",
+          "1/2",
+          "1/3",
+          "5/12"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "3/4 : 1/2 = ?",
+        "options": [
+          "3/2",
+          "3/8",
+          "2/3",
+          "1/8"
+        ],
+        "correct": 0
+      }
     ]
   },
-
   {
-    id: 'potenze',
-    icon: '⚡',
-    accent: 'gold',
-    title: 'Potenze e Radici',
-    tagline: 'Moltiplicazioni ripetute e il percorso inverso',
-    theory: [
+    "id": "potenze",
+    "icon": "⚡",
+    "accent": "gold",
+    "title": "Potenze e Radici",
+    "tagline": "Moltiplicazioni ripetute e il percorso inverso",
+    "theory": [
       {
-        title: "Cos'è una potenza",
-        body: "Una potenza a^n indica che la base a va moltiplicata per sé stessa n volte (n è l'esponente).\n\nEsempio: 2^3 = 2 · 2 · 2 = 8"
+        "title": "Cos'è una potenza",
+        "body": "Una potenza a^n indica che la base a va moltiplicata per sé stessa n volte (n è l'esponente).\n\nEsempio: 2^3 = 2 · 2 · 2 = 8"
       },
       {
-        title: 'Le proprietà delle potenze',
-        body: "Stessa base: a^n · a^m = a^(n+m)     a^n : a^m = a^(n−m)\n\nPotenza di potenza: (a^n)^m = a^(n·m)\n\nCasi speciali: a^1 = a       a^0 = 1  (per a ≠ 0)"
+        "title": "Le proprietà delle potenze",
+        "body": "Stessa base: a^n · a^m = a^(n+m)     a^n : a^m = a^(n−m)\n\nPotenza di potenza: (a^n)^m = a^(n·m)\n\nCasi speciali: a^1 = a       a^0 = 1  (per a ≠ 0)"
       },
       {
-        title: 'Proprietà del prodotto',
-        body: "La radice (o la potenza) di un prodotto è il prodotto delle radici (o potenze):\n\n√(a · b) = √a · √b\n\nEsempio: √(9 · 16) = √9 · √16 = 3 · 4 = 12"
+        "title": "Proprietà del prodotto",
+        "body": "La radice (o la potenza) di un prodotto è il prodotto delle radici (o potenze):\n\n√(a · b) = √a · √b\n\nEsempio: √(9 · 16) = √9 · √16 = 3 · 4 = 12"
       },
       {
-        title: 'Le radici quadrate',
-        body: "La radice quadrata √x è l'operazione inversa dell'elevamento al quadrato: risponde alla domanda \"quale numero moltiplicato per sé stesso dà x?\".\n\nConviene memorizzare: √1=1, √4=2, √9=3, √16=4, √25=5, √36=6, √49=7, √64=8, √81=9, √100=10, √144=12."
+        "title": "Le radici quadrate",
+        "body": "La radice quadrata √x è l'operazione inversa dell'elevamento al quadrato: risponde alla domanda \"quale numero moltiplicato per sé stesso dà x?\".\n\nConviene memorizzare: √1=1, √4=2, √9=3, √16=4, √25=5, √36=6, √49=7, √64=8, √81=9, √100=10, √144=12."
+      },
+      {
+        "title": "Esempio svolto",
+        "body": "Calcoliamo (2^3)^2 : 2^4\n\nPotenza di potenza: (2^3)^2 = 2^6\n\nStessa base nella divisione: 2^6 : 2^4 = 2^2 = 4"
       }
     ],
-    exercises: {
-      facile: [
-        { q: '2^3 = ?', answer: '8', hint: '2 · 2 · 2' },
-        { q: '5^2 = ?', answer: '25', hint: '5 · 5' },
-        { q: '3^0 = ?', answer: '1', hint: 'Qualsiasi numero (diverso da 0) elevato a 0 fa 1.' },
-        { q: 'Radice quadrata di 49 = ?', answer: '7', hint: 'Quale numero moltiplicato per sé stesso dà 49?' },
-        { q: '10^2 = ?', answer: '100', hint: '10 · 10' }
+    "exercises": {
+      "facile": [
+        {
+          "q": "Radice quadrata di 9 = ?",
+          "answer": "3",
+          "hint": "Quale numero moltiplicato per sé stesso dà questo risultato?"
+        },
+        {
+          "q": "Radice quadrata di 100 = ?",
+          "answer": "10",
+          "hint": "Quale numero moltiplicato per sé stesso dà questo risultato?"
+        },
+        {
+          "q": "4^3 = ?",
+          "answer": "64",
+          "hint": "4 moltiplicato per sé stesso 3 volte."
+        },
+        {
+          "q": "Radice quadrata di 16 = ?",
+          "answer": "4",
+          "hint": "Quale numero moltiplicato per sé stesso dà questo risultato?"
+        },
+        {
+          "q": "4^2 = ?",
+          "answer": "16",
+          "hint": "4 moltiplicato per sé stesso 2 volte."
+        },
+        {
+          "q": "9^3 = ?",
+          "answer": "729",
+          "hint": "9 moltiplicato per sé stesso 3 volte."
+        },
+        {
+          "q": "8^2 = ?",
+          "answer": "64",
+          "hint": "8 moltiplicato per sé stesso 2 volte."
+        },
+        {
+          "q": "Radice quadrata di 36 = ?",
+          "answer": "6",
+          "hint": "Quale numero moltiplicato per sé stesso dà questo risultato?"
+        },
+        {
+          "q": "Qual è il numero successivo nella sequenza: 1, 2, 4, 8, 16, ... ?",
+          "answer": "32",
+          "hint": "Ogni numero è il doppio del precedente: sono le potenze di 2.",
+          "logic": true
+        },
+        {
+          "q": "Un video ha 5 visualizzazioni il primo giorno e ogni giorno raddoppia. Quante visualizzazioni avrà il quarto giorno?",
+          "answer": "40",
+          "hint": "Giorno1=5, giorno2=5×2, giorno3=doppio di giorno2... prosegui raddoppiando."
+        },
+        {
+          "q": "Quale numero elevato al quadrato dà 25?",
+          "answer": "5",
+          "hint": "È la radice quadrata di 25."
+        },
+        {
+          "q": "9^2 = ?",
+          "answer": "81",
+          "hint": "9 moltiplicato per sé stesso 2 volte."
+        }
       ],
-      medio: [
-        { q: '2^3 · 2^2 = ?', answer: '32', hint: 'Stessa base: somma gli esponenti (3+2), poi calcola la potenza.' },
-        { q: '(3^2)^2 = ?', answer: '81', hint: 'Potenza di potenza: moltiplica gli esponenti (2·2).' },
-        { q: '5^4 : 5^2 = ?', answer: '25', hint: 'Stessa base: sottrai gli esponenti (4−2).' },
-        { q: 'Radice quadrata di 144 = ?', answer: '12', hint: 'Quale numero moltiplicato per sé stesso dà 144?' },
-        { q: '4^3 = ?', answer: '64', hint: '4 · 4 · 4' }
+      "medio": [
+        {
+          "q": "6^3 × 6^1 = ?",
+          "answer": "1296",
+          "hint": "Stessa base: somma gli esponenti."
+        },
+        {
+          "q": "Radice quadrata di 196 = ?",
+          "answer": "14",
+          "hint": "Quale numero moltiplicato per sé stesso dà questo risultato?"
+        },
+        {
+          "q": "Radice quadrata di 100 = ?",
+          "answer": "10",
+          "hint": "Quale numero moltiplicato per sé stesso dà questo risultato?"
+        },
+        {
+          "q": "Radice quadrata di 64 = ?",
+          "answer": "8",
+          "hint": "Quale numero moltiplicato per sé stesso dà questo risultato?"
+        },
+        {
+          "q": "5^2 × 5^1 = ?",
+          "answer": "125",
+          "hint": "Stessa base: somma gli esponenti."
+        },
+        {
+          "q": "(5^1)^2 = ?",
+          "answer": "25",
+          "hint": "Potenza di potenza: moltiplica gli esponenti."
+        },
+        {
+          "q": "(5^2)^2 = ?",
+          "answer": "625",
+          "hint": "Potenza di potenza: moltiplica gli esponenti."
+        },
+        {
+          "q": "Radice quadrata di 169 = ?",
+          "answer": "13",
+          "hint": "Quale numero moltiplicato per sé stesso dà questo risultato?"
+        },
+        {
+          "q": "Le torri di Archie: il 1° giorno costruisce una torre con 1 cubo. Ogni giorno aggiunge sopra un livello quadrato il cui lato è il triplo del precedente (2° giorno: livello 3×3=9, totale 10; 3° giorno: livello 9×9=81, totale 91). Quanti cubi in totale il 4° giorno, se il nuovo livello è 27×27?",
+          "answer": "820",
+          "hint": "Il nuovo livello ha 27×27 cubi: sommalo al totale che aveva alla fine del 3° giorno (91).",
+          "logic": true
+        },
+        {
+          "q": "Quanti chicchi di riso ci sono sulla decima casella di una scacchiera, se sulla prima c'è 1 chicco e ogni casella raddoppia la precedente?",
+          "answer": "512",
+          "hint": "Sulla casella n ci sono 2 elevato alla (n−1) chicchi.",
+          "logic": true
+        },
+        {
+          "q": "Quale numero elevato al cubo dà 27?",
+          "answer": "3",
+          "hint": "Quale numero moltiplicato 3 volte per sé stesso dà 27?"
+        },
+        {
+          "q": "Un gruppo turistico raddoppia il numero di iscritti ogni anno: nel 2024 erano 15. Quanti saranno nel 2027 se il trend continua?",
+          "answer": "120",
+          "hint": "Raddoppia il numero di iscritti 3 volte (per il 2025, 2026 e 2027)."
+        }
       ],
-      difficile: [
-        { q: '2^3 · 2^0 + 3^2 = ?', answer: '17', hint: 'Calcola separatamente le due potenze (ricorda 2^0=1), poi somma.' },
-        { q: '(2^2)^3 : 2^4 = ?', answer: '4', hint: 'Prima la potenza di potenza (2^2)^3 = 2^6, poi sottrai gli esponenti nella divisione.' },
-        { q: 'Radice quadrata di (9 · 16) = ?', answer: '12', hint: 'Usa √(a·b) = √a · √b.' },
-        { q: 'Calcola la radice quadrata di (3^2 + 4^2)', answer: '5', hint: 'Prima calcola le due potenze e sommale (9+16), poi estrai la radice.' },
-        { q: '5^3 : (5 · 5) = ?', answer: '5', hint: 'Scrivi 5·5 come 5^2, poi sottrai gli esponenti.' }
+      "difficile": [
+        {
+          "q": "4^1 × 4^2 + 3^1 = ?",
+          "answer": "67",
+          "hint": "Calcola separatamente il prodotto di potenze (stessa base → somma esponenti) e la potenza finale, poi somma."
+        },
+        {
+          "q": "3^3 × 3^1 + 2^1 = ?",
+          "answer": "83",
+          "hint": "Calcola separatamente il prodotto di potenze (stessa base → somma esponenti) e la potenza finale, poi somma."
+        },
+        {
+          "q": "Radice quadrata di (16 × 16) = ?",
+          "answer": "16",
+          "hint": "Usa √(a·b) = √a · √b: calcola le due radici separatamente."
+        },
+        {
+          "q": "Radice quadrata di (100 × 100) = ?",
+          "answer": "100",
+          "hint": "Usa √(a·b) = √a · √b: calcola le due radici separatamente."
+        },
+        {
+          "q": "5^1 × 5^2 + 4^2 = ?",
+          "answer": "141",
+          "hint": "Calcola separatamente il prodotto di potenze (stessa base → somma esponenti) e la potenza finale, poi somma."
+        },
+        {
+          "q": "5^1 × 5^2 + 3^2 = ?",
+          "answer": "134",
+          "hint": "Calcola separatamente il prodotto di potenze (stessa base → somma esponenti) e la potenza finale, poi somma."
+        },
+        {
+          "q": "3^2 × 3^2 + 4^1 = ?",
+          "answer": "85",
+          "hint": "Calcola separatamente il prodotto di potenze (stessa base → somma esponenti) e la potenza finale, poi somma."
+        },
+        {
+          "q": "(2^2)^2 : 2^1 = ?",
+          "answer": "8",
+          "hint": "Prima la potenza di potenza, poi sottrai gli esponenti nella divisione."
+        },
+        {
+          "q": "Un video di viaggi ha 200 visualizzazioni il primo giorno e ogni giorno raddoppia rispetto al precedente. In quale giorno (1°, 2°, 3°...) supera per la prima volta 1.000.000 di visualizzazioni?",
+          "answer": "14",
+          "hint": "Le visualizzazioni al giorno n sono 200 × 2^(n−1): prova a calcolare per n vicino a 12-14.",
+          "logic": true
+        },
+        {
+          "q": "Quanti chicchi di riso in totale ci sono sulle prime 10 caselle di una scacchiera (1, 2, 4, 8, ... raddoppiando ogni volta)?",
+          "answer": "1023",
+          "hint": "La somma 1+2+4+...+2^9 è sempre uguale alla potenza successiva meno 1: 2^10 − 1."
+        },
+        {
+          "q": "Se 3^x = 81, quanto vale x?",
+          "answer": "4",
+          "hint": "Scrivi 81 come potenza di 3."
+        },
+        {
+          "q": "Il lato di un quadrato viene raddoppiato. Di quante volte aumenta la sua area?",
+          "answer": "4",
+          "hint": "Se il lato diventa 2l, l'area diventa (2l)² = 4 × l²."
+        }
       ]
     },
-    quiz: [
-      { q: '4^2 = ?', options: ['6', '8', '16', '32'], correct: 2 },
-      { q: '2^5 = ?', options: ['10', '16', '25', '32'], correct: 3 },
-      { q: 'Radice quadrata di 81 = ?', options: ['8', '9', '40,5', '81'], correct: 1 },
-      { q: '3^2 · 3^3 = ?', options: ['81', '243', '729', '15'], correct: 1 },
-      { q: '(2^3)^2 = ?', options: ['12', '16', '36', '64'], correct: 3 },
-      { q: 'Radice quadrata di 100 = ?', options: ['10', '50', '100', '1000'], correct: 0 }
+    "quiz": [
+      {
+        "q": "4^2 = ?",
+        "options": [
+          "6",
+          "8",
+          "16",
+          "32"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "2^5 = ?",
+        "options": [
+          "10",
+          "16",
+          "25",
+          "32"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "Radice quadrata di 81 = ?",
+        "options": [
+          "8",
+          "9",
+          "40,5",
+          "81"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "3^2 · 3^3 = ?",
+        "options": [
+          "81",
+          "243",
+          "729",
+          "15"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "(2^3)^2 = ?",
+        "options": [
+          "12",
+          "16",
+          "36",
+          "64"
+        ],
+        "correct": 3
+      },
+      {
+        "q": "Radice quadrata di 100 = ?",
+        "options": [
+          "10",
+          "50",
+          "100",
+          "1000"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "6^2 = ?",
+        "options": [
+          "12",
+          "36",
+          "62",
+          "26"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "3^4 = ?",
+        "options": [
+          "12",
+          "64",
+          "81",
+          "34"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Radice quadrata di 64 = ?",
+        "options": [
+          "6",
+          "7",
+          "8",
+          "32"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "5^0 = ?",
+        "options": [
+          "0",
+          "1",
+          "5",
+          "50"
+        ],
+        "correct": 1
+      }
     ]
   },
-
   {
-    id: 'algebra',
-    icon: '🧩',
-    accent: 'teal',
-    title: 'Espressioni Algebriche',
-    tagline: 'Quando le lettere prendono il posto dei numeri',
-    theory: [
+    "id": "algebra",
+    "icon": "🧩",
+    "accent": "teal",
+    "title": "Espressioni Algebriche",
+    "tagline": "Quando le lettere prendono il posto dei numeri",
+    "theory": [
       {
-        title: "Cos'è un'espressione algebrica",
-        body: "Un'espressione algebrica usa lettere (dette variabili) al posto di numeri non ancora conosciuti.\n\nEsempio: 2x + 3 è un'espressione dove x rappresenta un numero qualsiasi."
+        "title": "Cos'è un'espressione algebrica",
+        "body": "Un'espressione algebrica usa lettere (dette variabili) al posto di numeri non ancora conosciuti.\n\nEsempio: 2x + 3 è un'espressione dove x rappresenta un numero qualsiasi."
       },
       {
-        title: 'Termini simili',
-        body: "Due termini sono simili se hanno la stessa parte letterale (stessa lettera, stesso esponente). Si possono sommare/sottrarre i loro coefficienti (i numeri davanti).\n\nEsempio: 3x + 5x = 8x       7a − 2a = 5a"
+        "title": "Termini simili",
+        "body": "Due termini sono simili se hanno la stessa parte letterale (stessa lettera, stesso esponente). Si possono sommare/sottrarre i loro coefficienti (i numeri davanti).\n\nEsempio: 3x + 5x = 8x       7a − 2a = 5a"
       },
       {
-        title: 'Sommare e sottrarre polinomi',
-        body: "Per sommare o sottrarre polinomi si raggruppano i termini simili tra loro.\n\nAttenzione al segno meno davanti a una parentesi: cambia il segno a tutti i termini dentro.\n\nEsempio: (5x−2) − (3x+4) = 5x−2−3x−4 = 2x−6"
+        "title": "Sommare e sottrarre polinomi",
+        "body": "Per sommare o sottrarre polinomi si raggruppano i termini simili tra loro.\n\nAttenzione al segno meno davanti a una parentesi: cambia il segno a tutti i termini dentro.\n\nEsempio: (5x−2) − (3x+4) = 5x−2−3x−4 = 2x−6"
       },
       {
-        title: "Il valore di un'espressione",
-        body: "Per calcolare il valore di un'espressione, si sostituisce un numero al posto della lettera e si esegue il calcolo.\n\nEsempio: 2x+1 per x=3 → 2·3+1 = 7"
+        "title": "Il valore di un'espressione",
+        "body": "Per calcolare il valore di un'espressione, si sostituisce un numero al posto della lettera e si esegue il calcolo.\n\nEsempio: 2x+1 per x=3 → 2·3+1 = 7"
+      },
+      {
+        "title": "Esempio svolto",
+        "body": "Semplifichiamo 3(x+2) − (x−5)\n\nDistribuiamo: 3x+6 − x+5\n(il segno meno davanti alla parentesi cambia il segno a entrambi i termini dentro)\n\nRaggruppiamo: (3x−x) + (6+5) = 2x+11"
       }
     ],
-    exercises: {
-      facile: [
-        { q: 'Somma i termini simili: 3x + 5x = ?', answer: ['8x'], type: 'expr', hint: 'Somma i coefficienti 3 e 5, tieni la x.' },
-        { q: 'Semplifica: 7a − 2a = ?', answer: ['5a'], type: 'expr', hint: 'Sottrai i coefficienti 7 e 2, tieni la a.' },
-        { q: 'Calcola il valore di 2x+1 per x=3', answer: '7', hint: 'Sostituisci 3 al posto di x: 2·3+1' },
-        { q: 'Semplifica: 4y + 3 + 2y = ?', answer: ['6y+3'], type: 'expr', hint: 'Somma i termini in y (4y e 2y); il numero 3 resta da solo.' },
-        { q: 'Calcola il valore di 3a per a=5', answer: '15', hint: '3 · 5' }
+    "exercises": {
+      "facile": [
+        {
+          "q": "Semplifica: 3b + 7b = ?",
+          "answer": [
+            "10b"
+          ],
+          "type": "expr",
+          "hint": "Somma i coefficienti, la lettera resta la stessa."
+        },
+        {
+          "q": "Semplifica: 8a + 7a = ?",
+          "answer": [
+            "15a"
+          ],
+          "type": "expr",
+          "hint": "Somma i coefficienti, la lettera resta la stessa."
+        },
+        {
+          "q": "Semplifica: 9x + 9x = ?",
+          "answer": [
+            "18x"
+          ],
+          "type": "expr",
+          "hint": "Somma i coefficienti, la lettera resta la stessa."
+        },
+        {
+          "q": "Semplifica: 9a + 2a = ?",
+          "answer": [
+            "11a"
+          ],
+          "type": "expr",
+          "hint": "Somma i coefficienti, la lettera resta la stessa."
+        },
+        {
+          "q": "Calcola il valore di 3b + 5 per b=5",
+          "answer": "20",
+          "hint": "Sostituisci 5 al posto di b."
+        },
+        {
+          "q": "Semplifica: 2a + 5a = ?",
+          "answer": [
+            "7a"
+          ],
+          "type": "expr",
+          "hint": "Somma i coefficienti, la lettera resta la stessa."
+        },
+        {
+          "q": "Calcola il valore di 2y + 7 per y=0",
+          "answer": "7",
+          "hint": "Sostituisci 0 al posto di y."
+        },
+        {
+          "q": "Semplifica: 6y + 2y = ?",
+          "answer": [
+            "8y"
+          ],
+          "type": "expr",
+          "hint": "Somma i coefficienti, la lettera resta la stessa."
+        },
+        {
+          "q": "Pensa un numero, aggiungi 10, moltiplica per 2, sottrai 6, dividi per 2, sottrai il numero di partenza. Cosa ottieni sempre, qualunque numero tu abbia scelto?",
+          "answer": "7",
+          "hint": "Prova con un numero a piacere (es. 5) e segui tutti i passaggi: il risultato non dipende dal numero scelto!",
+          "logic": true
+        },
+        {
+          "q": "Calcola il valore di 5x per x=4, poi sottrai 3",
+          "answer": "17",
+          "hint": "Prima 5×4, poi sottrai 3."
+        },
+        {
+          "q": "Semplifica: 2a + 3a + a = ?",
+          "type": "expr",
+          "answer": [
+            "6a"
+          ],
+          "hint": "Somma tutti e tre i coefficienti (ricorda: \"a\" da sola vale 1a)."
+        },
+        {
+          "q": "Semplifica: 2a + 4a = ?",
+          "answer": [
+            "6a"
+          ],
+          "type": "expr",
+          "hint": "Somma i coefficienti, la lettera resta la stessa."
+        }
       ],
-      medio: [
-        { q: 'Semplifica: 5x + 3y − 2x + y = ?', answer: ['3x+4y', '4y+3x'], type: 'expr', hint: 'Raggruppa separatamente i termini in x e quelli in y.' },
-        { q: 'Somma i polinomi: (2x+3) + (x−5) = ?', answer: ['3x-2'], type: 'expr', hint: 'Raggruppa i termini in x insieme e i numeri insieme.' },
-        { q: 'Sottrai: (5x−2) − (3x+4) = ?', answer: ['2x-6'], type: 'expr', hint: 'Il segno meno cambia segno a entrambi i termini della seconda parentesi.' },
-        { q: 'Calcola il valore di x^2+2x per x=3', answer: '15', hint: '3^2 + 2·3 = 9 + 6' },
-        { q: 'Semplifica: 2(x+3) = ?', answer: ['2x+6'], type: 'expr', hint: 'Moltiplica il 2 per ogni termine dentro la parentesi (proprietà distributiva).' }
+      "medio": [
+        {
+          "q": "Semplifica: 5x − 7x = ?",
+          "answer": [
+            "-2x"
+          ],
+          "type": "expr",
+          "hint": "Sottrai i coefficienti mantenendo la lettera."
+        },
+        {
+          "q": "Calcola il valore di a^2 + 3a per a=4",
+          "answer": "28",
+          "hint": "Calcola prima a², poi 3·a, infine somma."
+        },
+        {
+          "q": "Semplifica: 8a − 1a = ?",
+          "answer": [
+            "7a"
+          ],
+          "type": "expr",
+          "hint": "Sottrai i coefficienti mantenendo la lettera."
+        },
+        {
+          "q": "Semplifica: 6y − 7y = ?",
+          "answer": [
+            "-y",
+            "-1y"
+          ],
+          "type": "expr",
+          "hint": "Sottrai i coefficienti mantenendo la lettera."
+        },
+        {
+          "q": "Semplifica: 9a − 1a = ?",
+          "answer": [
+            "8a"
+          ],
+          "type": "expr",
+          "hint": "Sottrai i coefficienti mantenendo la lettera."
+        },
+        {
+          "q": "Semplifica: 3x − 4x = ?",
+          "answer": [
+            "-x",
+            "-1x"
+          ],
+          "type": "expr",
+          "hint": "Sottrai i coefficienti mantenendo la lettera."
+        },
+        {
+          "q": "Semplifica: 6a − 4a = ?",
+          "answer": [
+            "2a"
+          ],
+          "type": "expr",
+          "hint": "Sottrai i coefficienti mantenendo la lettera."
+        },
+        {
+          "q": "Calcola il valore di y^2 + 5y per y=4",
+          "answer": "36",
+          "hint": "Calcola prima y², poi 5·y, infine somma."
+        },
+        {
+          "q": "Un mattone, su un piatto della bilancia, pesa come 1 kg più mezzo mattone sull'altro piatto. Quanto pesa un mattone intero?",
+          "answer": "2",
+          "unit": "kg",
+          "hint": "Chiama x il peso del mattone: x = 1 + x/2. Isola la x.",
+          "logic": true
+        },
+        {
+          "q": "Pensa un numero, moltiplicalo per 3, aggiungi 12, dividi per 3, sottrai il numero di partenza. Cosa ottieni sempre?",
+          "answer": "4",
+          "hint": "Scrivi l'espressione con una lettera al posto del numero pensato e semplificala.",
+          "logic": true
+        },
+        {
+          "q": "Semplifica: 4(x − 2) + 3x = ?",
+          "type": "expr",
+          "answer": [
+            "7x-8"
+          ],
+          "hint": "Distribuisci il 4, poi somma tra loro i termini in x."
+        },
+        {
+          "q": "Calcola il valore di 2(x+3) per x=5",
+          "answer": "16",
+          "hint": "Prima somma dentro la parentesi, poi moltiplica per 2."
+        }
       ],
-      difficile: [
-        { q: 'Semplifica: 3(x+2) − 2(x−1) = ?', answer: ['x+8'], type: 'expr', hint: 'Prima distribuisci entrambi i prodotti, poi raggruppa i termini simili (occhio ai segni).' },
-        { q: 'Calcola il valore di 2x^2 − 3x + 1 per x=−2', answer: '15', hint: '2·(−2)^2 − 3·(−2) + 1. Ricorda: (−2)^2 = 4.' },
-        { q: 'Semplifica: 4x − [2x − (x+3)] = ?', answer: ['3x+3'], type: 'expr', hint: 'Risolvi prima la parentesi tonda dentro la quadra, poi la quadra.' },
-        { q: 'Somma: (x^2+2x−1) + (3x^2−x+4) = ?', answer: ['4x^2+x+3'], type: 'expr', hint: 'Raggruppa i termini in x^2, poi quelli in x, poi i numeri. Scrivi il risultato in questo ordine.' },
-        { q: 'Calcola il valore di (a+b)^2 per a=2, b=3', answer: '25', hint: 'Prima calcola a+b, poi eleva al quadrato il risultato.' }
+      "difficile": [
+        {
+          "q": "Calcola il valore di 2a^2 − 2a per a=3",
+          "answer": "12",
+          "hint": "Calcola prima a² con il suo segno, poi i due prodotti, infine somma."
+        },
+        {
+          "q": "Calcola il valore di 3a^2 + 5a per a=-4",
+          "answer": "28",
+          "hint": "Calcola prima a² con il suo segno, poi i due prodotti, infine somma."
+        },
+        {
+          "q": "Calcola il valore di 4x^2 + 6x per x=4",
+          "answer": "88",
+          "hint": "Calcola prima x² con il suo segno, poi i due prodotti, infine somma."
+        },
+        {
+          "q": "Calcola il valore di 2x^2 − 3x per x=-3",
+          "answer": "27",
+          "hint": "Calcola prima x² con il suo segno, poi i due prodotti, infine somma."
+        },
+        {
+          "q": "Calcola il valore di 4x^2 + 5x per x=5",
+          "answer": "125",
+          "hint": "Calcola prima x² con il suo segno, poi i due prodotti, infine somma."
+        },
+        {
+          "q": "Calcola il valore di 5a^2 + 4a per a=3",
+          "answer": "57",
+          "hint": "Calcola prima a² con il suo segno, poi i due prodotti, infine somma."
+        },
+        {
+          "q": "Calcola il valore di 5x^2 − 1x per x=-2",
+          "answer": "22",
+          "hint": "Calcola prima x² con il suo segno, poi i due prodotti, infine somma."
+        },
+        {
+          "q": "Calcola il valore di 4a^2 − 2a per a=2",
+          "answer": "12",
+          "hint": "Calcola prima a² con il suo segno, poi i due prodotti, infine somma."
+        },
+        {
+          "q": "In aeroporto, ogni valigia oltre la prima costa 25€ di sovrapprezzo. Se un passeggero ha 4 valigie, quanto paga di sovrapprezzo in totale?",
+          "answer": "75",
+          "unit": "€",
+          "hint": "Le valigie che pagano sovrapprezzo sono tutte tranne la prima: moltiplica il loro numero per 25€."
+        },
+        {
+          "q": "Semplifica: 5(x−1) − 2(x+3) = ?",
+          "type": "expr",
+          "answer": [
+            "3x-11"
+          ],
+          "hint": "Distribuisci entrambi i prodotti (occhio al segno meno davanti al secondo), poi raggruppa i termini simili."
+        },
+        {
+          "q": "Calcola il valore di 2x^2 − 3(x+1) per x=3",
+          "answer": "6",
+          "hint": "Calcola prima 2x², poi 3 per (x+1), infine sottrai."
+        },
+        {
+          "q": "Pensa un numero, sommalo a 7, moltiplica il risultato per 4, sottrai 28, dividi per 4. Cosa ottieni?",
+          "type": "choice",
+          "options": [
+            "Il doppio del numero di partenza",
+            "Il numero di partenza stesso",
+            "Il numero di partenza più 7",
+            "Sempre zero"
+          ],
+          "correct": 1,
+          "hint": "Scrivi l'espressione con una lettera al posto del numero pensato e semplificala passo passo.",
+          "logic": true
+        }
       ]
     },
-    quiz: [
-      { q: 'Semplifica 4x+3x:', options: ['7x', '12x', '7', 'x⁷'], correct: 0 },
-      { q: 'Il valore di 3x−2 per x=4 è:', options: ['10', '12', '14', '9'], correct: 0 },
-      { q: 'Somma i polinomi (x+2)+(2x−5):', options: ['3x−3', 'x−3', '3x+7', '2x−3'], correct: 0 },
-      { q: 'Semplifica 2(x−3):', options: ['2x−3', '2x−6', 'x−6', '2x+6'], correct: 1 },
-      { q: 'Il valore di x^2 per x=−3 è:', options: ['−9', '9', '−6', '6'], correct: 1 },
-      { q: 'Semplifica 5a+2b−3a:', options: ['2a+2b', '8a+2b', '2a−2b', '5a−b'], correct: 0 }
+    "quiz": [
+      {
+        "q": "Semplifica 4x+3x:",
+        "options": [
+          "7x",
+          "12x",
+          "7",
+          "x⁷"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Il valore di 3x−2 per x=4 è:",
+        "options": [
+          "10",
+          "12",
+          "14",
+          "9"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Somma i polinomi (x+2)+(2x−5):",
+        "options": [
+          "3x−3",
+          "x−3",
+          "3x+7",
+          "2x−3"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Semplifica 2(x−3):",
+        "options": [
+          "2x−3",
+          "2x−6",
+          "x−6",
+          "2x+6"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Il valore di x^2 per x=−3 è:",
+        "options": [
+          "−9",
+          "9",
+          "−6",
+          "6"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Semplifica 5a+2b−3a:",
+        "options": [
+          "2a+2b",
+          "8a+2b",
+          "2a−2b",
+          "5a−b"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Semplifica 6x − 4x:",
+        "options": [
+          "2x",
+          "10x",
+          "2",
+          "24x"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Il valore di 4x+3 per x=2 è:",
+        "options": [
+          "7",
+          "8",
+          "11",
+          "14"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Somma i polinomi (3x−1)+(2x+4):",
+        "options": [
+          "5x+3",
+          "5x+5",
+          "x+3",
+          "5x−3"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Semplifica 3(x+4):",
+        "options": [
+          "3x+4",
+          "3x+7",
+          "3x+12",
+          "x+12"
+        ],
+        "correct": 2
+      }
     ]
   },
-
   {
-    id: 'equazioni',
-    icon: '⚖️',
-    accent: 'coral',
-    title: 'Equazioni di Primo Grado',
-    tagline: 'Trovare il valore che tiene tutto in equilibrio',
-    theory: [
+    "id": "equazioni",
+    "icon": "⚖️",
+    "accent": "coral",
+    "title": "Equazioni di Primo Grado",
+    "tagline": "Trovare il valore che tiene tutto in equilibrio",
+    "theory": [
       {
-        title: "Cos'è un'equazione",
-        body: "Un'equazione è un'uguaglianza tra due espressioni che contiene un'incognita (di solito x). Risolverla significa trovare il valore di x che rende vera l'uguaglianza.\n\nEsempio: x + 3 = 7  →  x = 4"
+        "title": "Cos'è un'equazione",
+        "body": "Un'equazione è un'uguaglianza tra due espressioni che contiene un'incognita (di solito x). Risolverla significa trovare il valore di x che rende vera l'uguaglianza.\n\nEsempio: x + 3 = 7  →  x = 4"
       },
       {
-        title: 'I principi di equivalenza',
-        body: "Un'equazione resta vera (equivalente) se:\n\n1° principio: si somma o sottrae lo stesso numero a entrambi i membri.\n\n2° principio: si moltiplica o divide entrambi i membri per uno stesso numero diverso da zero."
+        "title": "I principi di equivalenza",
+        "body": "Un'equazione resta vera (equivalente) se:\n\n1° principio: si somma o sottrae lo stesso numero a entrambi i membri.\n\n2° principio: si moltiplica o divide entrambi i membri per uno stesso numero diverso da zero."
       },
       {
-        title: "Come si risolve",
-        body: "Si portano tutti i termini con la x da un lato e i numeri dall'altro, cambiando di segno ogni termine che \"cambia lato\".\n\nEsempio: 2x + 3 = 11 → 2x = 11 − 3 → 2x = 8 → x = 4"
+        "title": "Come si risolve",
+        "body": "Si portano tutti i termini con la x da un lato e i numeri dall'altro, cambiando di segno ogni termine che \"cambia lato\".\n\nEsempio: 2x + 3 = 11 → 2x = 11 − 3 → 2x = 8 → x = 4"
       },
       {
-        title: 'La verifica',
-        body: "Per controllare che il risultato sia corretto, si sostituisce il valore trovato al posto della x nell'equazione originale: se i due membri diventano uguali, la soluzione è corretta."
+        "title": "La verifica",
+        "body": "Per controllare che il risultato sia corretto, si sostituisce il valore trovato al posto della x nell'equazione originale: se i due membri diventano uguali, la soluzione è corretta."
+      },
+      {
+        "title": "Esempio svolto",
+        "body": "Risolviamo 3(x−2) = x+4\n\nDistribuiamo: 3x−6 = x+4\n\nPortiamo le x a sinistra e i numeri a destra: 3x−x = 4+6\n\n2x = 10  →  x = 5\n\nVerifica: 3(5−2)=9  e  5+4=9 ✓"
       }
     ],
-    exercises: {
-      facile: [
-        { q: 'x + 3 = 7', answer: '4', hint: 'Sposta il 3 dall\'altra parte cambiandogli segno.' },
-        { q: 'x − 5 = 2', answer: '7', hint: 'Sposta il −5 dall\'altra parte: diventa +5.' },
-        { q: '2x = 10', answer: '5', hint: 'Dividi entrambi i membri per 2.' },
-        { q: 'x : 3 = 4', answer: '12', hint: 'Moltiplica entrambi i membri per 3.' },
-        { q: '3x = −9', answer: '-3', hint: 'Dividi entrambi i membri per 3.' }
+    "exercises": {
+      "facile": [
+        {
+          "q": "x + 7 = 12",
+          "answer": "5",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        },
+        {
+          "q": "5x = 55",
+          "answer": "11",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        },
+        {
+          "q": "x − 1 = 6",
+          "answer": "7",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        },
+        {
+          "q": "2x = -18",
+          "answer": "-9",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        },
+        {
+          "q": "x − 8 = -11",
+          "answer": "-3",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        },
+        {
+          "q": "7x = 28",
+          "answer": "4",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        },
+        {
+          "q": "x − 3 = -8",
+          "answer": "-5",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        },
+        {
+          "q": "9x = 54",
+          "answer": "6",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        },
+        {
+          "q": "Un padre ha 40 anni, suo figlio 14. Tra quanti anni l'età del padre sarà il doppio di quella del figlio?",
+          "answer": "12",
+          "unit": "anni",
+          "hint": "Scrivi l'equazione 40+x = 2×(14+x) e risolvila.",
+          "logic": true
+        },
+        {
+          "q": "Alberto ha una caramella in più di Marco, che ne ha due in più di Luca. In totale hanno 59 caramelle. Quante ne ha Luca?",
+          "answer": "18",
+          "hint": "Chiama L le caramelle di Luca: Marco ne ha L+2, Alberto L+3. Scrivi l'equazione della somma totale.",
+          "logic": true
+        },
+        {
+          "q": "Il triplo di un numero, diminuito di 4, fa 11. Qual è il numero?",
+          "answer": "5",
+          "hint": "Scrivi l'equazione 3x − 4 = 11 e risolvila."
+        },
+        {
+          "q": "x + 9 = 7",
+          "answer": "-2",
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+        }
       ],
-      medio: [
-        { q: '2x + 3 = 11', answer: '4', hint: 'Sposta il 3: 2x = 11−3, poi dividi per 2.' },
-        { q: '3x − 4 = 11', answer: '5', hint: 'Sposta il −4: 3x = 11+4, poi dividi per 3.' },
-        { q: '5x + 2 = 3x + 10', answer: '4', hint: 'Porta le x a sinistra e i numeri a destra: 5x−3x = 10−2.' },
-        { q: '4(x+1) = 20', answer: '4', hint: 'Distribuisci il 4, poi risolvi come al solito.' },
-        { q: '2x − 5 = x + 1', answer: '6', hint: 'Porta le x a sinistra e i numeri a destra: 2x−x = 1+5.' }
+      "medio": [
+        {
+          "q": "7(x + 5) = -35",
+          "answer": "-10",
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+        },
+        {
+          "q": "2x − 5 = 4x − 9",
+          "answer": "2",
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+        },
+        {
+          "q": "7x − 6 = 57",
+          "answer": "9",
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+        },
+        {
+          "q": "4x + 6 = 46",
+          "answer": "10",
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+        },
+        {
+          "q": "4(x + 2) = 4",
+          "answer": "-1",
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+        },
+        {
+          "q": "8x + 8 = 88",
+          "answer": "10",
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+        },
+        {
+          "q": "4x − 2 = 22",
+          "answer": "6",
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+        },
+        {
+          "q": "3x − 2 = 5x + 8",
+          "answer": "-5",
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+        },
+        {
+          "q": "Un tour operator applica una tariffa di 50€ fissi più 8€ per ogni giorno di soggiorno. Un altro applica 30€ fissi più 12€ al giorno. Da quanti giorni di soggiorno i due tour operator costano esattamente uguale?",
+          "answer": "5",
+          "unit": "giorni",
+          "hint": "Scrivi l'equazione 50+8x = 30+12x e risolvila.",
+          "logic": true
+        },
+        {
+          "q": "Alberto ha una caramella in più di Marco, che ne ha due in più di Luca. In totale hanno 59 caramelle. Quante ne ha Alberto?",
+          "answer": "21",
+          "hint": "Chiama L le caramelle di Luca: Marco=L+2, Alberto=L+3. Risolvi 3L+5=59, poi calcola le caramelle di Alberto.",
+          "logic": true
+        },
+        {
+          "q": "Matteo è nato nel 2000. Nel 2014 aveva 14 anni e la somma delle cifre di quell'anno (2+0+1+4=7) era esattamente la metà della sua età. In quale altro anno la somma delle cifre dell'anno sarà un terzo della sua età?",
+          "answer": "2024",
+          "hint": "L'età di Matteo nell'anno Y è (Y−2000). Cerca Y tale che la somma delle sue cifre sia (Y−2000):3: prova per tentativi vicino al 2020.",
+          "logic": true
+        },
+        {
+          "q": "5(x−3) = 2x + 6",
+          "answer": "7",
+          "hint": "Distribuisci il 5, poi porta le x da una parte e i numeri dall'altra."
+        }
       ],
-      difficile: [
-        { q: '3(x−2) + 4 = 2x + 5', answer: '7', hint: 'Distribuisci il 3(x−2), semplifica il membro sinistro, poi isola la x.' },
-        { q: '2(x+3) − (x−1) = 10', answer: '3', hint: 'Distribuisci entrambe le parentesi: occhio al segno meno davanti alla seconda.' },
-        { q: '5x − 2(x−4) = 2x + 6', answer: '-2', hint: 'Distribuisci −2(x−4), semplifica il membro sinistro, poi isola la x.' },
-        { q: '(x+1)/2 = (x−1)/3 + 1', answer: '1', hint: 'Moltiplica tutta l\'equazione per 6 (minimo comune multiplo di 2 e 3) per eliminare le frazioni.' },
-        { q: '3(2x−1) − 4 = 5(x+1) − 3', answer: '9', hint: 'Distribuisci entrambi i membri, poi porta le x da una parte e i numeri dall\'altra.' }
+      "difficile": [
+        {
+          "q": "5(x − 2) − 4 = 2x − 38",
+          "answer": "-8",
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+        },
+        {
+          "q": "3(x − 1) + 4 = 4x + 9",
+          "answer": "-8",
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+        },
+        {
+          "q": "5(x + 2) − 7 = 2x − 6",
+          "answer": "-3",
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+        },
+        {
+          "q": "2(x − 1) + 6 = 5x − 14",
+          "answer": "6",
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+        },
+        {
+          "q": "4(x + 6) − 4 = 3x + 21",
+          "answer": "1",
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+        },
+        {
+          "q": "5(x − 5) + 1 = 3x − 18",
+          "answer": "3",
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+        },
+        {
+          "q": "(x − 5) + 10 = 3x + 15",
+          "answer": "-5",
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+        },
+        {
+          "q": "3(x + 1) + 2 = 5x + 7",
+          "answer": "-1",
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+        },
+        {
+          "q": "Le età di tre sorelle sono tutte diverse. La media delle tre età è 10 anni. Prendendole a due a due: la media di una coppia è 11 anni e quella di un'altra coppia è 12 anni. Quanti anni ha la sorella maggiore?",
+          "answer": "16",
+          "unit": "anni",
+          "hint": "La somma delle tre età è 30. Le somme delle tre possibili coppie, sommate insieme, danno il doppio della somma totale (60): trova la terza somma di coppia, poi capisci a quale coppia (le due più piccole, o quella con la maggiore) appartiene ciascuna somma.",
+          "logic": true
+        },
+        {
+          "q": "Con 6 fiammiferi, senza spezzarli, è possibile formare 4 triangoli equilateri identici. Come?",
+          "type": "choice",
+          "options": [
+            "Disponendoli in una stella a 6 punte sul tavolo",
+            "Costruendo una piramide a base triangolare (tetraedro)",
+            "Non è possibile con soli 6 fiammiferi",
+            "Disponendoli in due triangoli separati"
+          ],
+          "correct": 1,
+          "hint": "Pensa in 3 dimensioni, non solo sul piano del tavolo!",
+          "logic": true
+        },
+        {
+          "q": "In un'agenzia viaggi, il prezzo di un tour è dato da 3 volte il numero di partecipanti più una quota fissa di 50€. Se il prezzo totale è stato 230€, quanti partecipanti c'erano?",
+          "answer": "60",
+          "hint": "Scrivi l'equazione 3x + 50 = 230 e risolvila."
+        },
+        {
+          "q": "La somma di tre numeri interi consecutivi è 72. Qual è il più grande dei tre?",
+          "answer": "25",
+          "hint": "Chiama x il numero di mezzo: gli altri due sono x−1 e x+1. Scrivi l'equazione della somma."
+        }
       ]
     },
-    quiz: [
-      { q: 'Risolvi: x + 7 = 12', options: ['5', '19', '−5', '7'], correct: 0 },
-      { q: 'Risolvi: 3x = 21', options: ['7', '18', '24', '63'], correct: 0 },
-      { q: 'Risolvi: 2x − 4 = 10', options: ['3', '6', '7', '14'], correct: 2 },
-      { q: 'Risolvi: 4x + 1 = 13', options: ['2', '3', '4', '12'], correct: 1 },
-      { q: 'Risolvi: 2(x+1) = 8', options: ['2', '3', '4', '8'], correct: 1 },
-      { q: 'Risolvi: 5x − 3 = 2x + 9', options: ['2', '3', '4', '6'], correct: 2 }
+    "quiz": [
+      {
+        "q": "Risolvi: x + 7 = 12",
+        "options": [
+          "5",
+          "19",
+          "−5",
+          "7"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Risolvi: 3x = 21",
+        "options": [
+          "7",
+          "18",
+          "24",
+          "63"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Risolvi: 2x − 4 = 10",
+        "options": [
+          "3",
+          "6",
+          "7",
+          "14"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Risolvi: 4x + 1 = 13",
+        "options": [
+          "2",
+          "3",
+          "4",
+          "12"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Risolvi: 2(x+1) = 8",
+        "options": [
+          "2",
+          "3",
+          "4",
+          "8"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Risolvi: 5x − 3 = 2x + 9",
+        "options": [
+          "2",
+          "3",
+          "4",
+          "6"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Risolvi: x − 6 = 4",
+        "options": [
+          "10",
+          "−10",
+          "2",
+          "−2"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Risolvi: 3x + 2 = 14",
+        "options": [
+          "4",
+          "12",
+          "16",
+          "4,67"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Risolvi: 5(x−1) = 20",
+        "options": [
+          "3",
+          "4",
+          "5",
+          "6"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Risolvi: 3x + 1 = x + 9",
+        "options": [
+          "2",
+          "3",
+          "4",
+          "5"
+        ],
+        "correct": 2
+      }
     ]
   },
-
   {
-    id: 'geometria',
-    icon: '🗺️',
-    accent: 'gold',
-    title: 'Geometria Piana',
-    tagline: "L'ultima tappa: misurare lo spazio",
-    theory: [
+    "id": "geometria",
+    "icon": "🗺️",
+    "accent": "gold",
+    "title": "Geometria Piana",
+    "tagline": "L'ultima tappa: misurare lo spazio",
+    "theory": [
       {
-        title: 'Perimetro e area',
-        body: "Il perimetro è la lunghezza del contorno di una figura (si misura in cm, m...).\n\nL'area è la misura della superficie racchiusa dalla figura (si misura in cm², m²...)."
+        "title": "Perimetro e area",
+        "body": "Il perimetro è la lunghezza del contorno di una figura (si misura in cm, m...).\n\nL'area è la misura della superficie racchiusa dalla figura (si misura in cm², m²...)."
       },
       {
-        title: 'Le figure principali',
-        body: "Quadrato (lato l): perimetro = 4·l, area = l²\n\nRettangolo (base b, altezza h): perimetro = 2·(b+h), area = b·h\n\nTriangolo (base b, altezza h): area = (b·h) : 2"
+        "title": "Le figure principali",
+        "body": "Quadrato (lato l): perimetro = 4·l, area = l²\n\nRettangolo (base b, altezza h): perimetro = 2·(b+h), area = b·h\n\nTriangolo (base b, altezza h): area = (b·h) : 2"
       },
       {
-        title: 'Il cerchio',
-        body: "Circonferenza (il \"perimetro\" del cerchio) di raggio r: C = 2·π·r\n\nArea del cerchio di raggio r: A = π·r²\n\nSi usa solitamente π ≈ 3,14"
+        "title": "Il cerchio",
+        "body": "Circonferenza (il \"perimetro\" del cerchio) di raggio r: C = 2·π·r\n\nArea del cerchio di raggio r: A = π·r²\n\nSi usa solitamente π ≈ 3,14"
       },
       {
-        title: 'Il teorema di Pitagora',
-        body: "In un triangolo rettangolo, il quadrato costruito sull'ipotenusa è uguale alla somma dei quadrati costruiti sui due cateti:\n\nipotenusa² = cateto1² + cateto2²\n\nUtile per trovare un lato mancante quando si conoscono gli altri due."
+        "title": "Il teorema di Pitagora",
+        "body": "In un triangolo rettangolo, il quadrato costruito sull'ipotenusa è uguale alla somma dei quadrati costruiti sui due cateti:\n\nipotenusa² = cateto1² + cateto2²\n\nUtile per trovare un lato mancante quando si conoscono gli altri due."
+      },
+      {
+        "title": "Esempio svolto",
+        "body": "Un triangolo rettangolo ha i cateti 6 cm e 8 cm. Troviamo l'ipotenusa e poi l'area.\n\nIpotenusa: √(6²+8²) = √(36+64) = √100 = 10 cm\n\nArea: (6×8):2 = 24 cm²"
       }
     ],
-    exercises: {
-      facile: [
-        { q: 'Area di un quadrato con lato 5 cm', answer: '25', unit: 'cm²', hint: 'Area = lato²' },
-        { q: 'Perimetro di un quadrato con lato 6 cm', answer: '24', unit: 'cm', hint: 'Perimetro = 4 · lato' },
-        { q: 'Area di un rettangolo con base 8 cm e altezza 3 cm', answer: '24', unit: 'cm²', hint: 'Area = base · altezza' },
-        { q: 'Perimetro di un rettangolo con base 10 cm e altezza 4 cm', answer: '28', unit: 'cm', hint: 'Perimetro = 2 · (base + altezza)' },
-        { q: 'Area di un triangolo con base 6 cm e altezza 4 cm', answer: '12', unit: 'cm²', hint: 'Area = (base · altezza) : 2' }
+    "exercises": {
+      "facile": [
+        {
+          "q": "Area di un quadrato con lato 15 cm",
+          "answer": "225",
+          "unit": "cm²",
+          "hint": "Area = lato²"
+        },
+        {
+          "q": "Area di un quadrato con lato 10 cm",
+          "answer": "100",
+          "unit": "cm²",
+          "hint": "Area = lato²"
+        },
+        {
+          "q": "Area di un rettangolo con base 8 cm e altezza 12 cm",
+          "answer": "96",
+          "unit": "cm²",
+          "hint": "Area = base × altezza"
+        },
+        {
+          "q": "Area di un rettangolo con base 12 cm e altezza 3 cm",
+          "answer": "36",
+          "unit": "cm²",
+          "hint": "Area = base × altezza"
+        },
+        {
+          "q": "Perimetro di un quadrato con lato 12 cm",
+          "answer": "48",
+          "unit": "cm",
+          "hint": "Perimetro = 4 × lato"
+        },
+        {
+          "q": "Perimetro di un quadrato con lato 15 cm",
+          "answer": "60",
+          "unit": "cm",
+          "hint": "Perimetro = 4 × lato"
+        },
+        {
+          "q": "Area di un quadrato con lato 9 cm",
+          "answer": "81",
+          "unit": "cm²",
+          "hint": "Area = lato²"
+        },
+        {
+          "q": "Area di un triangolo con base 11 cm e altezza 8 cm",
+          "answer": "44",
+          "unit": "cm²",
+          "hint": "Area = (base × altezza) : 2"
+        },
+        {
+          "q": "Con 6 fiammiferi, senza spezzarli, quanti triangoli equilateri identici puoi formare se li disponi come una piccola piramide (invece che sul piano del tavolo)?",
+          "answer": "4",
+          "hint": "Pensa a un tetraedro: quante facce triangolari ha?",
+          "logic": true
+        },
+        {
+          "q": "Quanti quadratini 1×1 ci sono in una griglia di 3×3 caselle?",
+          "answer": "9",
+          "hint": "In una griglia n×n ci sono n×n quadratini piccoli."
+        },
+        {
+          "q": "Un hotel ha una piscina quadrata di lato 8 m. Qual è la sua area?",
+          "answer": "64",
+          "unit": "m²",
+          "hint": "Area del quadrato = lato²."
+        },
+        {
+          "q": "Area di un quadrato con lato 5 cm",
+          "answer": "25",
+          "unit": "cm²",
+          "hint": "Area = lato²"
+        }
       ],
-      medio: [
-        { q: 'Un triangolo rettangolo ha i cateti di 3 cm e 4 cm. Quanto misura l\'ipotenusa?', answer: '5', unit: 'cm', hint: 'Usa il teorema di Pitagora: ipotenusa = √(cateto1² + cateto2²)' },
-        { q: 'Un rettangolo ha area 48 cm² e base 8 cm. Quanto è alto?', answer: '6', unit: 'cm', hint: 'altezza = area : base' },
-        { q: 'Circonferenza di un cerchio con raggio 7 cm (usa π ≈ 3,14)', answer: '43.96', unit: 'cm', hint: 'C = 2 · π · r' },
-        { q: 'Area di un cerchio con raggio 5 cm (usa π ≈ 3,14)', answer: '78.5', unit: 'cm²', hint: 'A = π · r²' },
-        { q: 'Un quadrato ha area 64 cm². Quanto misura il lato?', answer: '8', unit: 'cm', hint: 'Il lato è la radice quadrata dell\'area.' }
+      "medio": [
+        {
+          "q": "Area di un cerchio con raggio 6 cm (usa π ≈ 3,14)",
+          "answer": "113.04",
+          "unit": "cm²",
+          "hint": "A = π × r²"
+        },
+        {
+          "q": "Un triangolo rettangolo ha i cateti di 8 cm e 15 cm. Quanto misura l'ipotenusa?",
+          "answer": "17",
+          "unit": "cm",
+          "hint": "ipotenusa = √(cateto1² + cateto2²)"
+        },
+        {
+          "q": "Circonferenza di un cerchio con raggio 3 cm (usa π ≈ 3,14)",
+          "answer": "18.84",
+          "unit": "cm",
+          "hint": "C = 2 × π × r"
+        },
+        {
+          "q": "Un quadrato ha area 36 cm². Quanto misura il lato?",
+          "answer": "6",
+          "unit": "cm",
+          "hint": "Il lato è la radice quadrata dell'area."
+        },
+        {
+          "q": "Un triangolo rettangolo ha i cateti di 12 cm e 16 cm. Quanto misura l'ipotenusa?",
+          "answer": "20",
+          "unit": "cm",
+          "hint": "ipotenusa = √(cateto1² + cateto2²)"
+        },
+        {
+          "q": "Area di un cerchio con raggio 8 cm (usa π ≈ 3,14)",
+          "answer": "200.96",
+          "unit": "cm²",
+          "hint": "A = π × r²"
+        },
+        {
+          "q": "Un quadrato ha area 64 cm². Quanto misura il lato?",
+          "answer": "8",
+          "unit": "cm",
+          "hint": "Il lato è la radice quadrata dell'area."
+        },
+        {
+          "q": "Circonferenza di un cerchio con raggio 7 cm (usa π ≈ 3,14)",
+          "answer": "43.96",
+          "unit": "cm",
+          "hint": "C = 2 × π × r"
+        },
+        {
+          "q": "Quanti quadrati di qualsiasi dimensione (1×1, 2×2, 3×3, 4×4) si contano in una griglia di 4×4 caselle?",
+          "answer": "30",
+          "hint": "Somma i quadrati di ogni dimensione: 4² quadrati 1×1, 3² quadrati 2×2, 2² quadrati 3×3, 1² quadrato 4×4.",
+          "logic": true
+        },
+        {
+          "q": "Nel tangram, il quadrato di partenza ha area 1. I due triangoli piccoli valgono 1/16 ciascuno, il quadrato medio, il triangolo medio e il parallelogramma valgono 1/8 ciascuno, i due triangoli grandi 1/4 ciascuno. Quanto vale la somma di tutti i 7 pezzi?",
+          "answer": "1",
+          "hint": "Somma: 2×(1/16) + 3×(1/8) + 2×(1/4). Il risultato deve ricostruire il quadrato intero.",
+          "logic": true
+        },
+        {
+          "q": "Un hotel vuole pavimentare una hall a forma di L: un rettangolo di 6m × 4m a cui viene tolto un angolo quadrato di 2m × 2m. Qual è l'area della hall?",
+          "answer": "20",
+          "unit": "m²",
+          "hint": "Calcola l'area del rettangolo grande, poi sottrai l'area dell'angolo tolto."
+        },
+        {
+          "q": "Un triangolo rettangolo ha area 30 cm² e base 12 cm. Quanto è alto?",
+          "answer": "5",
+          "unit": "cm",
+          "hint": "Area = (base × altezza):2, quindi altezza = (2 × area):base."
+        }
       ],
-      difficile: [
-        { q: 'Un triangolo rettangolo ha ipotenusa 13 cm e un cateto 5 cm. Quanto misura l\'altro cateto?', answer: '12', unit: 'cm', hint: 'cateto = √(ipotenusa² − cateto²)' },
-        { q: 'Un giardino rettangolare misura 12 m x 7 m. Per recintarlo con una rete che costa 8€ al metro, quanto si spende in totale?', answer: '304', unit: '€', hint: 'Prima calcola il perimetro, poi moltiplica per il costo al metro.' },
-        { q: 'Un cerchio ha area 78,5 cm² (usa π ≈ 3,14). Quanto misura il raggio?', answer: '5', unit: 'cm', hint: 'Dall\'area, calcola r² = area : π, poi estrai la radice quadrata.' },
-        { q: 'Una piscina rettangolare di 10 m x 6 m ha intorno un bordo largo 1 m su ogni lato. Qual è l\'area totale (piscina + bordo)?', answer: '96', unit: 'm²', hint: 'Il bordo aggiunge 1 m per lato: le dimensioni totali diventano 12 m x 8 m.' },
-        { q: 'Un triangolo rettangolo ha i cateti di 9 cm e 12 cm. Quanto misura l\'ipotenusa?', answer: '15', unit: 'cm', hint: 'Usa il teorema di Pitagora.' }
+      "difficile": [
+        {
+          "q": "Una piscina rettangolare di 11 m x 10 m ha un bordo largo 1 m su ogni lato. Qual è l'area totale (piscina + bordo)?",
+          "answer": "156",
+          "unit": "m²",
+          "hint": "Il bordo aggiunge 1 m per lato: le dimensioni totali diventano (base+2) x (altezza+2)."
+        },
+        {
+          "q": "Un triangolo rettangolo ha ipotenusa 13 cm e un cateto 5 cm. Quanto misura l'altro cateto?",
+          "answer": "12",
+          "unit": "cm",
+          "hint": "cateto = √(ipotenusa² − cateto²)"
+        },
+        {
+          "q": "Un triangolo rettangolo ha ipotenusa 10 cm e un cateto 6 cm. Quanto misura l'altro cateto?",
+          "answer": "8",
+          "unit": "cm",
+          "hint": "cateto = √(ipotenusa² − cateto²)"
+        },
+        {
+          "q": "Un giardino rettangolare misura 10 m x 14 m. Recintarlo con una rete costa 10€ al metro. Quanto si spende in totale?",
+          "answer": "480",
+          "unit": "€",
+          "hint": "Prima calcola il perimetro, poi moltiplica per il costo al metro."
+        },
+        {
+          "q": "Un giardino rettangolare misura 16 m x 5 m. Recintarlo con una rete costa 9€ al metro. Quanto si spende in totale?",
+          "answer": "378",
+          "unit": "€",
+          "hint": "Prima calcola il perimetro, poi moltiplica per il costo al metro."
+        },
+        {
+          "q": "Un triangolo rettangolo ha ipotenusa 17 cm e un cateto 15 cm. Quanto misura l'altro cateto?",
+          "answer": "8",
+          "unit": "cm",
+          "hint": "cateto = √(ipotenusa² − cateto²)"
+        },
+        {
+          "q": "Un triangolo rettangolo ha ipotenusa 29 cm e un cateto 20 cm. Quanto misura l'altro cateto?",
+          "answer": "21",
+          "unit": "cm",
+          "hint": "cateto = √(ipotenusa² − cateto²)"
+        },
+        {
+          "q": "Un triangolo rettangolo ha ipotenusa 15 cm e un cateto 12 cm. Quanto misura l'altro cateto?",
+          "answer": "9",
+          "unit": "cm",
+          "hint": "cateto = √(ipotenusa² − cateto²)"
+        },
+        {
+          "q": "Quanti quadrati di qualsiasi dimensione si contano in una griglia di 6×6 caselle?",
+          "answer": "91",
+          "hint": "Somma i quadrati di ogni dimensione da 1×1 a 6×6: 6²+5²+4²+3²+2²+1².",
+          "logic": true
+        },
+        {
+          "q": "Un hotel vuole pavimentare la hall a forma di L (rettangolo 6m×4m meno un angolo di 2m×2m, area 20 m²) con piastrelle quadrate da 40 cm di lato. Quante piastrelle servono?",
+          "answer": "125",
+          "hint": "L'area di una piastrella è 0,4×0,4 m². Dividi l'area totale della hall per l'area di una piastrella."
+        },
+        {
+          "q": "Un cerchio è inscritto in un quadrato di lato 10 cm (tocca tutti e 4 i lati). Quanto vale l'area compresa tra il quadrato e il cerchio (usa π ≈ 3,14)?",
+          "answer": "21.5",
+          "unit": "cm²",
+          "hint": "Il diametro del cerchio è uguale al lato del quadrato, quindi il raggio è 5 cm. Calcola l'area del quadrato meno l'area del cerchio."
+        },
+        {
+          "q": "Un triangolo rettangolo ha area 84 cm² e un cateto di 14 cm. Quanto misura l'altro cateto?",
+          "answer": "12",
+          "unit": "cm",
+          "hint": "Area = (cateto1 × cateto2):2, quindi cateto2 = (2×area):cateto1."
+        }
       ]
     },
-    quiz: [
-      { q: 'Area di un quadrato con lato 9 cm:', options: ['18 cm²', '36 cm²', '81 cm²', '90 cm²'], correct: 2 },
-      { q: 'Perimetro di un rettangolo 5x9 cm:', options: ['14 cm', '28 cm', '45 cm', '49 cm'], correct: 1 },
-      { q: 'Ipotenusa di un triangolo rettangolo con cateti 6 e 8:', options: ['10', '14', '48', '100'], correct: 0 },
-      { q: 'Area di un cerchio con raggio 10 cm (π≈3,14):', options: ['31,4 cm²', '62,8 cm²', '314 cm²', '628 cm²'], correct: 2 },
-      { q: 'Area di un triangolo con base 10 e altezza 6:', options: ['16', '30', '60', '32'], correct: 1 },
-      { q: 'Un cateto misura 9, l\'ipotenusa 15. Quanto misura l\'altro cateto?', options: ['6', '12', '18', '24'], correct: 1 }
+    "quiz": [
+      {
+        "q": "Area di un quadrato con lato 9 cm:",
+        "options": [
+          "18 cm²",
+          "36 cm²",
+          "81 cm²",
+          "90 cm²"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Perimetro di un rettangolo 5x9 cm:",
+        "options": [
+          "14 cm",
+          "28 cm",
+          "45 cm",
+          "49 cm"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Ipotenusa di un triangolo rettangolo con cateti 6 e 8:",
+        "options": [
+          "10",
+          "14",
+          "48",
+          "100"
+        ],
+        "correct": 0
+      },
+      {
+        "q": "Area di un cerchio con raggio 10 cm (π≈3,14):",
+        "options": [
+          "31,4 cm²",
+          "62,8 cm²",
+          "314 cm²",
+          "628 cm²"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Area di un triangolo con base 10 e altezza 6:",
+        "options": [
+          "16",
+          "30",
+          "60",
+          "32"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Un cateto misura 9, l'ipotenusa 15. Quanto misura l'altro cateto?",
+        "options": [
+          "6",
+          "12",
+          "18",
+          "24"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Area di un rettangolo 7×4 cm:",
+        "options": [
+          "11 cm²",
+          "22 cm²",
+          "28 cm²",
+          "56 cm²"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Perimetro di un triangolo equilatero con lato 6 cm:",
+        "options": [
+          "12 cm",
+          "18 cm",
+          "24 cm",
+          "36 cm"
+        ],
+        "correct": 1
+      },
+      {
+        "q": "Area di un cerchio con raggio 4 cm (π≈3,14):",
+        "options": [
+          "12,56 cm²",
+          "25,12 cm²",
+          "50,24 cm²",
+          "100,48 cm²"
+        ],
+        "correct": 2
+      },
+      {
+        "q": "Ipotenusa di un triangolo rettangolo con cateti 9 e 12:",
+        "options": [
+          "15",
+          "21",
+          "108",
+          "225"
+        ],
+        "correct": 0
+      }
     ]
   }
 ];

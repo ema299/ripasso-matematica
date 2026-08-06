@@ -1,9 +1,12 @@
 'use strict';
 
 /* ===== Costanti ===== */
+const STUDENT_NAME = 'Alessandra';
 const LEVELS = ['facile', 'medio', 'difficile'];
 const LEVEL_LABELS = { facile: 'Facile', medio: 'Medio', difficile: 'Difficile' };
 const STORAGE_KEY = 'ripasso-mate-progress-v1';
+const HISTORY_KEY = 'ripasso-mate-history-v1';
+const HISTORY_MAX = 1000;
 
 /* ===== Progresso persistente ===== */
 function loadProgress() {
@@ -32,6 +35,49 @@ function ensureModuleProgress(id) {
 
 function getModule(id) { return MODULES.find(m => m.id === id); }
 function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+
+/* ===== Storico risposte (per statistiche e futura personalizzazione) ===== */
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+function saveHistory() {
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch (e) { /* storage non disponibile */ }
+}
+let history = loadHistory();
+
+function logAttempt(entry) {
+  history.push({ ts: Date.now(), ...entry });
+  if (history.length > HISTORY_MAX) history = history.slice(history.length - HISTORY_MAX);
+  saveHistory();
+}
+
+function computeStats() {
+  const perModule = MODULES.map(m => {
+    const attempts = history.filter(h => h.moduleId === m.id);
+    const correct = attempts.filter(h => h.correct).length;
+    const pct = attempts.length ? Math.round((correct / attempts.length) * 100) : null;
+    return { id: m.id, title: m.title, icon: m.icon, accent: m.accent, attempts: attempts.length, correct, pct };
+  });
+
+  const wrongCounts = new Map();
+  history.forEach(h => {
+    if (h.correct) return;
+    const key = h.moduleId + '|' + h.question;
+    const prev = wrongCounts.get(key);
+    if (prev) prev.count++;
+    else wrongCounts.set(key, { moduleTitle: getModule(h.moduleId).title, question: h.question, count: 1, logic: !!h.logic });
+  });
+  const topMistakes = Array.from(wrongCounts.values()).sort((a, b) => b.count - a.count).slice(0, 5);
+
+  const totalAttempts = history.length;
+  const totalCorrect = history.filter(h => h.correct).length;
+  return { perModule, topMistakes, totalAttempts, totalCorrect };
+}
 
 /* ===== Verifica risposte ===== */
 function normalizeNumber(str) {
@@ -71,6 +117,7 @@ const state = {
   exHintVisible: false,
   exLastCorrect: false,
   exUserAnswer: '',
+  exSelectedIndex: null,
   quizIndex: 0,
   quizScore: 0,
   quizAnswered: false,
@@ -96,6 +143,7 @@ function openExercises(levelOverride) {
   state.exIndex = 0;
   state.exState = 'question';
   state.exHintVisible = false;
+  state.exSelectedIndex = null;
   state.view = 'exercises';
   render();
 }
@@ -108,6 +156,17 @@ function checkCurrentAnswer() {
   state.exLastCorrect = checkAnswer(ex, input.value);
   state.exUserAnswer = input.value;
   state.exState = 'checked';
+  logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: state.exLastCorrect, logic: !!ex.logic });
+  render();
+}
+function selectExerciseChoice(idx) {
+  if (state.exState === 'checked') return;
+  const m = getModule(state.moduleId);
+  const ex = m.exercises[state.exLevel][state.exIndex];
+  state.exSelectedIndex = idx;
+  state.exLastCorrect = idx === ex.correct;
+  state.exState = 'checked';
+  logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: state.exLastCorrect, logic: !!ex.logic });
   render();
 }
 function exerciseNext() {
@@ -116,6 +175,7 @@ function exerciseNext() {
   state.exIndex++;
   state.exState = 'question';
   state.exHintVisible = false;
+  state.exSelectedIndex = null;
   if (state.exIndex >= list.length) {
     const p = ensureModuleProgress(state.moduleId);
     p.exercises[state.exLevel] = true;
@@ -130,6 +190,7 @@ function levelContinue() {
   state.exIndex = 0;
   state.exState = 'question';
   state.exHintVisible = false;
+  state.exSelectedIndex = null;
   render();
 }
 
@@ -147,7 +208,9 @@ function selectQuizOption(idx) {
   const q = m.quiz[state.quizIndex];
   state.quizAnswered = true;
   state.quizSelected = idx;
-  if (idx === q.correct) state.quizScore++;
+  const correct = idx === q.correct;
+  if (correct) state.quizScore++;
+  logAttempt({ moduleId: m.id, kind: 'quiz', level: null, question: q.q, correct, logic: !!q.logic });
   render();
 }
 function quizNext() {
@@ -190,9 +253,10 @@ function renderHome() {
   const stamps = MODULES.filter(m => ensureModuleProgress(m.id).quiz.done).length;
   return `
     <header class="topbar topbar--home">
-      <p class="eyebrow">Ripasso estivo · ${stamps}/${MODULES.length} timbri sul passaporto</p>
+      <button class="diary-link" data-action="open-diario" type="button">📖 Diario</button>
+      <p class="eyebrow">Il passaporto di ${STUDENT_NAME} · ${stamps}/${MODULES.length} timbri</p>
       <h1 class="app-title">In viaggio con la Matematica</h1>
-      <p class="app-subtitle">Ogni tappa ha teoria, esercizi che crescono di difficoltà e un quiz finale. Buon viaggio! 🧳</p>
+      <p class="app-subtitle">Ogni tappa ha teoria, esercizi che crescono di difficoltà (con qualche indovinello di logica!) e un quiz finale. Buon viaggio, ${STUDENT_NAME}! 🧳</p>
     </header>
     <div class="route">${stops}</div>
   `;
@@ -283,11 +347,40 @@ function renderExerciseQuestion(m) {
   const list = m.exercises[state.exLevel];
   const ex = list[state.exIndex];
   const total = list.length;
-  const unit = ex.unit ? `<span class="exercise-unit">${ex.unit}</span>` : '';
+  const checked = state.exState === 'checked';
   const hintBlock = state.exHintVisible ? `<p class="exercise-hint">💡 ${ex.hint}</p>` : '';
+  const logicTag = ex.logic ? `<span class="exercise-tag">🧠 Logica</span>` : '';
+
+  if (ex.type === 'choice') {
+    const optionsHtml = ex.options.map((opt, i) => {
+      let cls = 'quiz-option';
+      if (checked) {
+        if (i === ex.correct) cls += ' is-correct';
+        else if (i === state.exSelectedIndex) cls += ' is-wrong';
+      }
+      return `<button class="${cls}" type="button" data-action="exercise-choice" data-index="${i}" ${checked ? 'disabled' : ''}>${opt}</button>`;
+    }).join('');
+    const feedback = checked
+      ? (state.exLastCorrect ? `<p class="exercise-feedback is-ok">✅ Esatto, complimenti!</p>` : `<p class="exercise-feedback is-bad">❌ La risposta corretta era: ${ex.options[ex.correct]}</p>`)
+      : '';
+    const actionsBlock = checked
+      ? `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button></div>`
+      : `<div class="exercise-actions exercise-actions--end"><button class="btn btn--ghost" data-action="show-hint" type="button">💡 Aiuto</button></div>`;
+    return `
+      <p class="exercise-counter">${LEVEL_LABELS[state.exLevel]} · Domanda ${state.exIndex + 1} di ${total} ${logicTag}</p>
+      <div class="exercise-card">
+        <p class="exercise-q">${ex.q}</p>
+        <div class="quiz-options">${optionsHtml}</div>
+        ${hintBlock}
+        ${feedback}
+        ${actionsBlock}
+      </div>
+    `;
+  }
+
+  const unit = ex.unit ? `<span class="exercise-unit">${ex.unit}</span>` : '';
   let feedbackBlock = '';
   let actionsBlock;
-  const checked = state.exState === 'checked';
   if (checked) {
     if (state.exLastCorrect) {
       feedbackBlock = `<p class="exercise-feedback is-ok">✅ Esatto, complimenti!</p>`;
@@ -305,7 +398,7 @@ function renderExerciseQuestion(m) {
   }
   const inputValue = checked ? state.exUserAnswer : '';
   return `
-    <p class="exercise-counter">${LEVEL_LABELS[state.exLevel]} · Domanda ${state.exIndex + 1} di ${total}</p>
+    <p class="exercise-counter">${LEVEL_LABELS[state.exLevel]} · Domanda ${state.exIndex + 1} di ${total} ${logicTag}</p>
     <div class="exercise-card">
       <p class="exercise-q">${ex.q}</p>
       <div class="exercise-input-row">
@@ -391,6 +484,7 @@ function renderResult() {
           <p class="pass__eyebrow">Carta d'imbarco</p>
           <h2 class="pass__title">Quiz completato</h2>
           <div class="pass__row">
+            <div><p class="pass__label">Passeggera</p><p class="pass__value">${STUDENT_NAME}</p></div>
             <div><p class="pass__label">Tappa</p><p class="pass__value">${m.title}</p></div>
           </div>
           <div class="pass__row">
@@ -409,6 +503,65 @@ function renderResult() {
   `;
 }
 
+/* ===== Rendering: Diario di viaggio (statistiche) ===== */
+function renderDiario() {
+  const stats = computeStats();
+  if (stats.totalAttempts === 0) {
+    return `
+      <header class="topbar">
+        <button class="back" data-action="go-home" type="button" aria-label="Torna alla mappa">←</button>
+        <p class="eyebrow">Diario di viaggio</p>
+        <h1 class="module-title">Il diario di ${STUDENT_NAME}</h1>
+      </header>
+      <div class="diary-wrap">
+        <div class="diary-empty">
+          <p style="font-size:34px; margin-bottom:10px;">🧳</p>
+          <p style="font-weight:800; font-size:16px; margin-bottom:6px;">Il diario è ancora vuoto</p>
+          <p style="color:var(--muted); font-size:14px; line-height:1.5;">Inizia qualche esercizio in una tappa: qui vedrai i tuoi progressi e gli argomenti da ripassare.</p>
+        </div>
+      </div>
+    `;
+  }
+  const overallPct = Math.round((stats.totalCorrect / stats.totalAttempts) * 100);
+  const rows = stats.perModule.map(s => `
+    <div class="diary-row">
+      <span class="diary-row__icon">${s.icon}</span>
+      <div class="diary-row__body">
+        <div class="diary-row__top">
+          <span class="diary-row__title">${s.title}</span>
+          <span class="diary-row__pct">${s.pct === null ? '—' : s.pct + '%'}</span>
+        </div>
+        <div class="diary-bar"><div class="diary-bar__fill diary-bar__fill--${s.accent}" style="width:${s.pct || 0}%"></div></div>
+        <span class="diary-row__meta">${s.attempts ? `${s.correct}/${s.attempts} risposte corrette` : 'Non ancora iniziata'}</span>
+      </div>
+    </div>
+  `).join('');
+  const mistakesHtml = stats.topMistakes.length
+    ? stats.topMistakes.map(t => `
+      <div class="diary-mistake">
+        <p class="diary-mistake__module">${t.moduleTitle}${t.logic ? ' · 🧠 logica' : ''}</p>
+        <p class="diary-mistake__q">${t.question}</p>
+      </div>`).join('')
+    : `<p style="color:var(--muted); font-size:13.5px;">Nessun errore ripetuto finora, complimenti! 🌟</p>`;
+  return `
+    <header class="topbar">
+      <button class="back" data-action="go-home" type="button" aria-label="Torna alla mappa">←</button>
+      <p class="eyebrow">Diario di viaggio</p>
+      <h1 class="module-title">Il diario di ${STUDENT_NAME}</h1>
+    </header>
+    <div class="diary-wrap">
+      <div class="diary-summary">
+        <span class="diary-summary__big">${overallPct}%</span>
+        <span class="diary-summary__label">risposte corrette su ${stats.totalAttempts} esercizi svolti in totale</span>
+      </div>
+      <h2 class="diary-section-title">Le tue tappe</h2>
+      ${rows}
+      <h2 class="diary-section-title">Argomenti da ripassare</h2>
+      <div class="diary-mistakes">${mistakesHtml}</div>
+    </div>
+  `;
+}
+
 /* ===== Render principale ===== */
 function render() {
   const app = document.getElementById('app');
@@ -419,6 +572,7 @@ function render() {
     case 'exercises': app.innerHTML = renderExercises(); break;
     case 'quiz': app.innerHTML = renderQuiz(); break;
     case 'result': app.innerHTML = renderResult(); break;
+    case 'diario': app.innerHTML = renderDiario(); break;
   }
   afterRender();
 }
@@ -482,10 +636,12 @@ appEl.addEventListener('click', (e) => {
     case 'theory-done': markTheorySeen(); openExercises('facile'); break;
     case 'show-hint': showHint(); break;
     case 'check-answer': checkCurrentAnswer(); break;
+    case 'exercise-choice': selectExerciseChoice(Number(btn.dataset.index)); break;
     case 'exercise-next': exerciseNext(); break;
     case 'level-continue': levelContinue(); break;
     case 'quiz-option': selectQuizOption(Number(btn.dataset.index)); break;
     case 'quiz-next': quizNext(); break;
+    case 'open-diario': state.view = 'diario'; render(); break;
   }
 });
 appEl.addEventListener('keydown', (e) => {

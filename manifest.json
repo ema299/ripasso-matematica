@@ -1,6 +1,6 @@
 {
-  "name": "In Viaggio con la Matematica",
-  "short_name": "Ripasso Mate",
+  "name": "Il viaggio di Alessandra nella Matematica",
+  "short_name": "Ale in viaggio",
   "description": "Ripasso estivo di matematica, in viaggio verso il primo anno di istituto tecnico turistico.",
   "start_url": "./index.html",
   "scope": "./",
