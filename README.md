@@ -4,7 +4,7 @@ App web (PWA) per il ripasso estivo di matematica, pensata per prepararsi al pri
 
 ## Contenuti
 
-6 tappe, ciascuna con teoria (cartoline swipeabili), esercizi a difficoltà crescente (facile → medio → difficile) con aiuto su richiesta, e un quiz finale con "carta d'imbarco" come risultato:
+6 tappe, ciascuna con teoria (5 cartoline swipeabili), 36 esercizi a difficoltà crescente (facile → medio → difficile, con problemi di logica e a scelta multipla mescolati dentro) con aiuto su richiesta, e un quiz finale da 10 domande con "carta d'imbarco" come risultato:
 
 1. Numeri interi e razionali
 2. Frazioni e percentuali
@@ -13,7 +13,7 @@ App web (PWA) per il ripasso estivo di matematica, pensata per prepararsi al pri
 5. Equazioni di primo grado
 6. Geometria piana
 
-I progressi vengono salvati nel browser (localStorage): si può chiudere l'app e riprendere da dove si era rimasti.
+I progressi e lo storico delle risposte vengono salvati nel browser (localStorage): si può chiudere l'app e riprendere da dove si era rimasti, e la schermata "Diario di viaggio" mostra le statistiche per tappa e gli argomenti da ripassare.
 
 ## Come usarla su iPhone
 
@@ -35,4 +35,10 @@ Le icone si rigenerano con:
 
 ```
 python3 scripts/gen_icons.py
+```
+
+I contenuti (`data.js`) sono stati costruiti unendo un pool di esercizi generato in modo deterministico e verificato per costruzione (`scripts/gen_exercises.js`) con problemi di logica e a tema turismo scritti a mano, tramite `scripts/build_data.js`. Per rigenerare il pool meccanico:
+
+```
+node scripts/gen_exercises.js > pool.json
 ```
