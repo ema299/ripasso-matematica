@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Mandatory V2 development plan
+
+Before starting substantial product, content, pedagogy, exercise-generation, or UX work, read **`PIANO_SVILUPPO_V2.md`** in full.
+
+That document is the owner-approved product and didactic roadmap. Its priorities, gates, and Definition of Done are requirements, not optional suggestions.
+
+The first requested V2 activity is **FASE 0 — Audit**: produce `docs/AUDIT_DIDATTICO.md` before any mass rewrite or expansion of `data.js`. In particular, audit prerequisites, theory accuracy, real difficulty progression, duplicated exercises, missing curriculum areas, and skills that are used before being properly explained.
+
+If implementation choices conflict with `PIANO_SVILUPPO_V2.md`, stop and document the conflict rather than silently bypassing the plan.
+
 ## What this is
 
 A mobile-first PWA for summer math review, built for one specific student (Alessandra, entering 1st year of an Istituto Tecnico per il Turismo). No framework, no build step, no package.json — plain HTML/CSS/JS served as static files, installable to an iPhone home screen and fully offline-capable.
