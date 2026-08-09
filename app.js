@@ -36,6 +36,20 @@ function ensureModuleProgress(id) {
 function getModule(id) { return MODULES.find(m => m.id === id); }
 function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 
+// Ogni livello di ogni modulo aveva esattamente 12 esercizi in V1 (vedi
+// docs/AUDIT_DIDATTICO.md). Se un progresso "completato" non porta con sé un
+// conteggio esplicito (perché salvato prima di questo campo), si presume
+// fosse contro quella banca V1: se la banca attuale ha un numero diverso di
+// esercizi, il livello va considerato "da riaprire", non più aggiornato.
+// Campo additivo: nessuna migrazione di STORAGE_KEY necessaria.
+const LEGACY_EXERCISE_COUNT = 12;
+function isLevelStale(m, p, level) {
+  if (!p.exercises[level]) return false;
+  const currentCount = m.exercises[level].length;
+  const completedCount = (p.exerciseCounts && p.exerciseCounts[level] !== undefined) ? p.exerciseCounts[level] : LEGACY_EXERCISE_COUNT;
+  return completedCount !== currentCount;
+}
+
 /* ===== Storico risposte (per statistiche e futura personalizzazione) ===== */
 function loadHistory() {
   try {
@@ -120,6 +134,11 @@ const state = {
   exHelpLevel: 0, // scala di aiuto 0-6 (HELP_SYSTEM_V2.md); 0 = nessun aiuto richiesto
   exErrorDiagnosis: null, // { message } dalla banca errori comuni, se l'ultima risposta errata corrisponde a un pattern noto
   exTwin: null, // esercizio gemello generato al livello 6 di aiuto, sostituisce l'esercizio corrente finché non si preme "Avanti"
+  exTwinAttempt: 0, // quanti gemelli sono già stati generati per l'esercizio corrente (0 = nessuno ancora)
+  exWrongStreak: 0, // errori consecutivi sulla stessa famiglia di esercizio (level6), per la regola di regressione
+  exWrongStreakGroup: null,
+  remediationRule: null, // testo di richiamo mostrato nella schermata di micro-ripasso
+  remediationTwin: null, // esercizio di recupero generato dalla regola di regressione, in attesa di essere avviato
   interaction: null, // stato del componente interattivo (bilancia/riordino/raggruppa/costruisci/caccia-errore) per l'esercizio corrente
   exLastCorrect: false,
   exUserAnswer: '',
@@ -168,6 +187,9 @@ function resetExerciseUIState() {
   state.exUserAnswer = '';
   state.exErrorDiagnosis = null;
   state.exTwin = null;
+  state.exTwinAttempt = 0;
+  state.remediationRule = null;
+  state.remediationTwin = null;
   state.interaction = null;
   const m = getModule(state.moduleId);
   const list = m && m.exercises[state.exLevel];
@@ -186,9 +208,12 @@ function getCurrentExercise() {
 }
 
 function openExercises(levelOverride) {
+  const m = getModule(state.moduleId);
   const p = ensureModuleProgress(state.moduleId);
-  state.exLevel = levelOverride || LEVELS.find(l => !p.exercises[l]) || 'facile';
+  state.exLevel = levelOverride || LEVELS.find(l => !p.exercises[l] || isLevelStale(m, p, l)) || 'facile';
   state.exIndex = 0;
+  state.exWrongStreak = 0;
+  state.exWrongStreakGroup = null;
   state.view = 'exercises';
   resetExerciseUIState();
   render();
@@ -203,6 +228,7 @@ function requestTwin() {
   const twin = HelpEngine.generateTwin(ex);
   if (!twin) return;
   state.exTwin = twin;
+  state.exTwinAttempt = (state.exTwinAttempt || 0) + 1;
   state.exState = 'question';
   state.exHelpLevel = 0;
   state.exSelectedIndex = null;
@@ -211,6 +237,50 @@ function requestTwin() {
   state.interaction = null; // i gemelli generati sono sempre a risposta numerica
   render();
 }
+
+// ===== Regola di regressione (HELP_SYSTEM_V2.md) =====
+// Deterministica, locale, senza alcuna dipendenza esterna: 3 errori
+// consecutivi sulla stessa famiglia di esercizio (ex.level6) interrompono la
+// progressione automatica e inseriscono un micro-ripasso + un esercizio di
+// recupero prima di riprendere. Non si applica durante un gemello già in
+// corso: lì il recupero è già gestito da requestTwin/exerciseNext (vedi
+// renderInteractiveExercise/numeric checked-branch, ramo "gemello sbagliato").
+const REMEDIATION_THRESHOLD = 3;
+function recordAttemptOutcome(ex, correct) {
+  if (correct) { state.exWrongStreak = 0; state.exWrongStreakGroup = null; return; }
+  const group = ex.level6 != null ? ex.level6 : (ex.skill || null);
+  if (group !== null && group === state.exWrongStreakGroup) state.exWrongStreak++;
+  else { state.exWrongStreak = 1; state.exWrongStreakGroup = group; }
+}
+function maybeTriggerRemediation(ex) {
+  if (state.exTwin) return;
+  if (state.exWrongStreak < REMEDIATION_THRESHOLD) return;
+  if (!ex.model) return; // serve un modello simbolico per generare un esercizio di recupero
+  state.exState = 'remediation';
+  state.remediationRule = (ex.hintSteps && ex.hintSteps[1]) || ex.hint;
+  state.remediationTwin = HelpEngine.generateTwin(ex);
+  state.exWrongStreak = 0;
+  state.exWrongStreakGroup = null;
+}
+function remediationContinue() {
+  if (state.remediationTwin) {
+    state.exTwin = state.remediationTwin;
+    state.remediationTwin = null;
+    state.remediationRule = null;
+    state.exState = 'question';
+    state.exHelpLevel = 0;
+    state.exTwinAttempt = 1;
+    state.exSelectedIndex = null;
+    state.exUserAnswer = '';
+    state.exErrorDiagnosis = null;
+    state.interaction = null;
+    render();
+    return;
+  }
+  state.remediationRule = null;
+  exerciseNext();
+}
+
 function checkCurrentAnswer() {
   const input = document.getElementById('ex-input');
   if (!input || !input.value.trim()) { if (input) input.focus(); return; }
@@ -220,12 +290,16 @@ function checkCurrentAnswer() {
   state.exUserAnswer = input.value;
   state.exState = 'checked';
   state.exErrorDiagnosis = null;
-  if (!state.exLastCorrect && ex.commonErrors) {
+  if (!state.exLastCorrect) {
     const userVal = normalizeNumber(input.value);
     const correctRaw = Array.isArray(ex.answer) ? ex.answer[0] : ex.answer;
     state.exErrorDiagnosis = HelpEngine.diagnoseCommonError(ex, userVal, normalizeNumber(correctRaw));
   }
-  logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: state.exLastCorrect, logic: !!ex.logic });
+  logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: state.exLastCorrect, logic: !!ex.logic, twin: !!state.exTwin, skill: ex.skill || null });
+  if (!state.exTwin) {
+    recordAttemptOutcome(ex, state.exLastCorrect);
+    maybeTriggerRemediation(ex);
+  }
   render();
 }
 function selectExerciseChoice(idx) {
@@ -247,7 +321,11 @@ function applyInteraction(kind, method, ...args) {
   if (result.completed) {
     state.exLastCorrect = result.correct;
     state.exState = 'checked';
-    logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: result.correct, logic: !!ex.logic });
+    logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: result.correct, logic: !!ex.logic, twin: !!state.exTwin, skill: ex.skill || null });
+    if (!state.exTwin) {
+      recordAttemptOutcome(ex, result.correct);
+      maybeTriggerRemediation(ex);
+    }
   }
   render();
 }
@@ -259,6 +337,8 @@ function exerciseNext() {
   if (state.exIndex >= list.length) {
     const p = ensureModuleProgress(state.moduleId);
     p.exercises[state.exLevel] = true;
+    p.exerciseCounts = p.exerciseCounts || {};
+    p.exerciseCounts[state.exLevel] = list.length;
     saveProgress();
     state.exState = 'levelComplete';
   }
@@ -268,6 +348,8 @@ function levelContinue() {
   if (state.exLevel === 'difficile') { openQuiz(); return; }
   state.exLevel = LEVELS[LEVELS.indexOf(state.exLevel) + 1];
   state.exIndex = 0;
+  state.exWrongStreak = 0;
+  state.exWrongStreakGroup = null;
   resetExerciseUIState();
   render();
 }
@@ -451,8 +533,17 @@ function renderTheory() {
 }
 
 /* ===== Rendering: Esercizi ===== */
-function levelTrackHtml(p) {
-  return LEVELS.map(l => `<div class="level-pill ${l === state.exLevel ? 'is-current' : ''} ${p.exercises[l] ? 'is-complete' : ''}">${LEVEL_LABELS[l]}</div>`).join('');
+// Le pillole sono sempre tappabili: permettono di riaprire un livello già
+// completato (es. dopo un aggiornamento che ha aggiunto nuovi esercizi a un
+// livello segnato "fatto" in passato — vedi isLevelStale) senza dover
+// ripassare dalla teoria per trovare la scorciatoia "vai agli esercizi".
+function levelTrackHtml(m, p) {
+  return LEVELS.map(l => {
+    const stale = isLevelStale(m, p, l);
+    const cls = `level-pill ${l === state.exLevel ? 'is-current' : ''} ${p.exercises[l] && !stale ? 'is-complete' : ''}`;
+    const badge = stale ? '<span class="level-pill__badge" title="Nuovi esercizi disponibili">●</span>' : '';
+    return `<button class="${cls}" type="button" data-action="open-exercises-level" data-level="${l}">${LEVEL_LABELS[l]}${badge}</button>`;
+  }).join('');
 }
 function renderLevelComplete() {
   const isLast = state.exLevel === 'difficile';
@@ -465,6 +556,22 @@ function renderLevelComplete() {
       </p>
       <div class="exercise-actions" style="margin-top:22px;">
         <button class="btn btn--primary" data-action="level-continue" type="button">${isLast ? 'Vai al quiz →' : `Continua: ${nextLabel} →`}</button>
+      </div>
+    </div>
+  `;
+}
+// Regola di regressione (HELP_SYSTEM_V2.md): dopo errori ripetuti sulla
+// stessa famiglia di esercizio, si interrompe la progressione automatica per
+// un micro-ripasso prima di riprendere (mai un aumento di difficoltà).
+function renderRemediation() {
+  const cta = state.remediationTwin ? 'Prova un esempio simile →' : 'Ho capito, continua →';
+  return `
+    <div class="exercise-card">
+      <p class="exercise-q">Facciamo una piccola pausa 🌿</p>
+      <p style="color:var(--muted); font-size:14.5px; line-height:1.55; margin-bottom:16px;">Hai avuto qualche difficoltà con questo tipo di esercizio. Rivediamo insieme la regola prima di continuare.</p>
+      <p class="exercise-hint">💡 ${state.remediationRule}</p>
+      <div class="exercise-actions exercise-actions--end" style="margin-top:18px;">
+        <button class="btn btn--primary" data-action="remediation-continue" type="button">${cta}</button>
       </div>
     </div>
   `;
@@ -544,12 +651,29 @@ function renderExerciseQuestion(m) {
   if (checked) {
     if (state.exLastCorrect) {
       feedbackBlock = `<p class="exercise-feedback is-ok">✅ Esatto, complimenti!</p>`;
+      actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button></div>`;
     } else {
       const shown = ex.type === 'expr' ? ex.answer[0] : ex.answer;
       const diag = state.exErrorDiagnosis ? `<p class="exercise-feedback is-bad">🔍 ${state.exErrorDiagnosis.message}</p>` : '';
       feedbackBlock = diag + `<p class="exercise-feedback is-bad">❌ Non proprio. Risposta corretta: ${shown}${ex.unit ? ' ' + ex.unit : ''}</p>`;
+      // Un gemello (livello 6) sbagliato non deve poter avanzare come se
+      // nulla fosse: prima un secondo tentativo con un nuovo gemello, poi
+      // (se ancora sbagliato) la soluzione guidata prima di proseguire —
+      // "wrong -> understand -> repair -> verify -> continue", non un
+      // "Avanti" incondizionato (fix Review Fase1 §2 finding H3).
+      if (state.exTwin && state.exTwinAttempt < 2) {
+        feedbackBlock += `<p class="exercise-hint">💡 Non fa niente: proviamo un altro esempio simile per verificare insieme che il concetto sia chiaro.</p>`;
+        actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="request-twin" type="button">Riprova con un esempio simile →</button></div>`;
+      } else if (state.exTwin) {
+        const full = HelpEngine.getHelpContent(ex, HelpEngine.HELP_MAX_LEVEL);
+        feedbackBlock += (full && full.kind === 'steps')
+          ? `<div class="exercise-hint exercise-hint--steps"><p class="exercise-hint__label">💡 Ripassiamo insieme, passo per passo:</p>${full.text.map(t => `<p>${t}</p>`).join('')}</div>`
+          : '';
+        actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Ho capito, continua →</button></div>`;
+      } else {
+        actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button></div>`;
+      }
     }
-    actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button></div>`;
   } else {
     actionsBlock = `
       <div class="exercise-actions">
@@ -575,14 +699,16 @@ function renderExerciseQuestion(m) {
 function renderExercises() {
   const m = getModule(state.moduleId);
   const p = ensureModuleProgress(m.id);
-  const body = state.exState === 'levelComplete' ? renderLevelComplete() : renderExerciseQuestion(m);
+  const body = state.exState === 'levelComplete' ? renderLevelComplete()
+    : state.exState === 'remediation' ? renderRemediation()
+    : renderExerciseQuestion(m);
   return `
     <header class="topbar">
       <button class="back" data-action="go-module" type="button" aria-label="Indietro">←</button>
       <p class="eyebrow">Esercizi</p>
       <h1 class="module-title">${m.title}</h1>
     </header>
-    <div class="level-track">${levelTrackHtml(p)}</div>
+    <div class="level-track">${levelTrackHtml(m, p)}</div>
     <div class="exercise-wrap">${body}</div>
   `;
 }
@@ -791,6 +917,7 @@ appEl.addEventListener('click', (e) => {
     case 'go-module': backToModuleMenu(); break;
     case 'open-theory': openTheory(); break;
     case 'open-exercises': openExercises(); break;
+    case 'open-exercises-level': openExercises(btn.dataset.level); break;
     case 'open-quiz': openQuiz(); break;
     case 'prev-slide': moveSlide(-1); break;
     case 'next-slide': moveSlide(1); break;
@@ -803,7 +930,9 @@ appEl.addEventListener('click', (e) => {
     case 'exercise-choice': selectExerciseChoice(Number(btn.dataset.index)); break;
     case 'exercise-next': exerciseNext(); break;
     case 'level-continue': levelContinue(); break;
-    case 'balance-move': applyInteraction('balance', 'applyMove', btn.dataset.moveId); break;
+    case 'remediation-continue': remediationContinue(); break;
+    case 'balance-op': applyInteraction('balance', 'chooseOp', btn.dataset.opId); break;
+    case 'balance-target': applyInteraction('balance', 'chooseTarget', btn.dataset.target); break;
     case 'order-move': applyInteraction('order', 'move', btn.dataset.id, btn.dataset.dir); break;
     case 'order-check': applyInteraction('order', 'check'); break;
     case 'error-select': applyInteraction('errorDetect', 'select', Number(btn.dataset.index)); break;
@@ -820,10 +949,20 @@ appEl.addEventListener('click', (e) => {
   }
 });
 appEl.addEventListener('keydown', (e) => {
-  if (e.key !== 'Enter' || e.target.id !== 'ex-input') return;
-  e.preventDefault();
-  if (state.exState === 'question') checkCurrentAnswer();
-  else if (state.exState === 'checked') exerciseNext();
+  if (e.key === 'Enter' && e.target.id === 'ex-input') {
+    e.preventDefault();
+    if (state.exState === 'question') checkCurrentAnswer();
+    else if (state.exState === 'checked') exerciseNext();
+    return;
+  }
+  // Attivazione da tastiera per elementi interattivi non nativi (es. i bucket
+  // di group-like-terms): i <button> gestiscono già Invio/Spazio da soli, i
+  // div con role="button" no. Non duplica il click sui bottoni nativi perché
+  // questi ultimi non hanno role="button" impostato esplicitamente.
+  if ((e.key === 'Enter' || e.key === ' ') && e.target.matches('[role="button"][data-action]')) {
+    e.preventDefault();
+    e.target.click();
+  }
 });
 
 /* ===== Service worker (offline) ===== */

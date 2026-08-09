@@ -29,23 +29,54 @@ function nextHelpLevel(ex, currentLevel) {
   return Math.min(currentLevel + 1, helpMaxLevelFor(ex));
 }
 
-// Restituisce { kind:'hint'|'steps'|'twin', text } per il livello richiesto.
+// Restituisce { kind:'hint'|'steps', text } per il livello richiesto.
+// Livelli 1-2: indizio/regola generici (invariati). Livelli 3-5: quando
+// l'esercizio ha un modello simbolico, restano semanticamente distinti anche
+// per soluzioni a un solo passaggio (fix Review Fase1 §2 finding H1: prima
+// il livello 3 mostrava già l'intera soluzione per gli esercizi corti):
+//   3 = individua il prossimo passo (SENZA calcolarne il risultato)
+//   4 = quel passo svolto e spiegato (con risultato)
+//   5 = soluzione guidata completa
 function getHelpContent(ex, level) {
   if (level <= 0) return null;
   if (!helpHasLadder(ex)) return { kind: 'hint', text: ex.hint };
   if (level === 1) return { kind: 'hint', text: ex.hintSteps[0] || ex.hint };
   if (level === 2) return { kind: 'hint', text: ex.hintSteps[1] || ex.hintSteps[0] || ex.hint };
+  if (ex.model && typeof Interactions !== 'undefined') {
+    const EM = Interactions.EquationModel;
+    if (level === 3) {
+      const move = EM.correctMove(ex.model);
+      return move
+        ? { kind: 'hint', text: `Il prossimo passo: applica "${EM.moveLabel(move)}" a entrambi i membri. Prova a calcolarlo tu prima di guardare il risultato.` }
+        : { kind: 'hint', text: ex.hintSteps[ex.hintSteps.length - 1] };
+    }
+    const solution = solutionStepsFor(ex);
+    if (level === 4) return { kind: 'steps', text: solution.slice(0, 1) };
+    return { kind: 'steps', text: solution }; // livello 5+
+  }
   const solution = ex.workedSolution || [];
   if (!solution.length) return { kind: 'hint', text: ex.hintSteps[ex.hintSteps.length - 1] };
   if (level === 3) return { kind: 'steps', text: solution.slice(0, 1) };
   if (level === 4) return { kind: 'steps', text: solution.slice(0, Math.max(1, solution.length - 1)) };
-  return { kind: 'steps', text: solution }; // livello 5+
+  return { kind: 'steps', text: solution };
+}
+
+// La soluzione guidata è derivabile a runtime dal modello simbolico: se non
+// è stata persistita in data.js (non serve più esserlo, vedi Fase Finale
+// §13/F19), la si calcola al volo invece di duplicarla come dato statico.
+function solutionStepsFor(ex) {
+  if (ex.workedSolution) return ex.workedSolution;
+  if (ex.model && typeof Interactions !== 'undefined') return Interactions.EquationModel.solutionSteps(ex.model);
+  return [];
 }
 
 /* ===== Diagnosi errori comuni =====
-   ex.commonErrors: [{ id, when, message }] — "when" è la chiave di un piccolo
-   catalogo di test condiviso (ERROR_TESTS), così il contenuto in data.js
-   resta puro dato e non porta codice eseguibile arbitrario.
+   ex.commonErrors: [{ id, when, message }] inline, OPPURE ex.commonErrorsKey
+   che referenzia un set condiviso in COMMON_ERROR_SETS (evita di duplicare
+   lo stesso catalogo su ogni esercizio in data.js, vedi Fase Finale §13/F19).
+   "when" è la chiave di un piccolo catalogo di test condiviso (ERROR_TESTS),
+   così il contenuto in data.js resta puro dato e non porta codice eseguibile
+   arbitrario.
 */
 const ERROR_TESTS = {
   // ha invertito il segno del risultato (classico errore "cambia lato, non cambia segno")
@@ -55,10 +86,23 @@ const ERROR_TESTS = {
   // ha lasciato il risultato di un passaggio intermedio invece di continuare a isolare la x
   zeroOrEmpty: (userVal) => userVal === 0
 };
+const COMMON_ERROR_SETS = {
+  linear_basic: [
+    { id: 'segno', when: 'signFlip', message: 'Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b).' },
+    { id: 'calcolo', when: 'smallSlip', message: 'Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze.' }
+  ]
+};
+
+function commonErrorsFor(ex) {
+  if (Array.isArray(ex.commonErrors)) return ex.commonErrors;
+  if (ex.commonErrorsKey && COMMON_ERROR_SETS[ex.commonErrorsKey]) return COMMON_ERROR_SETS[ex.commonErrorsKey];
+  return null;
+}
 
 function diagnoseCommonError(ex, userVal, correctVal) {
-  if (!Array.isArray(ex.commonErrors) || !ex.commonErrors.length) return null;
-  for (const err of ex.commonErrors) {
+  const errors = commonErrorsFor(ex);
+  if (!errors || !errors.length) return null;
+  for (const err of errors) {
     const test = ERROR_TESTS[err.when];
     if (test && test(userVal, correctVal)) return err;
   }
@@ -92,7 +136,7 @@ function generateTwin(ex) {
     hint: ex.hint,
     hintSteps: ex.hintSteps,
     workedSolution: EM.solutionSteps(model),
-    commonErrors: ex.commonErrors,
+    commonErrors: commonErrorsFor(ex),
     skill: ex.skill,
     level6: ex.level6,
     cognitiveType: ex.cognitiveType,
@@ -107,6 +151,7 @@ const HelpEngine = {
   helpMaxLevelFor,
   nextHelpLevel,
   getHelpContent,
+  commonErrorsFor,
   diagnoseCommonError,
   generateTwin
 };

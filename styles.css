@@ -312,9 +312,20 @@ h1, h2, p { margin: 0; }
   background: var(--white);
   color: var(--muted);
   border: 1px solid rgba(15,42,61,0.08);
+  appearance: none;
+  cursor: pointer;
+  position: relative;
 }
+.level-pill:active { transform: scale(0.97); }
 .level-pill.is-current { background: var(--navy); color: var(--white); }
 .level-pill.is-complete { background: var(--teal); color: var(--white); }
+.level-pill__badge {
+  display: inline-block;
+  margin-left: 3px;
+  color: var(--gold);
+  font-size: 9px;
+  vertical-align: super;
+}
 
 .exercise-wrap { padding: 18px 22px; flex: 1; display: flex; flex-direction: column; }
 .exercise-counter { font-size: 12.5px; font-weight: 700; color: var(--muted); margin-bottom: 10px; }

@@ -79,15 +79,27 @@ const EquationModel = {
   }
 };
 
-/* ---------- Bilancia (format: 'balance') ---------- */
-function balanceRoundOptions(m) {
+/* ---------- Bilancia (format: 'balance') =====
+   Interazione a due fasi, per evitare che un'opzione riveli da sola di
+   essere la trappola (fix Review Fase 1, finding F1):
+   fase 'op'     -> la studentessa sceglie QUALE operazione applicare
+                    (l'opzione corretta e quella con segno invertito hanno
+                    etichette ugualmente plausibili: "−4x" vs "+4x", nessun
+                    suffisso che la denunci);
+   fase 'target' -> sceglie SU QUALI piatti applicarla ("solo sinistro",
+                    "solo destro", "entrambi"). Solo "entrambi" fa avanzare
+                    il modello; le altre due mostrano lo sbilanciamento,
+                    spiegano perché, e riportano al modello precedente senza
+                    penalità (nessun logAttempt su un tentativo con trappola).
+*/
+function balanceOpOptions(m) {
   const correct = EquationModel.correctMove(m);
   if (!correct) return [];
-  const opts = [{ ...correct, id: 'correct', label: EquationModel.moveLabel(correct), trap: null }];
   const flipped = { kind: correct.kind, k: -correct.k };
-  opts.push({ ...flipped, id: 'wrongSign', label: EquationModel.moveLabel(flipped), trap: 'wrongSign' });
-  opts.push({ ...correct, id: 'oneSide', label: EquationModel.moveLabel(correct) + ' (un piatto solo)', trap: 'oneSide' });
-  return shuffle(opts);
+  return shuffle([
+    { ...correct, id: 'correct', label: EquationModel.moveLabel(correct) },
+    { ...flipped, id: 'wrongSign', label: EquationModel.moveLabel(flipped) }
+  ]);
 }
 function shuffle(arr) {
   const a = arr.slice();
@@ -101,27 +113,34 @@ function shuffle(arr) {
 const balance = {
   init(ex) {
     const model = { ...ex.model };
-    return { model, options: balanceRoundOptions(model), msg: null, solved: false, trapStreak: 0 };
+    return { model, phase: 'op', opOptions: balanceOpOptions(model), chosenOp: null, msg: null, tilt: false, solved: false, trapStreak: 0 };
   },
-  applyMove(ex, ist, moveId) {
-    const chosen = ist.options.find(o => o.id === moveId);
+  chooseOp(ex, ist, opId) {
+    if (ist.phase !== 'op') return { ist };
+    const chosen = ist.opOptions.find(o => o.id === opId);
     if (!chosen) return { ist };
-    if (chosen.trap === 'oneSide') {
+    return { ist: { ...ist, phase: 'target', chosenOp: chosen, msg: null, tilt: false } };
+  },
+  chooseTarget(ex, ist, target) {
+    if (ist.phase !== 'target') return { ist };
+    if (target !== 'both') {
       const trapStreak = ist.trapStreak + 1;
       const msg = trapStreak >= 2
-        ? 'La bilancia si sbilancia: quando applichi un\'operazione, deve valere per ENTRAMBI i piatti, altrimenti l\'uguaglianza si rompe.'
-        : 'Occhio: hai applicato l\'operazione solo a un piatto. La bilancia non è più in equilibrio!';
-      return { ist: { ...ist, msg, tilt: true, trapStreak } };
+        ? 'La bilancia si sbilancia: qualunque operazione scegli, deve valere per ENTRAMBI i piatti, altrimenti l\'uguaglianza si rompe.'
+        : 'Occhio: hai applicato l\'operazione solo a un piatto. La bilancia non è più in equilibrio! Il modello torna come prima: scegli di nuovo.';
+      return { ist: { ...ist, msg, tilt: true, trapStreak, phase: 'op', opOptions: balanceOpOptions(ist.model), chosenOp: null } };
     }
-    if (chosen.trap === 'wrongSign') {
-      return { ist: { ...ist, msg: 'Questa operazione mantiene l\'equilibrio (è lecita), ma non ti avvicina a isolare la x. Riprova con l\'operazione inversa giusta.', tilt: false, trapStreak: ist.trapStreak } };
+    if (ist.chosenOp.id === 'wrongSign') {
+      return { ist: { ...ist, msg: 'Questa operazione mantiene l\'equilibrio (è lecita: l\'hai applicata a entrambi i piatti), ma non ti avvicina a isolare la x. Riprova con l\'operazione inversa giusta.', tilt: false, trapStreak: 0, phase: 'op', opOptions: balanceOpOptions(ist.model), chosenOp: null } };
     }
-    const nextModel = EquationModel.applyMove(ist.model, chosen);
+    const nextModel = EquationModel.applyMove(ist.model, ist.chosenOp);
     const solved = EquationModel.isSolved(nextModel);
     return {
       ist: {
         model: nextModel,
-        options: solved ? [] : balanceRoundOptions(nextModel),
+        phase: 'op',
+        opOptions: solved ? [] : balanceOpOptions(nextModel),
+        chosenOp: null,
         msg: null,
         tilt: false,
         solved,
@@ -147,11 +166,20 @@ const balance = {
     if (ist.solved) {
       return beam + `<p class="exercise-feedback is-ok">✅ Hai isolato la x applicando sempre la stessa operazione a entrambi i piatti: x = ${m.d}</p>`;
     }
-    const options = ist.options.map(o => `<button class="balance-move" type="button" data-action="balance-move" data-move-id="${o.id}">${o.label}</button>`).join('');
-    const msg = ist.msg
-      ? `<p class="exercise-hint">💡 ${ist.msg}</p>`
-      : `<p class="balance__prompt">Quale operazione applichi a ENTRAMBI i piatti per avvicinarti a "x = …"?</p>`;
-    return beam + `<div class="balance-moves">${options}</div>${msg}`;
+    const msg = ist.msg ? `<p class="exercise-hint">💡 ${ist.msg}</p>` : '';
+    if (ist.phase === 'target') {
+      const targets = `
+        <div class="balance-moves">
+          <button class="balance-move" type="button" data-action="balance-target" data-target="left">Solo piatto sinistro</button>
+          <button class="balance-move" type="button" data-action="balance-target" data-target="right">Solo piatto destro</button>
+          <button class="balance-move" type="button" data-action="balance-target" data-target="both">Entrambi i piatti</button>
+        </div>`;
+      const prompt = `<p class="balance__prompt">Applichi "${ist.chosenOp.label}"... a quale/i piatto/i?</p>`;
+      return beam + prompt + targets + msg;
+    }
+    const options = ist.opOptions.map(o => `<button class="balance-move" type="button" data-action="balance-op" data-op-id="${o.id}">${o.label}</button>`).join('');
+    const prompt = msg ? '' : `<p class="balance__prompt">Quale operazione applichi per avvicinarti a "x = …"?</p>`;
+    return beam + `<div class="balance-moves">${options}</div>${prompt}${msg}`;
   }
 };
 function sideChips(coefX, konst) {
@@ -272,7 +300,7 @@ const group = {
         if (ist.checked) cls += t.group === b.key ? ' is-correct' : ' is-wrong';
         return `<button class="${cls}" type="button" data-action="group-tap-term" data-id="${t.id}" ${ist.checked ? 'disabled' : ''}>${t.label}</button>`;
       }).join('');
-      return `<div class="group-bucket" data-action="group-tap-bucket" data-bucket="${b.key}"><p class="group-bucket__label">${b.label}</p><div class="group-bucket__items">${chips}</div></div>`;
+      return `<div class="group-bucket" data-action="group-tap-bucket" data-bucket="${b.key}" role="button" tabindex="0" aria-label="Assegna a: ${b.label}"><p class="group-bucket__label">${b.label}</p><div class="group-bucket__items">${chips}</div></div>`;
     }).join('');
     const allPlaced = ex.groupData.terms.every(t => ist.assignment[t.id]);
     const action = !ist.checked

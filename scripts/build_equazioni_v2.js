@@ -1,4 +1,17 @@
 'use strict';
+// ============================================================================
+// SCRIPT STORICO DI MIGRAZIONE — NON RIESEGUIBILE, NON È LA SOURCE OF TRUTH.
+// Già eseguito una volta per produrre l'attuale data.js. Locata contenuto per
+// stringa (titoli/domande della V1 originale) che oggi non esiste più nel
+// repository: rieseguirlo fallisce rumorosamente e immediatamente (verificato
+// empiricamente), per design — non è un bug da correggere. Conservato solo
+// come documentazione di COME è stato derivato il modulo equazioni V2.
+// La source of truth, sempre, è data.js così com'è sul disco.
+// Vedi CLAUDE.md, sezione "data.js on disk is always the single source of
+// truth", per la convenzione completa. NON usare come base per un nuovo
+// modulo: scrivi un nuovo script one-shot dedicato, con lo stesso pattern.
+// ============================================================================
+//
 // FASE 1 della V2 — modulo equazioni come modello di riferimento.
 // Trasforma SOLO mod.id === 'equazioni' in data.js:
 //  - antepone 9 micro-lezioni sui prerequisiti (Fase 2 del task)
