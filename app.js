@@ -64,6 +64,27 @@ function saveHistory() {
 }
 let history = loadHistory();
 
+/* ===== Curiosità: persistenza (storage separato, non tocca progress/history) ===== */
+const CURIOSITA_KEY = 'ripasso-mate-curiosita-v1';
+function loadCuriositaProgress() {
+  try {
+    const raw = localStorage.getItem(CURIOSITA_KEY);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return (parsed && typeof parsed === 'object' && parsed.quizDone) ? parsed : { quizDone: {} };
+  } catch (e) {
+    return { quizDone: {} };
+  }
+}
+function saveCuriositaProgress() {
+  try { localStorage.setItem(CURIOSITA_KEY, JSON.stringify(curiositaProgress)); } catch (e) { /* storage non disponibile */ }
+}
+let curiositaProgress = loadCuriositaProgress();
+const CURIOSITA_CATEGORY_LABELS = { spazio: 'Spazio', scienza: 'Scienza', natura: 'Natura', corpo_umano: 'Corpo umano', tecnologia: 'Tecnologia', storia: 'Storia', geografia: 'Geografia' };
+function sortedCuriosita() {
+  if (typeof CURIOSITA === 'undefined') return [];
+  return [...CURIOSITA].sort((a, b) => b.date.localeCompare(a.date));
+}
+
 function logAttempt(entry) {
   history.push({ ts: Date.now(), ...entry });
   if (history.length > HISTORY_MAX) history = history.slice(history.length - HISTORY_MAX);
@@ -91,6 +112,48 @@ function computeStats() {
   const totalAttempts = history.length;
   const totalCorrect = history.filter(h => h.correct).length;
   return { perModule, topMistakes, totalAttempts, totalCorrect };
+}
+
+// Stima di padronanza per skill, ricavata dallo storico già presente in
+// localStorage (nessun nuovo storage, nessun server). Solo i tentativi con
+// un campo `skill` (oggi: equazioni) contribuiscono. Pesa le risposte più
+// recenti più di quelle vecchie e richiede almeno MIN_ATTEMPTS tentativi
+// prima di esprimere un giudizio, per evitare percentuali ingannevoli con
+// un solo tentativo (PIANO_SVILUPPO_V2.md §7.1).
+const MASTERY_MIN_ATTEMPTS = 2;
+const MASTERY_RECENT_WINDOW = 8;
+function computeMastery() {
+  const bySkill = new Map();
+  history.forEach(h => {
+    if (!h.skill || h.kind !== 'exercise') return;
+    if (!bySkill.has(h.skill)) bySkill.set(h.skill, []);
+    bySkill.get(h.skill).push(h);
+  });
+  const mastery = {};
+  bySkill.forEach((attempts, skill) => {
+    const sorted = attempts.slice().sort((a, b) => a.ts - b.ts);
+    const recent = sorted.slice(-MASTERY_RECENT_WINDOW);
+    let score = 0, weightSum = 0;
+    recent.forEach((h, i) => {
+      const weight = i + 1;
+      score += (h.correct ? 1 : 0) * weight;
+      weightSum += weight;
+    });
+    mastery[skill] = {
+      pct: attempts.length >= MASTERY_MIN_ATTEMPTS && weightSum ? Math.round((score / weightSum) * 100) : null,
+      attempts: attempts.length
+    };
+  });
+  return mastery;
+}
+// Le skill "deboli" per il ripasso mirato: mastery nota e sotto soglia,
+// ordinate dalla più debole. Esclude le skill senza abbastanza tentativi.
+function weakSkills(mastery, threshold, max) {
+  return Object.entries(mastery)
+    .filter(([, m]) => m.pct !== null && m.pct < threshold)
+    .sort((a, b) => a[1].pct - b[1].pct)
+    .slice(0, max)
+    .map(([skill]) => skill);
 }
 
 /* ===== Verifica risposte ===== */
@@ -146,13 +209,42 @@ const state = {
   quizIndex: 0,
   quizScore: 0,
   quizAnswered: false,
-  quizSelected: null
+  quizSelected: null,
+  ripassoQueue: [], // esercizi gemelli generati per il ripasso mirato sulle skill deboli
+  ripassoIndex: 0,
+  ripassoChecked: false,
+  ripassoLastCorrect: false,
+  ripassoUserAnswer: '',
+  ripassoScore: 0,
+  curiositaId: null, // id della curiosità aperta in vista dettaglio
+  curiositaQuizChecked: false,
+  curiositaQuizSelected: null
 };
 
 /* ===== Navigazione ===== */
 function goHome() { state.view = 'home'; state.moduleId = null; render(); }
 function openModule(id) { state.moduleId = id; state.view = 'module-menu'; render(); }
 function backToModuleMenu() { state.view = 'module-menu'; render(); }
+
+/* ===== Curiosità: navigazione ===== */
+function openCuriositaList() { state.view = 'curiosita-list'; render(); }
+function openCuriositaDetail(id) {
+  state.curiositaId = id;
+  state.curiositaQuizChecked = false;
+  state.curiositaQuizSelected = null;
+  state.view = 'curiosita-detail';
+  render();
+}
+function selectCuriositaQuiz(idx) {
+  if (state.curiositaQuizChecked) return;
+  const item = CURIOSITA.find(c => c.id === state.curiositaId);
+  if (!item) return;
+  state.curiositaQuizSelected = idx;
+  state.curiositaQuizChecked = true;
+  curiositaProgress.quizDone[item.id] = { correct: idx === item.quiz.correct };
+  saveCuriositaProgress();
+  render();
+}
 
 function openTheory() { state.view = 'theory'; state.theoryIndex = 0; state.theoryRevealed = {}; state.theoryChecks = {}; render(); }
 function microcheckSelect(slideIndex, index) {
@@ -388,6 +480,66 @@ function quizNext() {
   render();
 }
 
+/* ===== Ripasso mirato (esercizi adattivi) =====
+   Sessione breve di esercizi generati al volo (stesso motore dei gemelli,
+   Interactions.EquationModel + HelpEngine.generateTwin) mirati sulle skill
+   con la mastery più bassa calcolata dallo storico. Non tocca il progresso
+   "ufficiale" dei livelli: è pratica supplementare su richiesta, non parte
+   della sequenza valutata. Oggi disponibile solo per equazioni (unico
+   modulo con esercizi taggati per skill/model). */
+const RIPASSO_SIZE = 5;
+const RIPASSO_THRESHOLD = 70;
+function buildRipassoQueue() {
+  const eq = getModule('equazioni');
+  const allEx = [...eq.exercises.facile, ...eq.exercises.medio, ...eq.exercises.difficile];
+  const withModel = allEx.filter(e => e.model);
+  const mastery = computeMastery();
+  const weak = weakSkills(mastery, RIPASSO_THRESHOLD, RIPASSO_SIZE);
+  const queue = [];
+  weak.forEach(skill => {
+    const exemplar = withModel.find(e => e.skill === skill);
+    const twin = exemplar && HelpEngine.generateTwin(exemplar);
+    if (twin) queue.push(twin);
+  });
+  // Storico troppo corto per individuare skill deboli: pesca comunque un
+  // breve giro di pratica invece di lasciare la sessione vuota.
+  let guard = 0;
+  while (queue.length < RIPASSO_SIZE && withModel.length && guard < 20) {
+    const pick = withModel[Math.floor(Math.random() * withModel.length)];
+    const twin = HelpEngine.generateTwin(pick);
+    if (twin) queue.push(twin);
+    guard++;
+  }
+  return queue;
+}
+function startRipassoMirato() {
+  state.moduleId = 'equazioni';
+  state.view = 'ripasso';
+  state.ripassoQueue = buildRipassoQueue();
+  state.ripassoIndex = 0;
+  state.ripassoChecked = false;
+  state.ripassoUserAnswer = '';
+  state.ripassoScore = 0;
+  render();
+}
+function checkRipassoAnswer() {
+  const input = document.getElementById('ripasso-input');
+  if (!input || !input.value.trim()) { if (input) input.focus(); return; }
+  const ex = state.ripassoQueue[state.ripassoIndex];
+  state.ripassoLastCorrect = checkAnswer(ex, input.value);
+  state.ripassoUserAnswer = input.value;
+  state.ripassoChecked = true;
+  if (state.ripassoLastCorrect) state.ripassoScore++;
+  logAttempt({ moduleId: 'equazioni', kind: 'exercise', level: null, question: ex.q, correct: state.ripassoLastCorrect, skill: ex.skill || null, ripasso: true });
+  render();
+}
+function ripassoNext() {
+  state.ripassoIndex++;
+  state.ripassoChecked = false;
+  state.ripassoUserAnswer = '';
+  render();
+}
+
 /* ===== Rendering: Home ===== */
 function progressLabel(p) {
   if (p.quiz.done) return `Completata · ${p.quiz.score}/${p.quiz.total} al quiz`;
@@ -418,8 +570,26 @@ function renderHome() {
       <h1 class="app-title">In viaggio con la Matematica</h1>
       <p class="app-subtitle">Ogni tappa ha teoria, esercizi che crescono di difficoltà (con qualche indovinello di logica!) e un quiz finale. Buon viaggio, ${STUDENT_NAME}! 🧳</p>
     </header>
+    ${renderCuriositaTeaser()}
     <div class="route">${stops}</div>
   `;
+}
+// Piccolo invito alla sezione Curiosità (separata dal percorso di
+// matematica): mostra l'ultima voce aggiunta. Nessun output se il primo
+// lotto di contenuti non è ancora stato pubblicato (CURIOSITA vuoto).
+function renderCuriositaTeaser() {
+  const items = sortedCuriosita();
+  if (!items.length) return '';
+  const latest = items[0];
+  return `
+    <button class="curiosita-teaser" data-action="open-curiosita-list" type="button">
+      <span class="curiosita-teaser__icon">${latest.icon}</span>
+      <span class="curiosita-teaser__body">
+        <span class="curiosita-teaser__label">Curiosità di oggi</span>
+        <span class="curiosita-teaser__title">${latest.title}</span>
+      </span>
+      <span class="curiosita-teaser__arrow" aria-hidden="true">→</span>
+    </button>`;
 }
 
 /* ===== Rendering: Menu modulo ===== */
@@ -671,7 +841,16 @@ function renderExerciseQuestion(m) {
           : '';
         actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Ho capito, continua →</button></div>`;
       } else {
-        actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button></div>`;
+        // Esercizio adattivo: subito dopo QUALSIASI errore (non solo dopo 3
+        // di fila, che restano gestiti dalla regola di regressione), offre
+        // un esercizio gemello generato al volo per rinforzare subito il
+        // concetto sbagliato — non obbligatorio, la studentessa può anche
+        // solo proseguire.
+        const canRetrySimile = !!ex.model;
+        actionsBlock = `<div class="exercise-actions exercise-actions--end">
+          ${canRetrySimile ? '<button class="btn btn--ghost" data-action="request-twin" type="button">🔁 Prova un esercizio simile</button>' : ''}
+          <button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button>
+        </div>`;
       }
     }
   } else {
@@ -790,6 +969,120 @@ function renderResult() {
   `;
 }
 
+/* ===== Rendering: Ripasso mirato ===== */
+function renderRipasso() {
+  const total = state.ripassoQueue.length;
+  const header = `
+    <header class="topbar">
+      <button class="back" data-action="open-diario" type="button" aria-label="Indietro">←</button>
+      <p class="eyebrow">Ripasso mirato · Equazioni</p>
+      <h1 class="module-title">${total ? `Domanda ${Math.min(state.ripassoIndex + 1, total)} di ${total}` : 'Ripasso mirato'}</h1>
+    </header>`;
+  if (total === 0) {
+    return header + `
+      <div class="exercise-wrap">
+        <div class="exercise-card" style="text-align:center;">
+          <p class="exercise-q">Non ci sono ancora abbastanza esercizi di equazioni per generare un ripasso mirato.</p>
+        </div>
+      </div>`;
+  }
+  if (state.ripassoIndex >= total) {
+    return header + `
+      <div class="exercise-wrap">
+        <div class="exercise-card" style="text-align:center;">
+          <p class="exercise-q">🎉 Ripasso completato!</p>
+          <p style="color:var(--muted); font-size:14.5px; line-height:1.5;">${state.ripassoScore}/${total} risposte corrette.</p>
+          <div class="exercise-actions" style="margin-top:22px; justify-content:center;">
+            <button class="btn btn--primary" data-action="open-diario" type="button">Torna al Diario</button>
+          </div>
+        </div>
+      </div>`;
+  }
+  const ex = state.ripassoQueue[state.ripassoIndex];
+  const checked = state.ripassoChecked;
+  let feedbackBlock = '', actionsBlock;
+  if (checked) {
+    feedbackBlock = state.ripassoLastCorrect
+      ? `<p class="exercise-feedback is-ok">✅ Esatto, complimenti!</p>`
+      : `<p class="exercise-feedback is-bad">❌ Non proprio. Risposta corretta: ${ex.answer}</p>`;
+    actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="ripasso-next" type="button">${state.ripassoIndex + 1 >= total ? 'Vedi il risultato →' : 'Avanti →'}</button></div>`;
+  } else {
+    actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="ripasso-check" type="button">Controlla</button></div>`;
+  }
+  return header + `
+    <div class="exercise-wrap">
+      <div class="exercise-card">
+        <p class="exercise-q">${ex.q}</p>
+        <div class="exercise-input-row">
+          <input class="exercise-input" id="ripasso-input" type="text" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="La tua risposta" value="${checked ? state.ripassoUserAnswer : ''}" ${checked ? 'disabled' : ''}>
+        </div>
+        ${feedbackBlock}
+        ${actionsBlock}
+      </div>
+    </div>`;
+}
+
+/* ===== Rendering: Curiosità ===== */
+function renderCuriositaList() {
+  const items = sortedCuriosita();
+  const cards = items.length ? items.map(c => {
+    const done = curiositaProgress.quizDone[c.id];
+    const badge = done ? `<span class="curiosita-card__done" aria-hidden="true">${done.correct ? '✅' : '↻'}</span>` : '';
+    return `
+      <button class="curiosita-card" data-action="open-curiosita-detail" data-id="${c.id}" type="button">
+        <span class="curiosita-card__icon">${c.icon}</span>
+        <span class="curiosita-card__body">
+          <span class="curiosita-card__category">${CURIOSITA_CATEGORY_LABELS[c.category] || c.category}</span>
+          <span class="curiosita-card__title">${c.title}</span>
+        </span>
+        ${badge}
+      </button>`;
+  }).join('') : `<p style="color:var(--muted); font-size:14px; padding:0 4px;">Nessuna curiosità ancora: torna a trovarci presto!</p>`;
+  return `
+    <header class="topbar">
+      <button class="back" data-action="go-home" type="button" aria-label="Torna alla mappa">←</button>
+      <p class="eyebrow">Curiosità</p>
+      <h1 class="module-title">Scopri qualcosa di nuovo</h1>
+    </header>
+    <div class="curiosita-list">${cards}</div>
+  `;
+}
+function renderCuriositaDetail() {
+  const item = CURIOSITA.find(c => c.id === state.curiositaId);
+  if (!item) return renderCuriositaList();
+  const checked = state.curiositaQuizChecked;
+  const optionsHtml = item.quiz.options.map((opt, i) => {
+    let cls = 'quiz-option';
+    if (checked) {
+      if (i === item.quiz.correct) cls += ' is-correct';
+      else if (i === state.curiositaQuizSelected) cls += ' is-wrong';
+    }
+    return `<button class="${cls}" type="button" data-action="curiosita-quiz-select" data-index="${i}" ${checked ? 'disabled' : ''}>${opt}</button>`;
+  }).join('');
+  const feedback = checked
+    ? `<p class="exercise-feedback ${state.curiositaQuizSelected === item.quiz.correct ? 'is-ok' : 'is-bad'}">${state.curiositaQuizSelected === item.quiz.correct ? '✅ Esatto!' : '❌ Non proprio.'} ${item.quiz.explanation}</p>`
+    : '';
+  return `
+    <header class="topbar">
+      <button class="back" data-action="open-curiosita-list" type="button" aria-label="Indietro">←</button>
+      <p class="eyebrow">${CURIOSITA_CATEGORY_LABELS[item.category] || item.category}</p>
+      <h1 class="module-title">${item.title}</h1>
+    </header>
+    <div class="curiosita-detail">
+      <article class="postcard">
+        <p class="postcard__label">${item.icon} Curiosità</p>
+        <p class="postcard__body">${item.summary}</p>
+      </article>
+      <p class="curiosita-source">Fonte: <a href="${item.source.url}" target="_blank" rel="noopener noreferrer">${item.source.name}</a></p>
+      <div class="exercise-card">
+        <p class="exercise-q">${item.quiz.q}</p>
+        <div class="quiz-options">${optionsHtml}</div>
+        ${feedback}
+      </div>
+    </div>
+  `;
+}
+
 /* ===== Rendering: Diario di viaggio (statistiche) ===== */
 function renderDiario() {
   const stats = computeStats();
@@ -845,6 +1138,26 @@ function renderDiario() {
       ${rows}
       <h2 class="diary-section-title">Argomenti da ripassare</h2>
       <div class="diary-mistakes">${mistakesHtml}</div>
+      ${renderRipassoCta()}
+    </div>
+  `;
+}
+// Invito al ripasso mirato: esercizi adattivi generati sulle skill più
+// deboli (calcolate da computeMastery). Visibile solo se c'è abbastanza
+// storico su equazioni per generare qualcosa di sensato.
+function renderRipassoCta() {
+  const mastery = computeMastery();
+  const weak = weakSkills(mastery, RIPASSO_THRESHOLD, RIPASSO_SIZE);
+  const hasEnoughHistory = Object.values(mastery).some(m => m.pct !== null);
+  if (!hasEnoughHistory) return '';
+  const desc = weak.length
+    ? `Ho notato ${weak.length} ${weak.length === 1 ? 'argomento' : 'argomenti'} su cui vale la pena fare un po' di pratica in più. Genero al volo ${RIPASSO_SIZE} esercizi simili, diversi ogni volta.`
+    : `Le equazioni sembrano andare bene! Puoi comunque fare qualche esercizio di ripasso in più, generato al volo.`;
+  return `
+    <h2 class="diary-section-title">Ripasso mirato</h2>
+    <div class="diary-mistake" style="background:rgba(31,122,115,0.08); border-color:rgba(31,122,115,0.18);">
+      <p class="diary-mistake__q" style="margin-bottom:12px;">${desc}</p>
+      <button class="btn btn--primary" data-action="start-ripasso" type="button">Inizia il ripasso →</button>
     </div>
   `;
 }
@@ -860,6 +1173,9 @@ function render() {
     case 'quiz': app.innerHTML = renderQuiz(); break;
     case 'result': app.innerHTML = renderResult(); break;
     case 'diario': app.innerHTML = renderDiario(); break;
+    case 'ripasso': app.innerHTML = renderRipasso(); break;
+    case 'curiosita-list': app.innerHTML = renderCuriositaList(); break;
+    case 'curiosita-detail': app.innerHTML = renderCuriositaDetail(); break;
   }
   afterRender();
 }
@@ -946,6 +1262,12 @@ appEl.addEventListener('click', (e) => {
     case 'quiz-option': selectQuizOption(Number(btn.dataset.index)); break;
     case 'quiz-next': quizNext(); break;
     case 'open-diario': state.view = 'diario'; render(); break;
+    case 'start-ripasso': startRipassoMirato(); break;
+    case 'ripasso-check': checkRipassoAnswer(); break;
+    case 'ripasso-next': ripassoNext(); break;
+    case 'open-curiosita-list': openCuriositaList(); break;
+    case 'open-curiosita-detail': openCuriositaDetail(btn.dataset.id); break;
+    case 'curiosita-quiz-select': selectCuriositaQuiz(Number(btn.dataset.index)); break;
   }
 });
 appEl.addEventListener('keydown', (e) => {
@@ -953,6 +1275,12 @@ appEl.addEventListener('keydown', (e) => {
     e.preventDefault();
     if (state.exState === 'question') checkCurrentAnswer();
     else if (state.exState === 'checked') exerciseNext();
+    return;
+  }
+  if (e.key === 'Enter' && e.target.id === 'ripasso-input') {
+    e.preventDefault();
+    if (!state.ripassoChecked) checkRipassoAnswer();
+    else ripassoNext();
     return;
   }
   // Attivazione da tastiera per elementi interattivi non nativi (es. i bucket
