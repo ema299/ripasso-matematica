@@ -107,15 +107,20 @@ function checkAnswer(ex, raw) {
 }
 
 /* ===== Stato applicazione ===== */
+const FORMAT_KEY = { balance: 'balance', order: 'order', group: 'group', build: 'build', 'error-detect': 'errorDetect' };
 const state = {
   view: 'home',
   moduleId: null,
   theoryIndex: 0,
   theoryRevealed: {},
+  theoryChecks: {}, // { [slideIndex]: {selected, checked} } per le micro-verifiche non punitive
   exLevel: 'facile',
   exIndex: 0,
   exState: 'question', // question | checked | levelComplete
-  exHintVisible: false,
+  exHelpLevel: 0, // scala di aiuto 0-6 (HELP_SYSTEM_V2.md); 0 = nessun aiuto richiesto
+  exErrorDiagnosis: null, // { message } dalla banca errori comuni, se l'ultima risposta errata corrisponde a un pattern noto
+  exTwin: null, // esercizio gemello generato al livello 6 di aiuto, sostituisce l'esercizio corrente finché non si preme "Avanti"
+  interaction: null, // stato del componente interattivo (bilancia/riordino/raggruppa/costruisci/caccia-errore) per l'esercizio corrente
   exLastCorrect: false,
   exUserAnswer: '',
   exSelectedIndex: null,
@@ -130,7 +135,13 @@ function goHome() { state.view = 'home'; state.moduleId = null; render(); }
 function openModule(id) { state.moduleId = id; state.view = 'module-menu'; render(); }
 function backToModuleMenu() { state.view = 'module-menu'; render(); }
 
-function openTheory() { state.view = 'theory'; state.theoryIndex = 0; state.theoryRevealed = {}; render(); }
+function openTheory() { state.view = 'theory'; state.theoryIndex = 0; state.theoryRevealed = {}; state.theoryChecks = {}; render(); }
+function microcheckSelect(slideIndex, index) {
+  const cur = state.theoryChecks[slideIndex] || { selected: null, checked: false };
+  if (cur.checked) return;
+  state.theoryChecks[slideIndex] = { selected: index, checked: true };
+  render();
+}
 function revealStep(idx) {
   const m = getModule(state.moduleId);
   const slide = m.theory[idx];
@@ -146,45 +157,105 @@ function moveSlide(delta) {
   render();
 }
 
+// Reimposta tutto lo stato UI effimero (aiuto/selezione/interazione) legato
+// all'esercizio corrente e, se l'esercizio ha un format interattivo,
+// inizializza il suo stato tramite Interactions.<format>.init(). Chiamata
+// ogni volta che l'esercizio "attivo" cambia (nuovo livello, avanti, gemello).
+function resetExerciseUIState() {
+  state.exState = 'question';
+  state.exHelpLevel = 0;
+  state.exSelectedIndex = null;
+  state.exUserAnswer = '';
+  state.exErrorDiagnosis = null;
+  state.exTwin = null;
+  state.interaction = null;
+  const m = getModule(state.moduleId);
+  const list = m && m.exercises[state.exLevel];
+  const ex = list && list[state.exIndex];
+  if (ex && ex.format && FORMAT_KEY[ex.format]) {
+    state.interaction = Interactions[FORMAT_KEY[ex.format]].init(ex);
+  }
+}
+// L'esercizio "attivo" è normalmente quello in posizione exIndex, tranne
+// quando è in corso un esercizio gemello (livello 6 di aiuto): in quel caso
+// lo sostituisce temporaneamente senza avanzare nella lista.
+function getCurrentExercise() {
+  if (state.exTwin) return state.exTwin;
+  const m = getModule(state.moduleId);
+  return m.exercises[state.exLevel][state.exIndex];
+}
+
 function openExercises(levelOverride) {
   const p = ensureModuleProgress(state.moduleId);
   state.exLevel = levelOverride || LEVELS.find(l => !p.exercises[l]) || 'facile';
   state.exIndex = 0;
-  state.exState = 'question';
-  state.exHintVisible = false;
-  state.exSelectedIndex = null;
   state.view = 'exercises';
+  resetExerciseUIState();
   render();
 }
-function showHint() { state.exHintVisible = true; render(); }
+function bumpHelpLevel() {
+  const ex = getCurrentExercise();
+  state.exHelpLevel = HelpEngine.nextHelpLevel(ex, state.exHelpLevel);
+  render();
+}
+function requestTwin() {
+  const ex = getCurrentExercise();
+  const twin = HelpEngine.generateTwin(ex);
+  if (!twin) return;
+  state.exTwin = twin;
+  state.exState = 'question';
+  state.exHelpLevel = 0;
+  state.exSelectedIndex = null;
+  state.exUserAnswer = '';
+  state.exErrorDiagnosis = null;
+  state.interaction = null; // i gemelli generati sono sempre a risposta numerica
+  render();
+}
 function checkCurrentAnswer() {
   const input = document.getElementById('ex-input');
   if (!input || !input.value.trim()) { if (input) input.focus(); return; }
   const m = getModule(state.moduleId);
-  const ex = m.exercises[state.exLevel][state.exIndex];
+  const ex = getCurrentExercise();
   state.exLastCorrect = checkAnswer(ex, input.value);
   state.exUserAnswer = input.value;
   state.exState = 'checked';
+  state.exErrorDiagnosis = null;
+  if (!state.exLastCorrect && ex.commonErrors) {
+    const userVal = normalizeNumber(input.value);
+    const correctRaw = Array.isArray(ex.answer) ? ex.answer[0] : ex.answer;
+    state.exErrorDiagnosis = HelpEngine.diagnoseCommonError(ex, userVal, normalizeNumber(correctRaw));
+  }
   logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: state.exLastCorrect, logic: !!ex.logic });
   render();
 }
 function selectExerciseChoice(idx) {
   if (state.exState === 'checked') return;
   const m = getModule(state.moduleId);
-  const ex = m.exercises[state.exLevel][state.exIndex];
+  const ex = getCurrentExercise();
   state.exSelectedIndex = idx;
   state.exLastCorrect = idx === ex.correct;
   state.exState = 'checked';
   logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: state.exLastCorrect, logic: !!ex.logic });
   render();
 }
+function applyInteraction(kind, method, ...args) {
+  const m = getModule(state.moduleId);
+  const ex = getCurrentExercise();
+  const comp = Interactions[kind];
+  const result = comp[method](ex, state.interaction, ...args);
+  state.interaction = result.ist;
+  if (result.completed) {
+    state.exLastCorrect = result.correct;
+    state.exState = 'checked';
+    logAttempt({ moduleId: m.id, kind: 'exercise', level: state.exLevel, question: ex.q, correct: result.correct, logic: !!ex.logic });
+  }
+  render();
+}
 function exerciseNext() {
   const m = getModule(state.moduleId);
   const list = m.exercises[state.exLevel];
   state.exIndex++;
-  state.exState = 'question';
-  state.exHintVisible = false;
-  state.exSelectedIndex = null;
+  resetExerciseUIState();
   if (state.exIndex >= list.length) {
     const p = ensureModuleProgress(state.moduleId);
     p.exercises[state.exLevel] = true;
@@ -197,9 +268,7 @@ function levelContinue() {
   if (state.exLevel === 'difficile') { openQuiz(); return; }
   state.exLevel = LEVELS[LEVELS.indexOf(state.exLevel) + 1];
   state.exIndex = 0;
-  state.exState = 'question';
-  state.exHintVisible = false;
-  state.exSelectedIndex = null;
+  resetExerciseUIState();
   render();
 }
 
@@ -327,9 +396,36 @@ function renderStepsPostcard(s, idx) {
       ${footer}
     </article>`;
 }
+function renderMicrolessonPostcard(s, idx) {
+  const st = state.theoryChecks[idx] || { selected: null, checked: false };
+  const options = s.check.options.map((opt, i) => {
+    let cls = 'quiz-option';
+    if (st.checked) {
+      if (i === s.check.correct) cls += ' is-correct';
+      else if (i === st.selected) cls += ' is-wrong';
+    }
+    return `<button class="${cls}" type="button" data-action="microcheck-select" data-slide-index="${idx}" data-index="${i}" ${st.checked ? 'disabled' : ''}>${opt}</button>`;
+  }).join('');
+  const feedback = st.checked
+    ? `<p class="exercise-feedback ${st.selected === s.check.correct ? 'is-ok' : 'is-bad'}">${st.selected === s.check.correct ? '✅ Esatto!' : '💡 Non proprio: la risposta giusta è evidenziata sopra.'}</p>`
+    : '';
+  return `
+    <article class="postcard postcard--micro">
+      <p class="postcard__label">Prerequisiti</p>
+      <h2 class="postcard__title">${s.title}</h2>
+      <p class="micro__situation">🤔 ${s.situation}</p>
+      <p class="micro__explain">${s.explain}</p>
+      <p class="micro__example">✏️ ${s.example}</p>
+      <div class="micro-check">
+        <p class="micro-check__q">${s.check.q}</p>
+        <div class="quiz-options">${options}</div>
+        ${feedback}
+      </div>
+    </article>`;
+}
 function renderTheory() {
   const m = getModule(state.moduleId);
-  const slides = m.theory.map((s, i) => s.type === 'steps' ? renderStepsPostcard(s, i) : `
+  const slides = m.theory.map((s, i) => s.type === 'steps' ? renderStepsPostcard(s, i) : s.type === 'microlesson' ? renderMicrolessonPostcard(s, i) : `
     <article class="postcard">
       <p class="postcard__label">Appunti di viaggio</p>
       <h2 class="postcard__title">${s.title}</h2>
@@ -373,13 +469,47 @@ function renderLevelComplete() {
     </div>
   `;
 }
+// Contenuto dell'aiuto per il livello corrente (HELP_SYSTEM_V2.md): per gli
+// esercizi senza scala (altri moduli) equivale al vecchio hint singolo.
+function helpBlockHtml(ex) {
+  const content = HelpEngine.getHelpContent(ex, state.exHelpLevel);
+  if (!content) return '';
+  if (content.kind === 'hint') return `<p class="exercise-hint">💡 ${content.text}</p>`;
+  return `<div class="exercise-hint exercise-hint--steps"><p class="exercise-hint__label">💡 Passaggi:</p>${content.text.map(t => `<p>${t}</p>`).join('')}</div>`;
+}
+function helpButtonHtml(ex) {
+  const max = HelpEngine.helpMaxLevelFor(ex);
+  if (state.exHelpLevel >= max) {
+    if (max >= HelpEngine.HELP_MAX_LEVEL && ex.model && !state.exTwin) {
+      return `<button class="btn btn--ghost" data-action="request-twin" type="button">🔁 Esercizio simile</button>`;
+    }
+    return '';
+  }
+  return `<button class="btn btn--ghost" data-action="show-hint" type="button">💡 Aiuto</button>`;
+}
+function renderInteractiveExercise(ex, total, checked, logicTag, twinTag) {
+  const comp = Interactions[FORMAT_KEY[ex.format]];
+  const preStep = ex.preStep ? `<p class="exercise-prestep">📎 ${ex.preStep}</p>` : '';
+  const body = comp.render(ex, state.interaction);
+  const tail = checked
+    ? `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button></div>`
+    : `${helpBlockHtml(ex)}<div class="exercise-actions exercise-actions--end">${helpButtonHtml(ex)}</div>`;
+  return `
+    <p class="exercise-counter">${LEVEL_LABELS[state.exLevel]} · Domanda ${state.exIndex + 1} di ${total} ${logicTag}${twinTag}</p>
+    <div class="exercise-card">${preStep}${body}${tail}</div>
+  `;
+}
 function renderExerciseQuestion(m) {
   const list = m.exercises[state.exLevel];
-  const ex = list[state.exIndex];
+  const ex = getCurrentExercise();
   const total = list.length;
   const checked = state.exState === 'checked';
-  const hintBlock = state.exHintVisible ? `<p class="exercise-hint">💡 ${ex.hint}</p>` : '';
   const logicTag = ex.logic ? `<span class="exercise-tag">🧠 Logica</span>` : '';
+  const twinTag = state.exTwin ? `<span class="exercise-tag exercise-tag--twin">🔁 Esercizio simile</span>` : '';
+
+  if (ex.format && FORMAT_KEY[ex.format]) {
+    return renderInteractiveExercise(ex, total, checked, logicTag, twinTag);
+  }
 
   if (ex.type === 'choice') {
     const optionsHtml = ex.options.map((opt, i) => {
@@ -395,13 +525,13 @@ function renderExerciseQuestion(m) {
       : '';
     const actionsBlock = checked
       ? `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button></div>`
-      : `<div class="exercise-actions exercise-actions--end"><button class="btn btn--ghost" data-action="show-hint" type="button">💡 Aiuto</button></div>`;
+      : `<div class="exercise-actions exercise-actions--end">${helpButtonHtml(ex)}</div>`;
     return `
-      <p class="exercise-counter">${LEVEL_LABELS[state.exLevel]} · Domanda ${state.exIndex + 1} di ${total} ${logicTag}</p>
+      <p class="exercise-counter">${LEVEL_LABELS[state.exLevel]} · Domanda ${state.exIndex + 1} di ${total} ${logicTag}${twinTag}</p>
       <div class="exercise-card">
         <p class="exercise-q">${ex.q}</p>
         <div class="quiz-options">${optionsHtml}</div>
-        ${hintBlock}
+        ${checked ? '' : helpBlockHtml(ex)}
         ${feedback}
         ${actionsBlock}
       </div>
@@ -416,26 +546,27 @@ function renderExerciseQuestion(m) {
       feedbackBlock = `<p class="exercise-feedback is-ok">✅ Esatto, complimenti!</p>`;
     } else {
       const shown = ex.type === 'expr' ? ex.answer[0] : ex.answer;
-      feedbackBlock = `<p class="exercise-feedback is-bad">❌ Non proprio. Risposta corretta: ${shown}${ex.unit ? ' ' + ex.unit : ''}</p>`;
+      const diag = state.exErrorDiagnosis ? `<p class="exercise-feedback is-bad">🔍 ${state.exErrorDiagnosis.message}</p>` : '';
+      feedbackBlock = diag + `<p class="exercise-feedback is-bad">❌ Non proprio. Risposta corretta: ${shown}${ex.unit ? ' ' + ex.unit : ''}</p>`;
     }
     actionsBlock = `<div class="exercise-actions exercise-actions--end"><button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button></div>`;
   } else {
     actionsBlock = `
       <div class="exercise-actions">
-        <button class="btn btn--ghost" data-action="show-hint" type="button">💡 Aiuto</button>
+        ${helpButtonHtml(ex)}
         <button class="btn btn--primary" data-action="check-answer" type="button">Controlla</button>
       </div>`;
   }
   const inputValue = checked ? state.exUserAnswer : '';
   return `
-    <p class="exercise-counter">${LEVEL_LABELS[state.exLevel]} · Domanda ${state.exIndex + 1} di ${total} ${logicTag}</p>
+    <p class="exercise-counter">${LEVEL_LABELS[state.exLevel]} · Domanda ${state.exIndex + 1} di ${total} ${logicTag}${twinTag}</p>
     <div class="exercise-card">
       <p class="exercise-q">${ex.q}</p>
       <div class="exercise-input-row">
         <input class="exercise-input" id="ex-input" type="text" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="La tua risposta" value="${inputValue}" ${checked ? 'disabled' : ''}>
         ${unit}
       </div>
-      ${hintBlock}
+      ${checked ? '' : helpBlockHtml(ex)}
       ${feedbackBlock}
       ${actionsBlock}
     </div>
@@ -664,12 +795,25 @@ appEl.addEventListener('click', (e) => {
     case 'prev-slide': moveSlide(-1); break;
     case 'next-slide': moveSlide(1); break;
     case 'reveal-step': revealStep(Number(btn.dataset.slideIndex)); break;
+    case 'microcheck-select': microcheckSelect(Number(btn.dataset.slideIndex), Number(btn.dataset.index)); break;
     case 'theory-done': markTheorySeen(); openExercises('facile'); break;
-    case 'show-hint': showHint(); break;
+    case 'show-hint': bumpHelpLevel(); break;
+    case 'request-twin': requestTwin(); break;
     case 'check-answer': checkCurrentAnswer(); break;
     case 'exercise-choice': selectExerciseChoice(Number(btn.dataset.index)); break;
     case 'exercise-next': exerciseNext(); break;
     case 'level-continue': levelContinue(); break;
+    case 'balance-move': applyInteraction('balance', 'applyMove', btn.dataset.moveId); break;
+    case 'order-move': applyInteraction('order', 'move', btn.dataset.id, btn.dataset.dir); break;
+    case 'order-check': applyInteraction('order', 'check'); break;
+    case 'error-select': applyInteraction('errorDetect', 'select', Number(btn.dataset.index)); break;
+    case 'error-check': applyInteraction('errorDetect', 'check'); break;
+    case 'group-tap-term': applyInteraction('group', 'tapTerm', btn.dataset.id); break;
+    case 'group-tap-bucket': applyInteraction('group', 'tapBucket', btn.dataset.bucket); break;
+    case 'group-check': applyInteraction('group', 'check'); break;
+    case 'build-tap-pool': applyInteraction('build', 'place', btn.dataset.id); break;
+    case 'build-tap-placed': applyInteraction('build', 'remove', btn.dataset.id); break;
+    case 'build-check': applyInteraction('build', 'check'); break;
     case 'quiz-option': selectQuizOption(Number(btn.dataset.index)); break;
     case 'quiz-next': quizNext(); break;
     case 'open-diario': state.view = 'diario'; render(); break;

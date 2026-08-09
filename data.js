@@ -1455,16 +1455,178 @@ const MODULES = [
     "tagline": "Trovare il valore che tiene tutto in equilibrio",
     "theory": [
       {
+        "title": "Cos'è x?",
+        "type": "microlesson",
+        "concept": "x",
+        "situation": "Immagina di sapere che, aggiungendo 3 valigie a quelle che hai già, arrivi a 7 in totale. Non sai ancora quante valigie hai ORA: quel numero sconosciuto ha bisogno di un nome.",
+        "explain": "In matematica, invece di scrivere ogni volta “il numero che non conosco ancora”, usiamo una lettera al posto del numero. La più usata è x, ma potrebbe essere una qualsiasi altra lettera (y, n, t...). x non è un simbolo magico: è solo un contenitore per un numero che, al momento, non conosciamo.",
+        "example": "Nella frase “x valigie + 3 valigie = 7 valigie”, x rappresenta il numero di valigie che avevi all'inizio. Risolvere il problema significa scoprire quale numero si nasconde dietro la x.",
+        "check": {
+          "q": "Cosa rappresenta la lettera x in un’equazione?",
+          "options": [
+            "Sempre il numero 10",
+            "Un numero che non conosciamo ancora e vogliamo trovare",
+            "Una parola in codice",
+            "Il numero delle domande"
+          ],
+          "correct": 1
+        }
+      },
+      {
+        "title": "Variabile",
+        "type": "microlesson",
+        "concept": "variabile",
+        "situation": "Non tutte le lettere “nascondono” sempre lo stesso identico numero: a volte una lettera serve per descrivere una regola valida per tanti casi insieme.",
+        "explain": "Una variabile è una lettera che può assumere valori diversi, a seconda della situazione. Serve per scrivere una regola generale, non per trovare un unico numero preciso.",
+        "example": "Il costo di un taxi è “C = 3 + 1,5 × km”. Qui km è una variabile: cambia da viaggio a viaggio (5 km, 12 km, 20 km...) e la formula resta valida per ognuno di questi valori.",
+        "check": {
+          "q": "Quando una lettera è usata come \"variabile\"?",
+          "options": [
+            "Quando rappresenta un unico numero fisso da scoprire",
+            "Quando descrive una regola valida per valori diversi, non un unico numero da trovare",
+            "Quando è sempre uguale a zero",
+            "Quando si trova alla fine della frase"
+          ],
+          "correct": 1
+        }
+      },
+      {
+        "title": "Incognita",
+        "type": "microlesson",
+        "concept": "incognita",
+        "situation": "In un’equazione come x + 3 = 7, invece, la lettera non può assumere tanti valori diversi: c’è un solo numero che rende vera l’uguaglianza.",
+        "explain": "Quando una lettera rappresenta un unico numero preciso da trovare per rendere vera un’uguaglianza, si chiama incognita (non più genericamente \"variabile\"). x + 3 = 7 è vera solo se x vale esattamente 4: qui x è un’incognita.",
+        "example": "Variabile: \"y = 2 × numero di biglietti\" (y cambia a seconda di quanti biglietti compri: è una regola generale). Incognita: \"2 × biglietti = 18\" (c’è un solo numero di biglietti che rende vera l’uguaglianza: è un’incognita da trovare).",
+        "check": {
+          "q": "Qual è la differenza principale tra variabile e incognita?",
+          "options": [
+            "Nessuna, sono sempre sinonimi",
+            "La variabile descrive una regola per valori diversi; l’incognita è il numero preciso che rende vera una particolare uguaglianza",
+            "La variabile si usa solo in geometria",
+            "L’incognita è sempre negativa"
+          ],
+          "correct": 1
+        }
+      },
+      {
+        "title": "Termine",
+        "type": "microlesson",
+        "concept": "termine",
+        "situation": "Guarda l’espressione 3x + 5 − 2x: sembra complicata, ma è fatta di pezzi più piccoli, uniti dai simboli + e −.",
+        "explain": "Un termine è ciascuno dei \"pezzi\" di un’espressione, separati da + o −. In 3x + 5 − 2x ci sono tre termini: 3x, +5, −2x. Ogni termine ha il proprio segno, anche quando non è scritto esplicitamente (il primo termine, se non ha segno davanti, è considerato positivo).",
+        "example": "Nell’equazione 2x − 7 = x + 4, i termini sono: 2x e −7 (primo membro), x e +4 (secondo membro): quattro termini in totale.",
+        "check": {
+          "q": "Quanti termini ci sono in 5x − 3 + 2x?",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "correct": 2
+        }
+      },
+      {
+        "title": "Coefficiente",
+        "type": "microlesson",
+        "concept": "coefficiente",
+        "situation": "Nel termine 5x, il numero 5 e la lettera x fanno parte dello stesso \"pezzo\", ma hanno ruoli diversi.",
+        "explain": "Il coefficiente è il numero scritto davanti alla lettera in un termine: dice per quante volte va contata quella lettera. In 5x il coefficiente è 5. Se scrivo solo x, il coefficiente è 1 (sottinteso); se scrivo −x, il coefficiente è −1.",
+        "example": "Nel termine −3x, il coefficiente è −3. Nel termine x, il coefficiente è 1. Nel termine 7 (senza lettera), non c’è un coefficiente: è un termine numerico puro.",
+        "check": {
+          "q": "Qual è il coefficiente di x nel termine −x?",
+          "options": [
+            "0",
+            "1",
+            "−1",
+            "Non esiste"
+          ],
+          "correct": 2
+        }
+      },
+      {
+        "title": "Primo membro",
+        "type": "microlesson",
+        "concept": "primo_membro",
+        "situation": "Un’equazione è divisa in due parti dal simbolo =, un po’ come una bilancia con due piatti.",
+        "explain": "Tutto ciò che si trova a SINISTRA del simbolo = si chiama primo membro (o membro sinistro).",
+        "example": "In 2x + 3 = 11, il primo membro è \"2x + 3\".",
+        "check": {
+          "q": "Qual è il primo membro di 4x − 1 = 15?",
+          "options": [
+            "4x − 1",
+            "15",
+            "=",
+            "4x − 1 = 15"
+          ],
+          "correct": 0
+        }
+      },
+      {
+        "title": "Secondo membro",
+        "type": "microlesson",
+        "concept": "secondo_membro",
+        "situation": "…e tutto ciò che si trova a DESTRA del simbolo = ha un nome altrettanto preciso.",
+        "explain": "Tutto ciò che si trova a DESTRA del simbolo = si chiama secondo membro (o membro destro). Un’equazione è un’uguaglianza tra il valore del primo membro e il valore del secondo membro.",
+        "example": "In 2x + 3 = 11, il secondo membro è \"11\". In 2x + 3 = x + 8, il secondo membro è \"x + 8\": anche il secondo membro può contenere l’incognita.",
+        "check": {
+          "q": "Qual è il secondo membro di 3x = x + 10?",
+          "options": [
+            "3x",
+            "x",
+            "x + 10",
+            "10"
+          ],
+          "correct": 2
+        }
+      },
+      {
+        "title": "Operazioni inverse",
+        "type": "microlesson",
+        "concept": "operazioni_inverse",
+        "situation": "Per scoprire quanto vale x in x + 3 = 7, dobbiamo \"liberarla\" dal +3 che le sta accanto. Come si annulla un +3?",
+        "explain": "Ogni operazione ha un’operazione inversa che la annulla: l’inversa di +3 è −3; l’inversa di −5 è +5; l’inversa di ×4 è ÷4; l’inversa di ÷2 è ×2. Per isolare l’incognita, si applica l’operazione inversa di ciò che le sta accanto.",
+        "example": "In x + 3 = 7, per eliminare il \"+3\" accanto alla x applico l’operazione inversa: sottraggo 3. Nella prossima scheda vedrai perché questo va fatto su ENTRAMBI i membri, non solo su uno.",
+        "check": {
+          "q": "Qual è l’operazione inversa di \"×5\"?",
+          "options": [
+            "+5",
+            "−5",
+            "×5",
+            "÷5"
+          ],
+          "correct": 3
+        }
+      },
+      {
+        "title": "Il principio di equivalenza",
+        "type": "microlesson",
+        "concept": "principio_equivalenza",
+        "situation": "Immagina una vera bilancia in equilibrio, con dei pesi su entrambi i piatti. Se aggiungi 2 kg SOLO a sinistra, cosa succede?",
+        "explain": "Un’equazione è come una bilancia in equilibrio: i due membri hanno lo stesso valore. Se applichi un’operazione a un SOLO membro, l’equilibrio si rompe e l’equazione non è più vera. Se applichi la STESSA operazione a ENTRAMBI i membri, l’equilibrio resta: ottieni un’equazione equivalente, con la stessa soluzione.",
+        "example": "x + 3 = 7. Sottraggo 3 da ENTRAMBI i membri: x + 3 − 3 = 7 − 3, cioè x = 4. È lo stesso identico principio della bilancia: quello che fai a sinistra, lo devi fare anche a destra.",
+        "check": {
+          "q": "Perché x + 3 = 7 diventa x = 4 quando sottraggo 3?",
+          "options": [
+            "Perché il 3 \"cambia magicamente segno\" quando attraversa l’uguale",
+            "Perché ho sottratto 3 da ENTRAMBI i membri, e questo mantiene l’uguaglianza vera",
+            "Perché x deve sempre essere positiva",
+            "Perché 7 − 3 fa sempre 4"
+          ],
+          "correct": 1
+        }
+      },
+      {
         "title": "Cos'è un'equazione",
         "body": "Un'equazione è un'uguaglianza tra due espressioni che contiene un'incognita (di solito x). Risolverla significa trovare il valore di x che rende vera l'uguaglianza.\n\nEsempio: x + 3 = 7  →  x = 4"
       },
       {
         "title": "I principi di equivalenza",
-        "body": "Un'equazione resta vera (equivalente) se:\n\n1° principio: si somma o sottrae lo stesso numero a entrambi i membri.\n\n2° principio: si moltiplica o divide entrambi i membri per uno stesso numero diverso da zero."
+        "body": "Ora formalizziamo quello che hai appena visto con la bilancia. Un'equazione resta vera (equivalente) se:\n\n1° principio: si somma o sottrae lo stesso numero a entrambi i membri.\n\n2° principio: si moltiplica o divide entrambi i membri per uno stesso numero diverso da zero."
       },
       {
-        "title": "Come si risolve",
-        "body": "Si portano tutti i termini con la x da un lato e i numeri dall'altro, cambiando di segno ogni termine che \"cambia lato\".\n\nEsempio: 2x + 3 = 11 → 2x = 11 − 3 → 2x = 8 → x = 4"
+        "title": "Perché \"cambi membro, cambi segno\"",
+        "body": "Il principio di equivalenza dice: applica la STESSA operazione a entrambi i membri.\n\nEsempio: 2x + 3 = 11. Il termine “+3” è accanto alla x: applico l'operazione inversa, cioè sottraggo 3 da ENTRAMBI i membri:\n2x + 3 − 3 = 11 − 3\n2x = 8\n\nGuarda cosa è successo: il “+3” a sinistra è sparito, e a destra è comparso un “−3”. Da qui nasce la scorciatoia che userai spesso: “quando un termine passa all'altro membro, cambia segno”. Non è una regola magica: è solo il risultato visibile di aver sottratto lo stesso numero da entrambi i membri e aver semplificato. Ora che sai PERCHÉ funziona, puoi usarla per andare più veloce."
       },
       {
         "title": "La verifica",
@@ -1496,180 +1658,1570 @@ const MODULES = [
         {
           "q": "x + 7 = 12",
           "answer": "5",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_addizione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 1,
+            "b": 7,
+            "c": 0,
+            "d": 12
+          },
+          "workedSolution": [
+            "Applico −7 a entrambi i membri: x = 5",
+            "x = 5"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "5x = 55",
           "answer": "11",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_moltiplicazione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 5,
+            "b": 0,
+            "c": 0,
+            "d": 55
+          },
+          "workedSolution": [
+            "Divido entrambi i membri per 5: x = 11",
+            "x = 11"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "x − 1 = 6",
           "answer": "7",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_sottrazione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 1,
+            "b": -1,
+            "c": 0,
+            "d": 6
+          },
+          "workedSolution": [
+            "Applico +1 a entrambi i membri: x = 7",
+            "x = 7"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "2x = -18",
           "answer": "-9",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_moltiplicazione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 2,
+            "b": 0,
+            "c": 0,
+            "d": -18
+          },
+          "workedSolution": [
+            "Divido entrambi i membri per 2: x = -9",
+            "x = -9"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "x − 8 = -11",
           "answer": "-3",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_sottrazione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 1,
+            "b": -8,
+            "c": 0,
+            "d": -11
+          },
+          "workedSolution": [
+            "Applico +8 a entrambi i membri: x = -3",
+            "x = -3"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "7x = 28",
           "answer": "4",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_moltiplicazione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 7,
+            "b": 0,
+            "c": 0,
+            "d": 28
+          },
+          "workedSolution": [
+            "Divido entrambi i membri per 7: x = 4",
+            "x = 4"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "x − 3 = -8",
           "answer": "-5",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_sottrazione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 1,
+            "b": -3,
+            "c": 0,
+            "d": -8
+          },
+          "workedSolution": [
+            "Applico +3 a entrambi i membri: x = -5",
+            "x = -5"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "9x = 54",
           "answer": "6",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_moltiplicazione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 9,
+            "b": 0,
+            "c": 0,
+            "d": 54
+          },
+          "workedSolution": [
+            "Divido entrambi i membri per 9: x = 6",
+            "x = 6"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "Un padre ha 40 anni, suo figlio 14. Tra quanti anni l'età del padre sarà il doppio di quella del figlio?",
           "answer": "12",
           "unit": "anni",
           "hint": "Scrivi l'equazione 40+x = 2×(14+x) e risolvila.",
-          "logic": true
-        },
-        {
-          "q": "Alberto ha una caramella in più di Marco, che ne ha due in più di Luca. In totale hanno 59 caramelle. Quante ne ha Luca?",
-          "answer": "18",
-          "hint": "Chiama L le caramelle di Luca: Marco ne ha L+2, Alberto L+3. Scrivi l'equazione della somma totale.",
-          "logic": true
+          "logic": true,
+          "skill": "equazioni.problema_testuale",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "model": {
+            "a": 1,
+            "b": 40,
+            "c": 2,
+            "d": 28
+          },
+          "workedSolution": [
+            "Applico −2x a entrambi i membri: −x + 40 = 28",
+            "Applico −40 a entrambi i membri: −x = -12",
+            "Divido entrambi i membri per -1: x = 12",
+            "x = 12"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "Il triplo di un numero, diminuito di 4, fa 11. Qual è il numero?",
           "answer": "5",
-          "hint": "Scrivi l'equazione 3x − 4 = 11 e risolvila."
+          "hint": "Scrivi l'equazione 3x − 4 = 11 e risolvila.",
+          "skill": "equazioni.problema_testuale",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "model": {
+            "a": 3,
+            "b": -4,
+            "c": 0,
+            "d": 11
+          },
+          "workedSolution": [
+            "Applico +4 a entrambi i membri: 3x = 15",
+            "Divido entrambi i membri per 3: x = 5",
+            "x = 5"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "x + 9 = 7",
           "answer": "-2",
-          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa."
+          "hint": "Isola la x applicando ad entrambi i membri la stessa operazione inversa.",
+          "skill": "equazioni.isola_x_addizione",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "model": {
+            "a": 1,
+            "b": 9,
+            "c": 0,
+            "d": 7
+          },
+          "workedSolution": [
+            "Applico −9 a entrambi i membri: x = -2",
+            "x = -2"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
+        },
+        {
+          "q": "Risolvi con la bilancia: x + 4 = 9",
+          "format": "balance",
+          "skill": "equazioni.bilancia",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hint": "Applica sempre la stessa operazione a entrambi i piatti della bilancia.",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "answer": "5",
+          "model": {
+            "a": 1,
+            "b": 4,
+            "c": 0,
+            "d": 9
+          },
+          "workedSolution": [
+            "Applico −4 a entrambi i membri: x = 5",
+            "x = 5"
+          ]
+        },
+        {
+          "q": "Risolvi con la bilancia: 6x = 42",
+          "format": "balance",
+          "skill": "equazioni.bilancia",
+          "level6": 1,
+          "cognitiveType": "apply",
+          "hint": "Applica sempre la stessa operazione a entrambi i piatti della bilancia.",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "answer": "7",
+          "model": {
+            "a": 6,
+            "b": 0,
+            "c": 0,
+            "d": 42
+          },
+          "workedSolution": [
+            "Divido entrambi i membri per 6: x = 7",
+            "x = 7"
+          ]
+        },
+        {
+          "q": "Riordina i passaggi per risolvere 4x − 3 = 9",
+          "format": "order",
+          "answer": "3",
+          "skill": "equazioni.riordina_passaggi",
+          "level6": 2,
+          "cognitiveType": "apply",
+          "hint": "Prima isola il termine con la x, poi trova il valore di x.",
+          "hintSteps": [
+            "Prima isola il termine con la x, poi trova il coefficiente.",
+            "Sposta prima il numero senza x nell’altro membro (operazione inversa su entrambi i membri), poi dividi per il coefficiente rimasto."
+          ],
+          "orderData": {
+            "steps": [
+              {
+                "id": "s1",
+                "text": "4x − 3 = 9"
+              },
+              {
+                "id": "s2",
+                "text": "4x = 9 + 3"
+              },
+              {
+                "id": "s3",
+                "text": "4x = 12"
+              },
+              {
+                "id": "s4",
+                "text": "x = 3"
+              }
+            ],
+            "correctOrder": [
+              "s1",
+              "s2",
+              "s3",
+              "s4"
+            ]
+          }
+        },
+        {
+          "q": "Raggruppa i termini simili di: 5x + 3 − 2x + 7",
+          "format": "group",
+          "skill": "equazioni.raggruppa_termini",
+          "level6": 1,
+          "cognitiveType": "recognize",
+          "hint": "Separa i termini che contengono la x da quelli che sono solo numeri.",
+          "hintSteps": [
+            "Guarda ogni termine uno alla volta: contiene una x oppure no?",
+            "I termini con la x vanno insieme, i termini numerici vanno insieme: il segno di ogni termine resta suo."
+          ],
+          "groupData": {
+            "buckets": [
+              {
+                "key": "x",
+                "label": "Termini con la x"
+              },
+              {
+                "key": "num",
+                "label": "Termini numerici"
+              }
+            ],
+            "terms": [
+              {
+                "id": "t1",
+                "label": "5x",
+                "group": "x"
+              },
+              {
+                "id": "t2",
+                "label": "+3",
+                "group": "num"
+              },
+              {
+                "id": "t3",
+                "label": "−2x",
+                "group": "x"
+              },
+              {
+                "id": "t4",
+                "label": "+7",
+                "group": "num"
+              }
+            ]
+          }
+        },
+        {
+          "q": "Raggruppa i termini simili di: 4x − 6 − x + 2",
+          "format": "group",
+          "skill": "equazioni.raggruppa_termini",
+          "level6": 1,
+          "cognitiveType": "recognize",
+          "hint": "Separa i termini che contengono la x da quelli che sono solo numeri.",
+          "hintSteps": [
+            "Guarda ogni termine uno alla volta: contiene una x oppure no?",
+            "I termini con la x vanno insieme, i termini numerici vanno insieme: il segno di ogni termine resta suo."
+          ],
+          "groupData": {
+            "buckets": [
+              {
+                "key": "x",
+                "label": "Termini con la x"
+              },
+              {
+                "key": "num",
+                "label": "Termini numerici"
+              }
+            ],
+            "terms": [
+              {
+                "id": "t1",
+                "label": "4x",
+                "group": "x"
+              },
+              {
+                "id": "t2",
+                "label": "−6",
+                "group": "num"
+              },
+              {
+                "id": "t3",
+                "label": "−x",
+                "group": "x"
+              },
+              {
+                "id": "t4",
+                "label": "+2",
+                "group": "num"
+              }
+            ]
+          }
+        },
+        {
+          "q": "Il triplo di un numero aumentato di 2 è uguale a 17.",
+          "format": "build",
+          "answer": "5",
+          "skill": "equazioni.costruisci_equazione",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hint": "Traduci un pezzo alla volta: \"il triplo di un numero\" è 3x, \"diminuito di 4\" è −4, \"è uguale a\" è =.",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "buildData": {
+            "sentence": "Il triplo di un numero aumentato di 2 è uguale a 17.",
+            "blocks": [
+              {
+                "id": "3x",
+                "label": "3x"
+              },
+              {
+                "id": "+2",
+                "label": "+2"
+              },
+              {
+                "id": "=",
+                "label": "="
+              },
+              {
+                "id": "17",
+                "label": "17"
+              },
+              {
+                "id": "d1",
+                "label": "−2"
+              },
+              {
+                "id": "d2",
+                "label": "15"
+              }
+            ],
+            "correctSequence": [
+              "3x",
+              "+2",
+              "=",
+              "17"
+            ]
+          }
+        },
+        {
+          "q": "Un numero diminuito di 5 è uguale a 12.",
+          "format": "build",
+          "answer": "17",
+          "skill": "equazioni.costruisci_equazione",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hint": "Traduci un pezzo alla volta: \"il triplo di un numero\" è 3x, \"diminuito di 4\" è −4, \"è uguale a\" è =.",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "buildData": {
+            "sentence": "Un numero diminuito di 5 è uguale a 12.",
+            "blocks": [
+              {
+                "id": "x",
+                "label": "x"
+              },
+              {
+                "id": "-5",
+                "label": "−5"
+              },
+              {
+                "id": "=",
+                "label": "="
+              },
+              {
+                "id": "12",
+                "label": "12"
+              },
+              {
+                "id": "d1",
+                "label": "+5"
+              },
+              {
+                "id": "d2",
+                "label": "5x"
+              }
+            ],
+            "correctSequence": [
+              "x",
+              "-5",
+              "=",
+              "12"
+            ]
+          }
         }
       ],
       "medio": [
         {
+          "q": "Alberto ha una caramella in più di Marco, che ne ha due in più di Luca. In totale hanno 59 caramelle. Quante ne ha Luca?",
+          "answer": "18",
+          "hint": "Chiama L le caramelle di Luca: Marco ne ha L+2, Alberto L+3. Scrivi l'equazione della somma totale.",
+          "logic": true,
+          "skill": "equazioni.problema_logico",
+          "level6": 5,
+          "cognitiveType": "reason",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "model": {
+            "a": 3,
+            "b": 5,
+            "c": 0,
+            "d": 59
+          },
+          "workedSolution": [
+            "Applico −5 a entrambi i membri: 3x = 54",
+            "Divido entrambi i membri per 3: x = 18",
+            "x = 18"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
+        },
+        {
           "q": "7(x + 5) = -35",
           "answer": "-10",
-          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti.",
+          "skill": "equazioni.parentesi",
+          "level6": 4,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 7,
+            "b": 35,
+            "c": 0,
+            "d": -35
+          },
+          "workedSolution": [
+            "Applico −35 a entrambi i membri: 7x = -70",
+            "Divido entrambi i membri per 7: x = -10",
+            "x = -10"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "2x − 5 = 4x − 9",
           "answer": "2",
-          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti.",
+          "skill": "equazioni.x_ambo_membri",
+          "level6": 3,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Il primo obiettivo è avere la x da un lato solo.",
+            "Sottrai da entrambi i membri il termine con la x più piccolo (ad es. se hai 2x a destra, sottrai 2x da entrambi i membri): sparirà da un lato e si sottrarrà dall’altro."
+          ],
+          "model": {
+            "a": 2,
+            "b": -5,
+            "c": 4,
+            "d": -9
+          },
+          "workedSolution": [
+            "Applico −4x a entrambi i membri: -2x − 5 = -9",
+            "Applico +5 a entrambi i membri: -2x = -4",
+            "Divido entrambi i membri per -2: x = 2",
+            "x = 2"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "7x − 6 = 57",
           "answer": "9",
-          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti.",
+          "skill": "equazioni.due_passaggi",
+          "level6": 2,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Prima isola il termine con la x, poi trova il coefficiente.",
+            "Sposta prima il numero senza x nell’altro membro (operazione inversa su entrambi i membri), poi dividi per il coefficiente rimasto."
+          ],
+          "model": {
+            "a": 7,
+            "b": -6,
+            "c": 0,
+            "d": 57
+          },
+          "workedSolution": [
+            "Applico +6 a entrambi i membri: 7x = 63",
+            "Divido entrambi i membri per 7: x = 9",
+            "x = 9"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "4x + 6 = 46",
           "answer": "10",
-          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti.",
+          "skill": "equazioni.due_passaggi",
+          "level6": 2,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Prima isola il termine con la x, poi trova il coefficiente.",
+            "Sposta prima il numero senza x nell’altro membro (operazione inversa su entrambi i membri), poi dividi per il coefficiente rimasto."
+          ],
+          "model": {
+            "a": 4,
+            "b": 6,
+            "c": 0,
+            "d": 46
+          },
+          "workedSolution": [
+            "Applico −6 a entrambi i membri: 4x = 40",
+            "Divido entrambi i membri per 4: x = 10",
+            "x = 10"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "4(x + 2) = 4",
           "answer": "-1",
-          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti.",
+          "skill": "equazioni.parentesi",
+          "level6": 4,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 4,
+            "b": 8,
+            "c": 0,
+            "d": 4
+          },
+          "workedSolution": [
+            "Applico −8 a entrambi i membri: 4x = -4",
+            "Divido entrambi i membri per 4: x = -1",
+            "x = -1"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "8x + 8 = 88",
           "answer": "10",
-          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti.",
+          "skill": "equazioni.due_passaggi",
+          "level6": 2,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Prima isola il termine con la x, poi trova il coefficiente.",
+            "Sposta prima il numero senza x nell’altro membro (operazione inversa su entrambi i membri), poi dividi per il coefficiente rimasto."
+          ],
+          "model": {
+            "a": 8,
+            "b": 8,
+            "c": 0,
+            "d": 88
+          },
+          "workedSolution": [
+            "Applico −8 a entrambi i membri: 8x = 80",
+            "Divido entrambi i membri per 8: x = 10",
+            "x = 10"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "4x − 2 = 22",
           "answer": "6",
-          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti.",
+          "skill": "equazioni.due_passaggi",
+          "level6": 2,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Prima isola il termine con la x, poi trova il coefficiente.",
+            "Sposta prima il numero senza x nell’altro membro (operazione inversa su entrambi i membri), poi dividi per il coefficiente rimasto."
+          ],
+          "model": {
+            "a": 4,
+            "b": -2,
+            "c": 0,
+            "d": 22
+          },
+          "workedSolution": [
+            "Applico +2 a entrambi i membri: 4x = 24",
+            "Divido entrambi i membri per 4: x = 6",
+            "x = 6"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "3x − 2 = 5x + 8",
           "answer": "-5",
-          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti."
+          "hint": "Porta tutti i termini con la x da un lato e i numeri dall'altro, cambiando segno quando li sposti.",
+          "skill": "equazioni.x_ambo_membri",
+          "level6": 3,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Il primo obiettivo è avere la x da un lato solo.",
+            "Sottrai da entrambi i membri il termine con la x più piccolo (ad es. se hai 2x a destra, sottrai 2x da entrambi i membri): sparirà da un lato e si sottrarrà dall’altro."
+          ],
+          "model": {
+            "a": 3,
+            "b": -2,
+            "c": 5,
+            "d": 8
+          },
+          "workedSolution": [
+            "Applico −5x a entrambi i membri: -2x − 2 = 8",
+            "Applico +2 a entrambi i membri: -2x = 10",
+            "Divido entrambi i membri per -2: x = -5",
+            "x = -5"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "Un tour operator applica una tariffa di 50€ fissi più 8€ per ogni giorno di soggiorno. Un altro applica 30€ fissi più 12€ al giorno. Da quanti giorni di soggiorno i due tour operator costano esattamente uguale?",
           "answer": "5",
           "unit": "giorni",
           "hint": "Scrivi l'equazione 50+8x = 30+12x e risolvila.",
-          "logic": true
+          "logic": true,
+          "skill": "equazioni.problema_testuale",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "model": {
+            "a": 8,
+            "b": 50,
+            "c": 12,
+            "d": 30
+          },
+          "workedSolution": [
+            "Applico −12x a entrambi i membri: -4x + 50 = 30",
+            "Applico −50 a entrambi i membri: -4x = -20",
+            "Divido entrambi i membri per -4: x = 5",
+            "x = 5"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "Alberto ha una caramella in più di Marco, che ne ha due in più di Luca. In totale hanno 59 caramelle. Quante ne ha Alberto?",
           "answer": "21",
           "hint": "Chiama L le caramelle di Luca: Marco=L+2, Alberto=L+3. Risolvi 3L+5=59, poi calcola le caramelle di Alberto.",
-          "logic": true
+          "logic": true,
+          "skill": "equazioni.problema_logico",
+          "level6": 5,
+          "cognitiveType": "reason",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ]
         },
         {
           "q": "Matteo è nato nel 2000. Nel 2014 aveva 14 anni e la somma delle cifre di quell'anno (2+0+1+4=7) era esattamente la metà della sua età. In quale altro anno la somma delle cifre dell'anno sarà un terzo della sua età?",
           "answer": "2024",
           "hint": "L'età di Matteo nell'anno Y è (Y−2000). Cerca Y tale che la somma delle sue cifre sia (Y−2000):3: prova per tentativi vicino al 2020.",
-          "logic": true
+          "logic": true,
+          "skill": "equazioni.problema_logico",
+          "level6": null,
+          "cognitiveType": "reason",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ]
         },
         {
           "q": "5(x−3) = 2x + 6",
           "answer": "7",
-          "hint": "Distribuisci il 5, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il 5, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi",
+          "level6": 4,
+          "cognitiveType": "apply",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 5,
+            "b": -15,
+            "c": 2,
+            "d": 6
+          },
+          "workedSolution": [
+            "Applico −2x a entrambi i membri: 3x − 15 = 6",
+            "Applico +15 a entrambi i membri: 3x = 21",
+            "Divido entrambi i membri per 3: x = 7",
+            "x = 7"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
+        },
+        {
+          "q": "Risolvi con la bilancia: 3x + 2 = x + 10",
+          "format": "balance",
+          "skill": "equazioni.bilancia",
+          "level6": 3,
+          "cognitiveType": "integrate",
+          "hint": "Applica sempre la stessa operazione a entrambi i piatti della bilancia.",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "answer": "4",
+          "model": {
+            "a": 3,
+            "b": 2,
+            "c": 1,
+            "d": 10
+          },
+          "workedSolution": [
+            "Applico −1x a entrambi i membri: 2x + 2 = 10",
+            "Applico −2 a entrambi i membri: 2x = 8",
+            "Divido entrambi i membri per 2: x = 4",
+            "x = 4"
+          ]
+        },
+        {
+          "q": "Risolvi con la bilancia: 5x − 3 = 2x + 9",
+          "format": "balance",
+          "skill": "equazioni.bilancia",
+          "level6": 3,
+          "cognitiveType": "integrate",
+          "hint": "Applica sempre la stessa operazione a entrambi i piatti della bilancia.",
+          "hintSteps": [
+            "Isola la x applicando ad entrambi i membri l’operazione inversa di quella scritta accanto alla x.",
+            "Se vedi +b accanto alla x, sottrai b da entrambi i membri; se vedi ×a, dividi entrambi i membri per a."
+          ],
+          "answer": "4",
+          "model": {
+            "a": 5,
+            "b": -3,
+            "c": 2,
+            "d": 9
+          },
+          "workedSolution": [
+            "Applico −2x a entrambi i membri: 3x − 3 = 9",
+            "Applico +3 a entrambi i membri: 3x = 12",
+            "Divido entrambi i membri per 3: x = 4",
+            "x = 4"
+          ]
+        },
+        {
+          "q": "Riordina i passaggi per risolvere 5x − 4 = 2x + 11",
+          "format": "order",
+          "answer": "5",
+          "skill": "equazioni.riordina_passaggi",
+          "level6": 3,
+          "cognitiveType": "integrate",
+          "hint": "Il primo passaggio deve avvicinare tutte le x da un lato solo.",
+          "hintSteps": [
+            "Il primo obiettivo è avere la x da un lato solo.",
+            "Sottrai da entrambi i membri il termine con la x più piccolo (ad es. se hai 2x a destra, sottrai 2x da entrambi i membri): sparirà da un lato e si sottrarrà dall’altro."
+          ],
+          "orderData": {
+            "steps": [
+              {
+                "id": "s1",
+                "text": "5x − 4 = 2x + 11"
+              },
+              {
+                "id": "s2",
+                "text": "5x − 2x = 11 + 4"
+              },
+              {
+                "id": "s3",
+                "text": "3x = 15"
+              },
+              {
+                "id": "s4",
+                "text": "x = 5"
+              }
+            ],
+            "correctOrder": [
+              "s1",
+              "s2",
+              "s3",
+              "s4"
+            ]
+          }
+        },
+        {
+          "q": "Raggruppa i termini simili di: 6x + 5 − 2x − 9 + x",
+          "format": "group",
+          "skill": "equazioni.raggruppa_termini",
+          "level6": 2,
+          "cognitiveType": "recognize",
+          "hint": "Separa i termini che contengono la x da quelli che sono solo numeri.",
+          "hintSteps": [
+            "Guarda ogni termine uno alla volta: contiene una x oppure no?",
+            "I termini con la x vanno insieme, i termini numerici vanno insieme: il segno di ogni termine resta suo."
+          ],
+          "groupData": {
+            "buckets": [
+              {
+                "key": "x",
+                "label": "Termini con la x"
+              },
+              {
+                "key": "num",
+                "label": "Termini numerici"
+              }
+            ],
+            "terms": [
+              {
+                "id": "t1",
+                "label": "6x",
+                "group": "x"
+              },
+              {
+                "id": "t2",
+                "label": "+5",
+                "group": "num"
+              },
+              {
+                "id": "t3",
+                "label": "−2x",
+                "group": "x"
+              },
+              {
+                "id": "t4",
+                "label": "−9",
+                "group": "num"
+              },
+              {
+                "id": "t5",
+                "label": "+x",
+                "group": "x"
+              }
+            ]
+          }
+        },
+        {
+          "q": "Il doppio di un numero, diminuito di 7, è uguale al numero aumentato di 3.",
+          "format": "build",
+          "answer": "10",
+          "skill": "equazioni.costruisci_equazione",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hint": "Traduci un pezzo alla volta: \"il triplo di un numero\" è 3x, \"diminuito di 4\" è −4, \"è uguale a\" è =.",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "buildData": {
+            "sentence": "Il doppio di un numero, diminuito di 7, è uguale al numero aumentato di 3.",
+            "blocks": [
+              {
+                "id": "2x",
+                "label": "2x"
+              },
+              {
+                "id": "-7",
+                "label": "−7"
+              },
+              {
+                "id": "=",
+                "label": "="
+              },
+              {
+                "id": "x",
+                "label": "x"
+              },
+              {
+                "id": "+3",
+                "label": "+3"
+              },
+              {
+                "id": "d1",
+                "label": "+7"
+              },
+              {
+                "id": "d2",
+                "label": "3x"
+              }
+            ],
+            "correctSequence": [
+              "2x",
+              "-7",
+              "=",
+              "x",
+              "+3"
+            ]
+          }
         }
       ],
       "difficile": [
         {
           "q": "5(x − 2) − 4 = 2x − 38",
           "answer": "-8",
-          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi_ambo_membri",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 5,
+            "b": -14,
+            "c": 2,
+            "d": -38
+          },
+          "workedSolution": [
+            "Applico −2x a entrambi i membri: 3x − 14 = -38",
+            "Applico +14 a entrambi i membri: 3x = -24",
+            "Divido entrambi i membri per 3: x = -8",
+            "x = -8"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "3(x − 1) + 4 = 4x + 9",
           "answer": "-8",
-          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi_ambo_membri",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 3,
+            "b": 1,
+            "c": 4,
+            "d": 9
+          },
+          "workedSolution": [
+            "Applico −4x a entrambi i membri: −x + 1 = 9",
+            "Applico −1 a entrambi i membri: −x = 8",
+            "Divido entrambi i membri per -1: x = -8",
+            "x = -8"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "5(x + 2) − 7 = 2x − 6",
           "answer": "-3",
-          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi_ambo_membri",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 5,
+            "b": 3,
+            "c": 2,
+            "d": -6
+          },
+          "workedSolution": [
+            "Applico −2x a entrambi i membri: 3x + 3 = -6",
+            "Applico −3 a entrambi i membri: 3x = -9",
+            "Divido entrambi i membri per 3: x = -3",
+            "x = -3"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "2(x − 1) + 6 = 5x − 14",
           "answer": "6",
-          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi_ambo_membri",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 2,
+            "b": 4,
+            "c": 5,
+            "d": -14
+          },
+          "workedSolution": [
+            "Applico −5x a entrambi i membri: -3x + 4 = -14",
+            "Applico −4 a entrambi i membri: -3x = -18",
+            "Divido entrambi i membri per -3: x = 6",
+            "x = 6"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "4(x + 6) − 4 = 3x + 21",
           "answer": "1",
-          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi_ambo_membri",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 4,
+            "b": 20,
+            "c": 3,
+            "d": 21
+          },
+          "workedSolution": [
+            "Applico −3x a entrambi i membri: x + 20 = 21",
+            "Applico −20 a entrambi i membri: x = 1",
+            "x = 1"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "5(x − 5) + 1 = 3x − 18",
           "answer": "3",
-          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi_ambo_membri",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 5,
+            "b": -24,
+            "c": 3,
+            "d": -18
+          },
+          "workedSolution": [
+            "Applico −3x a entrambi i membri: 2x − 24 = -18",
+            "Applico +24 a entrambi i membri: 2x = 6",
+            "Divido entrambi i membri per 2: x = 3",
+            "x = 3"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "(x − 5) + 10 = 3x + 15",
           "answer": "-5",
-          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi_ambo_membri",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 1,
+            "b": 5,
+            "c": 3,
+            "d": 15
+          },
+          "workedSolution": [
+            "Applico −3x a entrambi i membri: -2x + 5 = 15",
+            "Applico −5 a entrambi i membri: -2x = 10",
+            "Divido entrambi i membri per -2: x = -5",
+            "x = -5"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "3(x + 1) + 2 = 5x + 7",
           "answer": "-1",
-          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra."
+          "hint": "Distribuisci il prodotto a sinistra, poi porta le x da una parte e i numeri dall'altra.",
+          "skill": "equazioni.parentesi_ambo_membri",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "model": {
+            "a": 3,
+            "b": 5,
+            "c": 5,
+            "d": 7
+          },
+          "workedSolution": [
+            "Applico −5x a entrambi i membri: -2x + 5 = 7",
+            "Applico −5 a entrambi i membri: -2x = 2",
+            "Divido entrambi i membri per -2: x = -1",
+            "x = -1"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "Le età di tre sorelle sono tutte diverse. La media delle tre età è 10 anni. Prendendole a due a due: la media di una coppia è 11 anni e quella di un'altra coppia è 12 anni. Quanti anni ha la sorella maggiore?",
           "answer": "16",
           "unit": "anni",
           "hint": "La somma delle tre età è 30. Le somme delle tre possibili coppie, sommate insieme, danno il doppio della somma totale (60): trova la terza somma di coppia, poi capisci a quale coppia (le due più piccole, o quella con la maggiore) appartiene ciascuna somma.",
-          "logic": true
+          "logic": true,
+          "skill": "equazioni.problema_logico",
+          "level6": null,
+          "cognitiveType": "reason",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ]
         },
         {
           "q": "Con 6 fiammiferi, senza spezzarli, è possibile formare 4 triangoli equilateri identici. Come?",
@@ -1682,17 +3234,321 @@ const MODULES = [
           ],
           "correct": 1,
           "hint": "Pensa in 3 dimensioni, non solo sul piano del tavolo!",
-          "logic": true
+          "logic": true,
+          "skill": "logica.pensiero_laterale",
+          "level6": null,
+          "cognitiveType": "reason"
         },
         {
           "q": "In un'agenzia viaggi, il prezzo di un tour è dato da 3 volte il numero di partecipanti più una quota fissa di 50€. Se il prezzo totale è stato 230€, quanti partecipanti c'erano?",
           "answer": "60",
-          "hint": "Scrivi l'equazione 3x + 50 = 230 e risolvila."
+          "hint": "Scrivi l'equazione 3x + 50 = 230 e risolvila.",
+          "skill": "equazioni.problema_testuale",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "model": {
+            "a": 3,
+            "b": 50,
+            "c": 0,
+            "d": 230
+          },
+          "workedSolution": [
+            "Applico −50 a entrambi i membri: 3x = 180",
+            "Divido entrambi i membri per 3: x = 60",
+            "x = 60"
+          ],
+          "commonErrors": [
+            {
+              "id": "segno",
+              "when": "signFlip",
+              "message": "Hai trovato il numero giusto ma con il segno invertito: ricontrolla l’operazione inversa che hai applicato (l’inversa di +b è −b, non +b)."
+            },
+            {
+              "id": "calcolo",
+              "when": "smallSlip",
+              "message": "Il procedimento sembra impostato bene, ma c’è un piccolo errore di calcolo in uno dei passaggi: ricontrolla le somme e le differenze."
+            }
+          ]
         },
         {
           "q": "La somma di tre numeri interi consecutivi è 72. Qual è il più grande dei tre?",
           "answer": "25",
-          "hint": "Chiama x il numero di mezzo: gli altri due sono x−1 e x+1. Scrivi l'equazione della somma."
+          "hint": "Chiama x il numero di mezzo: gli altri due sono x−1 e x+1. Scrivi l'equazione della somma.",
+          "skill": "equazioni.problema_testuale",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ]
+        },
+        {
+          "q": "2(x + 3) = x + 11",
+          "format": "balance",
+          "skill": "equazioni.bilancia",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hint": "Applica sempre la stessa operazione a entrambi i piatti della bilancia.",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "preStep": "Distribuiamo prima il 2: 2x + 6 = x + 11",
+          "answer": "5",
+          "model": {
+            "a": 2,
+            "b": 6,
+            "c": 1,
+            "d": 11
+          },
+          "workedSolution": [
+            "Applico −1x a entrambi i membri: x + 6 = 11",
+            "Applico −6 a entrambi i membri: x = 5",
+            "x = 5"
+          ]
+        },
+        {
+          "q": "Riordina i passaggi per risolvere 3(x − 2) = x + 4",
+          "format": "order",
+          "answer": "5",
+          "skill": "equazioni.riordina_passaggi",
+          "level6": 4,
+          "cognitiveType": "integrate",
+          "hint": "Il primo passaggio è sempre distribuire il numero davanti alla parentesi.",
+          "hintSteps": [
+            "Prima di tutto, distribuisci il numero davanti alla parentesi su ogni termine dentro.",
+            "Dopo aver distribuito, procedi come per un’equazione con la x da entrambe le parti."
+          ],
+          "orderData": {
+            "steps": [
+              {
+                "id": "s1",
+                "text": "3(x − 2) = x + 4"
+              },
+              {
+                "id": "s2",
+                "text": "3x − 6 = x + 4"
+              },
+              {
+                "id": "s3",
+                "text": "3x − x = 4 + 6"
+              },
+              {
+                "id": "s4",
+                "text": "2x = 10"
+              },
+              {
+                "id": "s5",
+                "text": "x = 5"
+              }
+            ],
+            "correctOrder": [
+              "s1",
+              "s2",
+              "s3",
+              "s4",
+              "s5"
+            ]
+          }
+        },
+        {
+          "q": "In un hotel il numero di camere occupate è il triplo di quelle libere. In totale ci sono 48 camere. Quante sono le camere libere?",
+          "format": "build",
+          "answer": "12",
+          "skill": "equazioni.costruisci_equazione",
+          "level6": 5,
+          "cognitiveType": "integrate",
+          "hint": "Traduci un pezzo alla volta: \"il triplo di un numero\" è 3x, \"diminuito di 4\" è −4, \"è uguale a\" è =.",
+          "hintSteps": [
+            "Rileggi la frase e individua qual è il numero sconosciuto: chiamalo x.",
+            "Traduci ogni pezzo della frase in un’operazione, poi risolvi l’equazione ottenuta come al solito."
+          ],
+          "buildData": {
+            "sentence": "In un hotel il numero di camere occupate è il triplo di quelle libere. In totale ci sono 48 camere. Quante sono le camere libere?",
+            "blocks": [
+              {
+                "id": "3x",
+                "label": "3x"
+              },
+              {
+                "id": "+x",
+                "label": "+x"
+              },
+              {
+                "id": "=",
+                "label": "="
+              },
+              {
+                "id": "48",
+                "label": "48"
+              },
+              {
+                "id": "d1",
+                "label": "−x"
+              },
+              {
+                "id": "d2",
+                "label": "24"
+              }
+            ],
+            "correctSequence": [
+              "3x",
+              "+x",
+              "=",
+              "48"
+            ]
+          }
+        },
+        {
+          "q": "Trova l'errore nella risoluzione di 2x − 5 = 3",
+          "format": "error-detect",
+          "skill": "equazioni.caccia_errore",
+          "level6": 6,
+          "cognitiveType": "diagnose",
+          "hint": "Ricontrolla ogni passaggio confrontandolo con quello precedente: cosa è stato applicato a entrambi i membri?",
+          "hintSteps": [
+            "Confronta due righe consecutive alla volta: cosa è cambiato?",
+            "Chiediti se l’operazione applicata è davvero l’inversa corretta, se è stata applicata a entrambi i membri e se il calcolo è giusto."
+          ],
+          "errorData": {
+            "steps": [
+              {
+                "text": "2x − 5 = 3"
+              },
+              {
+                "text": "2x = 3 − 5"
+              },
+              {
+                "text": "2x = −2"
+              },
+              {
+                "text": "x = −1"
+              }
+            ],
+            "errorIndex": 1,
+            "explanation": "L'operazione inversa di \"−5\" è \"+5\", non \"−5\". Il passaggio corretto è: 2x = 3 + 5 = 8, quindi x = 4."
+          }
+        },
+        {
+          "q": "Trova l'errore nella risoluzione di x + 6 = 14",
+          "format": "error-detect",
+          "skill": "equazioni.caccia_errore",
+          "level6": 6,
+          "cognitiveType": "diagnose",
+          "hint": "Ricontrolla ogni passaggio confrontandolo con quello precedente: cosa è stato applicato a entrambi i membri?",
+          "hintSteps": [
+            "Confronta due righe consecutive alla volta: cosa è cambiato?",
+            "Chiediti se l’operazione applicata è davvero l’inversa corretta, se è stata applicata a entrambi i membri e se il calcolo è giusto."
+          ],
+          "errorData": {
+            "steps": [
+              {
+                "text": "x + 6 = 14"
+              },
+              {
+                "text": "x + 6 − 6 = 14"
+              },
+              {
+                "text": "x = 14"
+              }
+            ],
+            "errorIndex": 1,
+            "explanation": "Il −6 è stato applicato solo al primo membro. Va sottratto da ENTRAMBI: x + 6 − 6 = 14 − 6, quindi x = 8."
+          }
+        },
+        {
+          "q": "Trova l'errore nella risoluzione di 3x + 5 = 20",
+          "format": "error-detect",
+          "skill": "equazioni.caccia_errore",
+          "level6": 6,
+          "cognitiveType": "diagnose",
+          "hint": "Ricontrolla ogni passaggio confrontandolo con quello precedente: cosa è stato applicato a entrambi i membri?",
+          "hintSteps": [
+            "Confronta due righe consecutive alla volta: cosa è cambiato?",
+            "Chiediti se l’operazione applicata è davvero l’inversa corretta, se è stata applicata a entrambi i membri e se il calcolo è giusto."
+          ],
+          "errorData": {
+            "steps": [
+              {
+                "text": "3x + 5 = 20"
+              },
+              {
+                "text": "3x = 20 − 5"
+              },
+              {
+                "text": "3x = 16"
+              },
+              {
+                "text": "x = 16/3"
+              }
+            ],
+            "errorIndex": 2,
+            "explanation": "20 − 5 fa 15, non 16: è un errore di calcolo. Il passaggio corretto è 3x = 15, quindi x = 5."
+          }
+        },
+        {
+          "q": "Trova l'errore nella risoluzione di 5x − 3 = 2x + 9",
+          "format": "error-detect",
+          "skill": "equazioni.caccia_errore",
+          "level6": 6,
+          "cognitiveType": "diagnose",
+          "hint": "Ricontrolla ogni passaggio confrontandolo con quello precedente: cosa è stato applicato a entrambi i membri?",
+          "hintSteps": [
+            "Confronta due righe consecutive alla volta: cosa è cambiato?",
+            "Chiediti se l’operazione applicata è davvero l’inversa corretta, se è stata applicata a entrambi i membri e se il calcolo è giusto."
+          ],
+          "errorData": {
+            "steps": [
+              {
+                "text": "5x − 3 = 2x + 9"
+              },
+              {
+                "text": "5x − 2x = 9 + 3"
+              },
+              {
+                "text": "5x = 12"
+              },
+              {
+                "text": "x = 12/5"
+              }
+            ],
+            "errorIndex": 2,
+            "explanation": "5x − 2x fa 3x, non 5x: il termine con la x non è stato semplificato. Il passaggio corretto è 3x = 12, quindi x = 4."
+          }
+        },
+        {
+          "q": "Trova l'errore nella risoluzione di 6x − 9 = 21",
+          "format": "error-detect",
+          "skill": "equazioni.caccia_errore",
+          "level6": 6,
+          "cognitiveType": "diagnose",
+          "hint": "Ricontrolla ogni passaggio confrontandolo con quello precedente: cosa è stato applicato a entrambi i membri?",
+          "hintSteps": [
+            "Confronta due righe consecutive alla volta: cosa è cambiato?",
+            "Chiediti se l’operazione applicata è davvero l’inversa corretta, se è stata applicata a entrambi i membri e se il calcolo è giusto."
+          ],
+          "errorData": {
+            "steps": [
+              {
+                "text": "6x − 9 = 21"
+              },
+              {
+                "text": "6x = 21 + 7"
+              },
+              {
+                "text": "6x = 28"
+              },
+              {
+                "text": "x = 14/3"
+              }
+            ],
+            "errorIndex": 1,
+            "explanation": "Nell'equazione di partenza il numero è 9, non 7: è stato ricopiato male. Il passaggio corretto è 6x = 21 + 9 = 30, quindi x = 5."
+          }
         }
       ]
     },
