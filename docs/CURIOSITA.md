@@ -47,12 +47,9 @@ Fonti verificate una per una (HTTP reale) prima della pubblicazione: 8/9 raggiun
 
 ## Routine notturna (schedulata, cloud)
 
-**Stato: predisposta ma non ancora attiva.** La creazione tramite `RemoteTrigger` ha richiesto la connessione dell'account GitHub a Claude Code per il repository `ema299/ripasso-matematica` (necessaria perché la routine deve poter fare `git push`); al momento della configurazione non risultava connesso. Per attivarla:
+**Stato: attiva.** Collegamento GitHub completato il 2026-08-11 tramite `/web-setup`. Routine creata via `RemoteTrigger` (id `trig_019RqyfsJH9TTLAqFY5aJnft`, https://claude.ai/code/routines/trig_019RqyfsJH9TTLAqFY5aJnft), prima esecuzione prevista nella notte tra l'11 e il 12 agosto 2026.
 
-1. Collegare GitHub: https://claude.ai/code/onboarding?magic=github-app-setup (installare la Claude GitHub App sul repository), oppure il flusso `/web-setup` del client.
-2. Ricreare la routine con `/schedule` (il prompt completo è già stato scritto e testato nella sessione che ha introdotto questa sezione — basta ripeterlo).
-
-**Comportamento previsto una volta attiva** (cron `0 1 * * *` UTC, cioè le 01:00 UTC = le 03:00 ora italiana estiva):
+**Comportamento** (cron `0 1 * * *` UTC, cioè le 01:00 UTC = le 03:00 ora italiana estiva):
 1. Legge `curiosita-data.js` per evitare duplicati.
 2. Cerca 1 (max 2) fatto/scoperta reale e recente, applicando i criteri di sicurezza sopra.
 3. Se non trova nulla che li soddisfi, **non modifica nulla** (nessun commit quella notte).
