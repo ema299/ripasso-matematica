@@ -15,13 +15,33 @@
 */
 const HELP_MAX_LEVEL = 6;
 
+/* ===== Registro dei generatori di gemelli =====
+   Ogni modulo con un modello simbolico proprio (oggi solo equazioni) può
+   registrare un generatore qui invece di essere hardcoded dentro
+   generateTwin/getHelpContent. Un esercizio si aggancia a un generatore in
+   due modi: esplicitamente via ex.generatorKey, oppure — per compatibilità
+   con gli esercizi di equazioni già esistenti in data.js, che non hanno
+   quel campo — implicitamente se ex.model ha la forma {a,b,c,d} attesa dal
+   generatore 'equazioni'. Nessuna migrazione di data.js richiesta.
+*/
+const TWIN_GENERATORS = {};
+function registerTwinGenerator(key, generator) { TWIN_GENERATORS[key] = generator; }
+function resolveGenerator(ex) {
+  if (ex.generatorKey && TWIN_GENERATORS[ex.generatorKey]) return TWIN_GENERATORS[ex.generatorKey];
+  if (ex.model && TWIN_GENERATORS.equazioni) return TWIN_GENERATORS.equazioni;
+  return null;
+}
+function canGenerateTwin(ex) {
+  return !!resolveGenerator(ex) && typeof Interactions !== 'undefined';
+}
+
 function helpHasLadder(ex) {
   return Array.isArray(ex.hintSteps) && ex.hintSteps.length > 0;
 }
 
 function helpMaxLevelFor(ex) {
   if (!helpHasLadder(ex)) return 1; // comportamento V1: un solo livello (hint singolo)
-  if (ex.model) return HELP_MAX_LEVEL; // ha un modello simbolico: può generare un gemello
+  if (canGenerateTwin(ex)) return HELP_MAX_LEVEL; // ha un generatore: può produrre un gemello
   return Math.min(HELP_MAX_LEVEL, ex.workedSolution ? 5 : 2);
 }
 
@@ -42,12 +62,12 @@ function getHelpContent(ex, level) {
   if (!helpHasLadder(ex)) return { kind: 'hint', text: ex.hint };
   if (level === 1) return { kind: 'hint', text: ex.hintSteps[0] || ex.hint };
   if (level === 2) return { kind: 'hint', text: ex.hintSteps[1] || ex.hintSteps[0] || ex.hint };
-  if (ex.model && typeof Interactions !== 'undefined') {
-    const EM = Interactions.EquationModel;
+  const gen = resolveGenerator(ex);
+  if (gen && typeof Interactions !== 'undefined') {
     if (level === 3) {
-      const move = EM.correctMove(ex.model);
-      return move
-        ? { kind: 'hint', text: `Il prossimo passo: applica "${EM.moveLabel(move)}" a entrambi i membri. Prova a calcolarlo tu prima di guardare il risultato.` }
+      const hint3 = gen.level3Hint ? gen.level3Hint(ex) : null;
+      return hint3
+        ? { kind: 'hint', text: hint3 }
         : { kind: 'hint', text: ex.hintSteps[ex.hintSteps.length - 1] };
     }
     const solution = solutionStepsFor(ex);
@@ -66,7 +86,8 @@ function getHelpContent(ex, level) {
 // §13/F19), la si calcola al volo invece di duplicarla come dato statico.
 function solutionStepsFor(ex) {
   if (ex.workedSolution) return ex.workedSolution;
-  if (ex.model && typeof Interactions !== 'undefined') return Interactions.EquationModel.solutionSteps(ex.model);
+  const gen = resolveGenerator(ex);
+  if (gen && gen.solutionSteps && typeof Interactions !== 'undefined') return gen.solutionSteps(ex);
   return [];
 }
 
@@ -117,31 +138,95 @@ function diagnoseCommonError(ex, userVal, correctVal) {
    (helpMaxLevelFor lo esclude già).
 */
 function generateTwin(ex) {
-  if (!ex.model || typeof Interactions === 'undefined') return null;
-  const EM = Interactions.EquationModel;
-  const pick = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
-  const hasX2 = ex.model.c !== 0;
-  let a, c, x, b, d;
-  do {
-    a = pick(2, 9);
-    c = hasX2 ? pick(2, 9) : 0;
-  } while (a === c);
-  do { x = pick(-10, 10); } while (x === 0); // x=0 rende il gemello poco istruttivo
-  b = pick(-15, 15);
-  d = (a - c) * x + b; // garantisce una soluzione intera
-  const model = { a, b, c, d };
-  return {
-    q: EM.formatEquation(model),
-    answer: String(x),
-    hint: ex.hint,
-    hintSteps: ex.hintSteps,
-    workedSolution: EM.solutionSteps(model),
-    commonErrors: commonErrorsFor(ex),
-    skill: ex.skill,
-    level6: ex.level6,
-    cognitiveType: ex.cognitiveType,
-    model
-  };
+  const gen = resolveGenerator(ex);
+  if (!gen || typeof Interactions === 'undefined') return null;
+  return gen.generate(ex);
+}
+
+// Generatore 'equazioni': l'unico registrato per ora. Si aggancia
+// implicitamente a qualunque ex.model in forma {a,b,c,d} (vedi
+// resolveGenerator), quindi nessun esercizio esistente in data.js ha
+// bisogno di dichiarare generatorKey: 'equazioni' esplicitamente.
+registerTwinGenerator('equazioni', {
+  generate(ex) {
+    const EM = Interactions.EquationModel;
+    const pick = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+    const hasX2 = ex.model.c !== 0;
+    let a, c, x, b, d;
+    do {
+      a = pick(2, 9);
+      c = hasX2 ? pick(2, 9) : 0;
+    } while (a === c);
+    do { x = pick(-10, 10); } while (x === 0); // x=0 rende il gemello poco istruttivo
+    b = pick(-15, 15);
+    d = (a - c) * x + b; // garantisce una soluzione intera
+    const model = { a, b, c, d };
+    return {
+      q: EM.formatEquation(model),
+      answer: String(x),
+      hint: ex.hint,
+      hintSteps: ex.hintSteps,
+      workedSolution: EM.solutionSteps(model),
+      commonErrors: commonErrorsFor(ex),
+      skill: ex.skill,
+      level6: ex.level6,
+      cognitiveType: ex.cognitiveType,
+      model
+    };
+  },
+  solutionSteps(ex) { return Interactions.EquationModel.solutionSteps(ex.model); },
+  level3Hint(ex) {
+    const EM = Interactions.EquationModel;
+    const move = EM.correctMove(ex.model);
+    return move ? `Il prossimo passo: applica "${EM.moveLabel(move)}" a entrambi i membri. Prova a calcolarlo tu prima di guardare il risultato.` : null;
+  }
+});
+
+/* ===== Generatori 'numeri'/'frazioni'/'potenze'/'algebra'/'geometria' =====
+   A differenza di equazioni (un modello simbolico ax+b=cx+d riusabile per
+   qualunque esercizio del modulo), questi 5 moduli non hanno un modello
+   simbolico unico per skill: riusano invece le stesse funzioni generatrici
+   "corrette per costruzione" di generators.js (lo stesso codice che ha
+   originariamente popolato i pool di data.js, vedi CLAUDE.md), dispatchate
+   per livello via ex.model.level. Un gemello è quindi "stesso modulo, stesso
+   livello, pattern scelto a caso tra quelli del generatore" — meno preciso
+   del match per singola skill di equazioni, ma corretto per costruzione e
+   sufficiente per il ripasso mirato adattivo (vedi PIANO_SVILUPPO_V2.md
+   FASE 4/5). Registrato solo se generators.js è stato caricato.
+*/
+if (typeof Generators !== 'undefined') {
+  ['numeri', 'frazioni', 'potenze', 'algebra', 'geometria'].forEach(moduleId => {
+    registerTwinGenerator(moduleId, {
+      generate(ex) {
+        const level = ex.model && ex.model.level;
+        const genFn = Generators[moduleId] && Generators[moduleId][level];
+        if (!genFn) return null;
+        const fresh = genFn(1)[0];
+        return {
+          q: fresh.q,
+          answer: fresh.answer,
+          type: fresh.type,
+          unit: fresh.unit,
+          hint: ex.hint,
+          hintSteps: ex.hintSteps,
+          commonErrors: commonErrorsFor(ex),
+          skill: ex.skill,
+          cognitiveType: ex.cognitiveType,
+          model: ex.model
+        };
+      },
+      // Nessun modello simbolico condiviso da percorrere passo-passo: il
+      // livello 4/5 mostra il richiamo della regola (hint) seguito dal
+      // risultato, il livello 3 richiama la regola senza svelare il numero.
+      solutionSteps(ex) {
+        const ans = Array.isArray(ex.answer) ? ex.answer[0] : ex.answer;
+        return [ex.hint, `Risultato: ${ans}${ex.unit ? ' ' + ex.unit : ''}`];
+      },
+      level3Hint(ex) {
+        return (ex.hintSteps && ex.hintSteps[ex.hintSteps.length - 1]) || ex.hint;
+      }
+    });
+  });
 }
 
 /* ===== export (script classico) ===== */
@@ -153,5 +238,7 @@ const HelpEngine = {
   getHelpContent,
   commonErrorsFor,
   diagnoseCommonError,
-  generateTwin
+  generateTwin,
+  canGenerateTwin,
+  registerTwinGenerator
 };

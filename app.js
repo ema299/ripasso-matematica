@@ -347,7 +347,7 @@ function recordAttemptOutcome(ex, correct) {
 function maybeTriggerRemediation(ex) {
   if (state.exTwin) return;
   if (state.exWrongStreak < REMEDIATION_THRESHOLD) return;
-  if (!ex.model) return; // serve un modello simbolico per generare un esercizio di recupero
+  if (!HelpEngine.canGenerateTwin(ex)) return; // serve un generatore registrato per produrre un esercizio di recupero
   state.exState = 'remediation';
   state.remediationRule = (ex.hintSteps && ex.hintSteps[1]) || ex.hint;
   state.remediationTwin = HelpEngine.generateTwin(ex);
@@ -482,17 +482,25 @@ function quizNext() {
 
 /* ===== Ripasso mirato (esercizi adattivi) =====
    Sessione breve di esercizi generati al volo (stesso motore dei gemelli,
-   Interactions.EquationModel + HelpEngine.generateTwin) mirati sulle skill
-   con la mastery più bassa calcolata dallo storico. Non tocca il progresso
-   "ufficiale" dei livelli: è pratica supplementare su richiesta, non parte
-   della sequenza valutata. Oggi disponibile solo per equazioni (unico
-   modulo con esercizi taggati per skill/model). */
+   HelpEngine.generateTwin) mirati sulle skill con la mastery più bassa
+   calcolata dallo storico. Non tocca il progresso "ufficiale" dei livelli:
+   è pratica supplementare su richiesta, non parte della sequenza valutata.
+   Scansiona tutti i moduli, non solo equazioni: oggi equazioni resta
+   l'unico con un generatore registrato (vedi help-engine.js), quindi il
+   contenuto effettivo non cambia finché altri moduli non ne registrano uno. */
 const RIPASSO_SIZE = 5;
 const RIPASSO_THRESHOLD = 70;
+function allTwinCapableExercises() {
+  const out = [];
+  MODULES.forEach(m => {
+    LEVELS.forEach(l => {
+      (m.exercises[l] || []).forEach(e => { if (HelpEngine.canGenerateTwin(e)) out.push(e); });
+    });
+  });
+  return out;
+}
 function buildRipassoQueue() {
-  const eq = getModule('equazioni');
-  const allEx = [...eq.exercises.facile, ...eq.exercises.medio, ...eq.exercises.difficile];
-  const withModel = allEx.filter(e => e.model);
+  const withModel = allTwinCapableExercises();
   const mastery = computeMastery();
   const weak = weakSkills(mastery, RIPASSO_THRESHOLD, RIPASSO_SIZE);
   const queue = [];
@@ -513,7 +521,6 @@ function buildRipassoQueue() {
   return queue;
 }
 function startRipassoMirato() {
-  state.moduleId = 'equazioni';
   state.view = 'ripasso';
   state.ripassoQueue = buildRipassoQueue();
   state.ripassoIndex = 0;
@@ -530,7 +537,8 @@ function checkRipassoAnswer() {
   state.ripassoUserAnswer = input.value;
   state.ripassoChecked = true;
   if (state.ripassoLastCorrect) state.ripassoScore++;
-  logAttempt({ moduleId: 'equazioni', kind: 'exercise', level: null, question: ex.q, correct: state.ripassoLastCorrect, skill: ex.skill || null, ripasso: true });
+  const twinModuleId = (ex.skill && ex.skill.split('.')[0]) || 'equazioni';
+  logAttempt({ moduleId: twinModuleId, kind: 'exercise', level: null, question: ex.q, correct: state.ripassoLastCorrect, skill: ex.skill || null, ripasso: true });
   render();
 }
 function ripassoNext() {
@@ -757,7 +765,7 @@ function helpBlockHtml(ex) {
 function helpButtonHtml(ex) {
   const max = HelpEngine.helpMaxLevelFor(ex);
   if (state.exHelpLevel >= max) {
-    if (max >= HelpEngine.HELP_MAX_LEVEL && ex.model && !state.exTwin) {
+    if (max >= HelpEngine.HELP_MAX_LEVEL && HelpEngine.canGenerateTwin(ex) && !state.exTwin) {
       return `<button class="btn btn--ghost" data-action="request-twin" type="button">🔁 Esercizio simile</button>`;
     }
     return '';
@@ -846,7 +854,7 @@ function renderExerciseQuestion(m) {
         // un esercizio gemello generato al volo per rinforzare subito il
         // concetto sbagliato — non obbligatorio, la studentessa può anche
         // solo proseguire.
-        const canRetrySimile = !!ex.model;
+        const canRetrySimile = HelpEngine.canGenerateTwin(ex);
         actionsBlock = `<div class="exercise-actions exercise-actions--end">
           ${canRetrySimile ? '<button class="btn btn--ghost" data-action="request-twin" type="button">🔁 Prova un esercizio simile</button>' : ''}
           <button class="btn btn--primary" data-action="exercise-next" type="button">Avanti →</button>
@@ -975,14 +983,14 @@ function renderRipasso() {
   const header = `
     <header class="topbar">
       <button class="back" data-action="open-diario" type="button" aria-label="Indietro">←</button>
-      <p class="eyebrow">Ripasso mirato · Equazioni</p>
+      <p class="eyebrow">Ripasso mirato</p>
       <h1 class="module-title">${total ? `Domanda ${Math.min(state.ripassoIndex + 1, total)} di ${total}` : 'Ripasso mirato'}</h1>
     </header>`;
   if (total === 0) {
     return header + `
       <div class="exercise-wrap">
         <div class="exercise-card" style="text-align:center;">
-          <p class="exercise-q">Non ci sono ancora abbastanza esercizi di equazioni per generare un ripasso mirato.</p>
+          <p class="exercise-q">Non ci sono ancora abbastanza esercizi per generare un ripasso mirato.</p>
         </div>
       </div>`;
   }

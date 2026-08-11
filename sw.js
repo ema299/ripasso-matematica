@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ripasso-mate-v6';
+const CACHE_NAME = 'ripasso-mate-v8';
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const CORE_ASSETS = [
   './data.js',
   './curiosita-data.js',
   './interactions.js',
+  './generators.js',
   './help-engine.js',
   './manifest.json',
   './icons/icon-192.png',
