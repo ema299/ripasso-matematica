@@ -122,6 +122,22 @@ for (const m of candidate) {
 }
 ok('self-consistency (answer/choice/quiz + strutture interattive) completata su tutti i moduli');
 
+/* ---- 2b) microlezioni di teoria: check.correct in range, su TUTTI i moduli
+   (non solo equazioni, a differenza di scripts/verify_equazioni_v2.js) ---- */
+for (const m of candidate) {
+  m.theory.forEach((s, i) => {
+    if (s.type !== 'microlesson') return;
+    const c = s.check;
+    if (!c || !Array.isArray(c.options) || !(c.correct >= 0 && c.correct < c.options.length)) {
+      fail(`${m.id}/theory[${i}] "${s.title}": check.correct fuori range o mancante`);
+    } else if (!s.situation || !s.explain || !s.example) {
+      fail(`${m.id}/theory[${i}] "${s.title}": manca situation/explain/example`);
+    } else {
+      ok(`${m.id}/theory[${i}] "${s.title}": micro-verifica valida`);
+    }
+  });
+}
+
 /* ---- 3) i 5 moduli toccati: ogni esercizio classico deve avere skill + generatorKey/model ---- */
 for (const m of candidate) {
   if (!TOUCHED.has(m.id)) continue;

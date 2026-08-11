@@ -7,6 +7,24 @@ const MODULES = [
     "tagline": "La prima tappa: si parte da qui",
     "theory": [
       {
+        "title": "Cos’è un numero relativo?",
+        "type": "microlesson",
+        "concept": "numero_relativo",
+        "situation": "Finora forse hai sempre lavorato solo con numeri \"normali\": 1, 2, 3, 100… Ma cosa succede se il risultato di un conto è più piccolo di zero?",
+        "explain": "I numeri relativi (o interi relativi) sono i numeri che hanno un segno: positivo (+) se sono maggiori di zero, negativo (−) se sono minori di zero. Lo zero non ha segno. Il segno fa parte del numero tanto quanto la sua cifra: −5 e 5 sono due numeri diversi, uno agli antipodi dell’altro rispetto allo zero.",
+        "example": "Se hai 20€ e ne spendi 35€, il tuo saldo non è \"15 mancanti\": è −15€, un numero negativo che rappresenta un debito.",
+        "check": {
+          "q": "Cosa indica il segno di un numero relativo?",
+          "options": [
+            "Se il numero è pari o dispari",
+            "Se il numero è maggiore o minore di zero",
+            "Se il numero è intero o decimale",
+            "Niente, è solo decorativo"
+          ],
+          "correct": 1
+        }
+      },
+      {
         "title": "I numeri interi (Z)",
         "body": "I numeri interi comprendono i numeri positivi, i numeri negativi e lo zero: ... -3, -2, -1, 0, 1, 2, 3 ...\n\nSulla retta numerica, i numeri crescono andando verso destra e diminuiscono andando verso sinistra: un numero è maggiore di un altro (si scrive con il simbolo >) quando si trova più a destra sulla retta, minore (<) quando si trova più a sinistra.\n\nQuesta regola vale anche per i numeri negativi, ed è il punto che spesso confonde chi li ha appena imparati: −2 si trova più a destra di −5 sulla retta (è più vicino allo zero), quindi −2 è maggiore di −5, cioè −2 > −5 — anche se, guardando solo le cifre senza il segno, 5 sembra \"più grande\" di 2. Per confrontare due numeri negativi conta sempre la loro posizione sulla retta, non le cifre senza segno: più un numero negativo è vicino allo zero, più è grande."
       },
@@ -827,8 +845,44 @@ const MODULES = [
         "body": "Una frazione a/b rappresenta una parte di un intero diviso in b parti uguali, di cui ne prendiamo a.\n\nI due numeri della frazione hanno un nome preciso: a, il numero sopra la linea, si chiama numeratore e indica quante parti prendiamo; b, il numero sotto la linea, si chiama denominatore e indica in quante parti uguali è stato diviso l'intero.\n\nEsempio: 3/4 di una pizza significa dividerla in 4 fette uguali (il denominatore è 4) e prenderne 3 (il numeratore è 3)."
       },
       {
+        "title": "Cos’è il MCD?",
+        "type": "microlesson",
+        "concept": "mcd",
+        "situation": "Per semplificare una frazione al minimo in un solo colpo, invece di provare a dividere per 2, poi per 3, poi ancora… conviene trovare subito il numero più grande possibile per cui dividere.",
+        "explain": "Il MCD (Massimo Comun Divisore) di due numeri è il più grande numero che li divide entrambi esattamente, senza resto. Dividendo numeratore e denominatore per il loro MCD si ottiene subito la frazione ridotta ai minimi termini.",
+        "example": "MCD(12, 18): i divisori di 12 sono 1, 2, 3, 4, 6, 12; i divisori di 18 sono 1, 2, 3, 6, 9, 18. Il più grande in comune è 6, quindi MCD(12, 18) = 6.",
+        "check": {
+          "q": "Qual è il MCD tra 8 e 12?",
+          "options": [
+            "2",
+            "4",
+            "6",
+            "24"
+          ],
+          "correct": 1
+        }
+      },
+      {
+        "title": "Cos’è il mcm?",
+        "type": "microlesson",
+        "concept": "mcm",
+        "situation": "Per sommare due frazioni con denominatori diversi non puoi sommare direttamente i numeratori: prima devi \"tradurle\" con lo stesso denominatore.",
+        "explain": "Il mcm (minimo comune multiplo) di due numeri è il più piccolo numero che è multiplo di entrambi. Usato come denominatore comune, permette di sommare o confrontare frazioni con denominatori diversi.",
+        "example": "mcm(4, 6): i multipli di 4 sono 4, 8, 12, 16…; i multipli di 6 sono 6, 12, 18…; il più piccolo in comune è 12, quindi mcm(4, 6) = 12.",
+        "check": {
+          "q": "Qual è il mcm tra 3 e 4?",
+          "options": [
+            "7",
+            "1",
+            "12",
+            "24"
+          ],
+          "correct": 2
+        }
+      },
+      {
         "title": "Semplificare e confrontare",
-        "body": "Una frazione si semplifica dividendo numeratore e denominatore per uno stesso numero. Per semplificarla al massimo in un solo passaggio conviene dividere per il MCD (Massimo Comun Divisore) di numeratore e denominatore: il più grande numero che divide esattamente sia il numeratore sia il denominatore.\n\nEsempio: calcoliamo MCD(12, 18). I divisori di 12 sono 1, 2, 3, 4, 6, 12. I divisori di 18 sono 1, 2, 3, 6, 9, 18. Il divisore più grande che compare in entrambe le liste è 6, quindi MCD(12, 18) = 6.\n\nEsempio di semplificazione: nella frazione 6/8, il MCD tra 6 e 8 è 2: dividendo numeratore e denominatore per 2 si ottiene 3/4, già ridotta ai minimi termini (perché MCD(3,4) = 1, non si può più semplificare).\n\nPer sommare o confrontare frazioni con denominatori diversi serve invece un denominatore comune: di solito si usa il mcm (minimo comune multiplo) dei due denominatori, cioè il più piccolo numero che è multiplo di entrambi.\n\nEsempio: calcoliamo mcm(4, 6). I multipli di 4 sono 4, 8, 12, 16, 20... I multipli di 6 sono 6, 12, 18, 24... Il più piccolo multiplo che compare in entrambe le liste è 12, quindi mcm(4, 6) = 12."
+        "body": "Una frazione si semplifica dividendo numeratore e denominatore per il loro MCD (visto nella scheda precedente): il risultato è già ridotto ai minimi termini in un solo passaggio.\n\nEsempio: nella frazione 6/8, il MCD tra 6 e 8 è 2: dividendo numeratore e denominatore per 2 si ottiene 3/4, già ridotta ai minimi termini (perché MCD(3,4) = 1, non si può più semplificare).\n\nPer sommare o confrontare frazioni con denominatori diversi serve invece un denominatore comune: si usa il mcm (visto nella scheda precedente) dei due denominatori."
       },
       {
         "title": "Operazioni con le frazioni",
@@ -1651,7 +1705,25 @@ const MODULES = [
       },
       {
         "title": "Le proprietà delle potenze",
-        "body": "Stessa base: a^n · a^m = a^(n+m)     a^n : a^m = a^(n−m)\n\nPotenza di potenza: (a^n)^m = a^(n·m)\n\nCaso semplice: a^1 = a (la base moltiplicata per sé stessa una sola volta è semplicemente la base).\n\nPerché a^0 = 1? Non è una regola da imparare a memoria: si ricava dalla proprietà della divisione mostrata qui sopra. Se scegliamo lo stesso esponente sia sopra sia sotto: a^n : a^n = a^(n−n) = a^0.\n\nMa a^n : a^n è anche un numero diviso per se stesso, e un numero (diverso da zero) diviso per se stesso fa sempre 1. Quindi a^0 deve valere proprio 1: è una conseguenza diretta della proprietà della divisione appena vista, non un caso a parte da ricordare a memoria. (Serve a diverso da 0, altrimenti staremmo dividendo per zero, cosa che non è permessa.)"
+        "body": "Stessa base: a^n · a^m = a^(n+m)     a^n : a^m = a^(n−m)\n\nPotenza di potenza: (a^n)^m = a^(n·m)\n\nCaso semplice: a^1 = a (la base moltiplicata per sé stessa una sola volta è semplicemente la base)."
+      },
+      {
+        "title": "Perché a⁰ = 1?",
+        "type": "microlesson",
+        "concept": "esponente_zero",
+        "situation": "Nella scheda precedente hai visto che a^n : a^m = a^(n−m). Cosa succede se n ed m sono uguali?",
+        "explain": "a⁰ non è un caso a parte da imparare a memoria: si ricava dalla proprietà della divisione. Se scegliamo lo stesso esponente sia sopra sia sotto, a^n : a^n = a^(n−n) = a⁰. Ma a^n : a^n è anche un numero diviso per se stesso, e un numero (diverso da zero) diviso per se stesso fa sempre 1. Quindi a⁰ deve valere proprio 1.",
+        "example": "5⁰ = 5^3 : 5^3 = 1 (perché qualunque numero diverso da zero diviso per se stesso fa 1), non perché è una regola arbitraria da ricordare.",
+        "check": {
+          "q": "Perché 4⁰ = 1?",
+          "options": [
+            "Perché lo dice una regola da ricordare a memoria",
+            "Perché 4⁰ = 4² : 4², e un numero diverso da zero diviso per se stesso fa 1",
+            "Perché ogni numero elevato a 0 diventa 0",
+            "Perché vale solo per basi pari"
+          ],
+          "correct": 1
+        }
       },
       {
         "title": "Proprietà del prodotto",
@@ -2462,8 +2534,44 @@ const MODULES = [
         "body": "Un'espressione algebrica usa lettere al posto di numeri. Quella lettera può avere due ruoli diversi, a seconda del contesto.\n\nVariabile: rappresenta un numero generico, libero di cambiare — è il caso di questo capitolo. In 2x+3, x è una variabile: possiamo sostituire x con numeri diversi e il risultato cambia di volta in volta (lo farai negli esercizi di questa tappa).\n\nIncognita: rappresenta un valore preciso ma ancora sconosciuto, che va scoperto risolvendo un'equazione — è il caso della prossima tappa del viaggio. È la stessa idea di fondo ('una lettera al posto di un numero'): cambia solo se quel valore resta libero di variare (variabile) o va cercato (incognita).\n\nEsempio: 2x + 3 è un'espressione dove x rappresenta un numero qualsiasi: è una variabile."
       },
       {
-        "title": "Termini e coefficienti",
-        "body": "In un'espressione come 3x + 5y − 2, ogni pezzo separato da + o − si chiama termine: qui i termini sono 3x, 5y e −2 (il segno davanti fa parte del termine).\n\nIl numero scritto davanti alla lettera in un termine si chiama coefficiente: in 3x il coefficiente è 3, in 5y è 5. Se non c'è nessun numero scritto (come in 'x' da sola), il coefficiente è sottinteso 1.\n\nDue termini sono simili se hanno la stessa parte letterale (stessa lettera, stesso esponente): si possono sommare o sottrarre sommando/sottraendo i loro coefficienti, perché rappresentano la stessa 'unità' letterale.\n\nEsempio: 3x + 5x = 8x (i coefficienti 3 e 5 si sommano perché il termine è lo stesso, x)       7a − 2a = 5a"
+        "title": "Cos’è un termine?",
+        "type": "microlesson",
+        "concept": "termine",
+        "situation": "Guarda l’espressione 4a + 9 − 2a: sembra complicata, ma è fatta di pezzi più piccoli, uniti dai simboli + e −.",
+        "explain": "Un termine è ciascuno dei \"pezzi\" di un’espressione, separati da + o −. In 4a + 9 − 2a ci sono tre termini: 4a, +9, −2a. Ogni termine ha il proprio segno, anche quando non è scritto esplicitamente davanti (il primo termine, se non ha segno, è considerato positivo).",
+        "example": "In 7x − 4 + 3x, i termini sono: 7x, −4, +3x — tre termini in totale.",
+        "check": {
+          "q": "Quanti termini ci sono in 6y + 2 − y?",
+          "options": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "correct": 2
+        }
+      },
+      {
+        "title": "Cos’è il coefficiente?",
+        "type": "microlesson",
+        "concept": "coefficiente",
+        "situation": "Nel termine 5x, il numero 5 e la lettera x fanno parte dello stesso \"pezzo\", ma hanno ruoli diversi.",
+        "explain": "Il coefficiente è il numero scritto davanti alla lettera in un termine: dice per quante volte va contata quella lettera. Se scrivo solo x, il coefficiente è 1 (sottinteso); se scrivo −x, il coefficiente è −1.",
+        "example": "Nel termine −3a, il coefficiente è −3. Nel termine b (senza numero davanti), il coefficiente è 1.",
+        "check": {
+          "q": "Qual è il coefficiente di y nel termine −y?",
+          "options": [
+            "0",
+            "1",
+            "−1",
+            "Non esiste"
+          ],
+          "correct": 2
+        }
+      },
+      {
+        "title": "Termini simili",
+        "body": "Due termini sono simili se hanno la stessa parte letterale (stessa lettera, stesso esponente): come hai visto nelle schede precedenti, un termine ha un coefficiente (il numero davanti) e una parte letterale (la lettera).\n\nDue termini simili si possono sommare o sottrarre sommando/sottraendo i loro coefficienti, perché rappresentano la stessa \"unità\" letterale.\n\nEsempio: 3x + 5x = 8x (i coefficienti 3 e 5 si sommano perché il termine è lo stesso, x)       7a − 2a = 5a"
       },
       {
         "title": "Polinomi e proprietà distributiva",
@@ -5009,8 +5117,26 @@ const MODULES = [
         "body": "Quadrato (lato l): perimetro = 4·l, area = l²\n\nRettangolo (base b, altezza h): perimetro = 2·(b+h), area = b·h\n\nTriangolo (base b, altezza h): area = (b·h) : 2"
       },
       {
-        "title": "Il cerchio e il numero π",
-        "body": "Prendi un cerchio qualsiasi, piccolo o grande: se dividi la sua circonferenza (il perimetro del cerchio, cioè la lunghezza del suo contorno) per il suo diametro (il segmento che attraversa tutto il cerchio passando per il centro), ottieni sempre lo stesso numero, qualunque sia la dimensione del cerchio:\n\ncirconferenza : diametro = π\n\nQuesto numero si chiama \"pi greco\" (si scrive π) e non è una costante inventata da imparare a memoria: è un rapporto che si può davvero misurare, e resta sempre uguale perché tutti i cerchi hanno la stessa forma, solo in scala diversa (uno più grande, uno più piccolo). π ha infinite cifre decimali che non si ripetono mai (3,14159265...), quindi nella pratica si usa un'approssimazione: π ≈ 3,14.\n\nPoiché il diametro è il doppio del raggio (d = 2·r), dalla definizione di π si ricavano le formule che si usano per i calcoli:\n\nCirconferenza di raggio r: C = 2·π·r\n\nArea del cerchio di raggio r: A = π·r²"
+        "title": "Cos’è π (pi greco)?",
+        "type": "microlesson",
+        "concept": "pi_greco",
+        "situation": "In ogni cerchio, grande o piccolo, esiste un rapporto che non cambia mai.",
+        "explain": "π (pi greco) è il rapporto tra la circonferenza di un cerchio (il suo perimetro) e il suo diametro: circonferenza : diametro = π. Non è una costante inventata: è un numero che si può davvero misurare, uguale per ogni cerchio perché tutti i cerchi hanno la stessa forma, solo in scala diversa. Ha infinite cifre decimali che non si ripetono mai, quindi si usa un’approssimazione: π ≈ 3,14.",
+        "example": "Se misuri un piatto rotondo e trovi che la circonferenza è circa 3,14 volte il diametro, qualunque sia la dimensione del piatto, quel rapporto è sempre π.",
+        "check": {
+          "q": "Cos’è π (pi greco)?",
+          "options": [
+            "Un numero deciso per convenzione, diverso per ogni cerchio",
+            "Il rapporto tra circonferenza e diametro, uguale per ogni cerchio",
+            "La metà del raggio di un cerchio",
+            "Un’unità di misura per gli angoli"
+          ],
+          "correct": 1
+        }
+      },
+      {
+        "title": "Le formule del cerchio",
+        "body": "Poiché il diametro è il doppio del raggio (d = 2·r), dalla definizione di π vista nella scheda precedente si ricavano le formule che si usano per i calcoli:\n\nCirconferenza di raggio r: C = 2·π·r\n\nArea del cerchio di raggio r: A = π·r²\n\nNella pratica si usa l’approssimazione π ≈ 3,14."
       },
       {
         "title": "Il teorema di Pitagora",
