@@ -33,6 +33,39 @@ function ensureModuleProgress(id) {
   return progress[id];
 }
 
+// "Segnalibro" di ripresa: un solo puntatore per modulo verso l'ultima
+// posizione toccata in teoria/esercizi/quiz (non uno storico per livello).
+// Saltare tra pillole di livello o riaprire una sezione già finita sovrascrive
+// il segnalibro con la posizione corrente: è il comportamento voluto, "dove
+// mi trovo ora" più che "ricorda ogni luogo mai visitato". Campo additivo su
+// progress[id]: nessuna migrazione di STORAGE_KEY necessaria.
+function setResumeBookmark(moduleId, bookmark) {
+  const p = ensureModuleProgress(moduleId);
+  p.resume = bookmark;
+  saveProgress();
+}
+function clearResumeBookmark(moduleId, section) {
+  const p = ensureModuleProgress(moduleId);
+  if (p.resume && p.resume.section === section) {
+    p.resume = null;
+    saveProgress();
+  }
+}
+// Un segnalibro salvato prima di una modifica a data.js (nuovi esercizi,
+// teoria riordinata) o riferito a una sezione completata nel frattempo non è
+// più valido: va ignorato invece di riaprire un indice fuori range.
+function validResumeBookmark(m, p) {
+  const r = p.resume;
+  if (!r || !m) return null;
+  if (r.section === 'theory') return (r.index > 0 && r.index < m.theory.length && !p.theorySeen) ? r : null;
+  if (r.section === 'exercises') {
+    const list = m.exercises[r.level];
+    return (list && r.index >= 0 && r.index < list.length && !p.exercises[r.level]) ? r : null;
+  }
+  if (r.section === 'quiz') return (r.index > 0 && r.index < m.quiz.length && !p.quiz.done) ? r : null;
+  return null;
+}
+
 function getModule(id) { return MODULES.find(m => m.id === id); }
 function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
 
@@ -226,6 +259,44 @@ function goHome() { state.view = 'home'; state.moduleId = null; render(); }
 function openModule(id) { state.moduleId = id; state.view = 'module-menu'; render(); }
 function backToModuleMenu() { state.view = 'module-menu'; render(); }
 
+// Salta direttamente al punto esatto lasciato in sospeso in una sezione, da
+// un modulo qualsiasi: usato dal collegamento "Riprendi" nel Diario. Imposta
+// lo stato a mano (non richiama openTheory/openExercises/openQuiz) perché
+// quelle funzioni "indovinano" il livello/punto giusto solo all'interno del
+// modulo già aperto; qui serve saltare esattamente al segnalibro salvato,
+// anche se ad es. un livello successivo è stato aperto nel frattempo via
+// pillola. Se il segnalibro non è più valido, ricade sul menu del modulo.
+function resumeModule(id) {
+  const m = getModule(id);
+  const p = ensureModuleProgress(id);
+  const bookmark = validResumeBookmark(m, p);
+  if (!bookmark) { openModule(id); return; }
+  state.moduleId = id;
+  if (bookmark.section === 'theory') {
+    state.view = 'theory';
+    state.theoryIndex = bookmark.index;
+    state.theoryRevealed = {};
+    state.theoryChecks = {};
+  } else if (bookmark.section === 'exercises') {
+    state.view = 'exercises';
+    state.exLevel = bookmark.level;
+    state.exIndex = bookmark.index;
+    state.exWrongStreak = 0;
+    state.exWrongStreakGroup = null;
+    resetExerciseUIState();
+  } else if (bookmark.section === 'quiz') {
+    state.view = 'quiz';
+    state.quizIndex = bookmark.index;
+    state.quizScore = bookmark.score || 0;
+    state.quizAnswered = false;
+    state.quizSelected = null;
+  } else {
+    openModule(id);
+    return;
+  }
+  render();
+}
+
 /* ===== Curiosità: navigazione ===== */
 function openCuriositaList() { state.view = 'curiosita-list'; render(); }
 function openCuriositaDetail(id) {
@@ -246,7 +317,15 @@ function selectCuriositaQuiz(idx) {
   render();
 }
 
-function openTheory() { state.view = 'theory'; state.theoryIndex = 0; state.theoryRevealed = {}; state.theoryChecks = {}; render(); }
+function openTheory() {
+  state.view = 'theory';
+  const m = getModule(state.moduleId);
+  const bookmark = validResumeBookmark(m, ensureModuleProgress(state.moduleId));
+  state.theoryIndex = (bookmark && bookmark.section === 'theory') ? bookmark.index : 0;
+  state.theoryRevealed = {};
+  state.theoryChecks = {};
+  render();
+}
 function microcheckSelect(slideIndex, index) {
   const cur = state.theoryChecks[slideIndex] || { selected: null, checked: false };
   if (cur.checked) return;
@@ -261,10 +340,16 @@ function revealStep(idx) {
   state.theoryRevealed[idx] = Math.min(current + 1, slide.steps.length);
   render();
 }
-function markTheorySeen() { ensureModuleProgress(state.moduleId).theorySeen = true; saveProgress(); }
+function markTheorySeen() {
+  ensureModuleProgress(state.moduleId).theorySeen = true;
+  clearResumeBookmark(state.moduleId, 'theory');
+  saveProgress();
+}
 function moveSlide(delta) {
   const m = getModule(state.moduleId);
   state.theoryIndex = clamp(state.theoryIndex + delta, 0, m.theory.length - 1);
+  if (state.theoryIndex > 0) setResumeBookmark(state.moduleId, { section: 'theory', index: state.theoryIndex });
+  else clearResumeBookmark(state.moduleId, 'theory');
   render();
 }
 
@@ -303,11 +388,16 @@ function openExercises(levelOverride) {
   const m = getModule(state.moduleId);
   const p = ensureModuleProgress(state.moduleId);
   state.exLevel = levelOverride || LEVELS.find(l => !p.exercises[l] || isLevelStale(m, p, l)) || 'facile';
-  state.exIndex = 0;
+  // Riprende dall'ultima domanda solo quando si entra "al buio" (pulsante
+  // Esercizi dal menu del modulo): scegliere un livello dalla pillola resta
+  // un riavvio esplicito da domanda 1, comportamento preesistente invariato.
+  const bookmark = !levelOverride ? validResumeBookmark(m, p) : null;
+  state.exIndex = (bookmark && bookmark.section === 'exercises' && bookmark.level === state.exLevel) ? bookmark.index : 0;
   state.exWrongStreak = 0;
   state.exWrongStreakGroup = null;
   state.view = 'exercises';
   resetExerciseUIState();
+  setResumeBookmark(state.moduleId, { section: 'exercises', level: state.exLevel, index: state.exIndex });
   render();
 }
 function bumpHelpLevel() {
@@ -431,8 +521,11 @@ function exerciseNext() {
     p.exercises[state.exLevel] = true;
     p.exerciseCounts = p.exerciseCounts || {};
     p.exerciseCounts[state.exLevel] = list.length;
+    p.resume = null;
     saveProgress();
     state.exState = 'levelComplete';
+  } else {
+    setResumeBookmark(state.moduleId, { section: 'exercises', level: state.exLevel, index: state.exIndex });
   }
   render();
 }
@@ -443,13 +536,17 @@ function levelContinue() {
   state.exWrongStreak = 0;
   state.exWrongStreakGroup = null;
   resetExerciseUIState();
+  setResumeBookmark(state.moduleId, { section: 'exercises', level: state.exLevel, index: state.exIndex });
   render();
 }
 
 function openQuiz() {
+  const m = getModule(state.moduleId);
+  const bookmark = validResumeBookmark(m, ensureModuleProgress(state.moduleId));
+  const canResume = bookmark && bookmark.section === 'quiz';
   state.view = 'quiz';
-  state.quizIndex = 0;
-  state.quizScore = 0;
+  state.quizIndex = canResume ? bookmark.index : 0;
+  state.quizScore = canResume ? (bookmark.score || 0) : 0;
   state.quizAnswered = false;
   state.quizSelected = null;
   render();
@@ -474,8 +571,11 @@ function quizNext() {
   if (state.quizIndex >= m.quiz.length) {
     const p = ensureModuleProgress(state.moduleId);
     p.quiz = { done: true, score: state.quizScore, total: m.quiz.length };
+    p.resume = null;
     saveProgress();
     state.view = 'result';
+  } else {
+    setResumeBookmark(state.moduleId, { section: 'quiz', index: state.quizIndex, score: state.quizScore });
   }
   render();
 }
@@ -1092,8 +1192,35 @@ function renderCuriositaDetail() {
 }
 
 /* ===== Rendering: Diario di viaggio (statistiche) ===== */
+// Moduli con un segnalibro di ripresa ancora valido, per il collegamento
+// "Riprendi da dove hai lasciato" nel Diario.
+function resumableModules() {
+  return MODULES
+    .map(m => ({ m, bookmark: validResumeBookmark(m, ensureModuleProgress(m.id)) }))
+    .filter(x => x.bookmark);
+}
+function resumeSectionLabel(m, bookmark) {
+  if (bookmark.section === 'theory') return `Teoria — cartolina ${bookmark.index + 1} di ${m.theory.length}`;
+  if (bookmark.section === 'exercises') return `Esercizi ${LEVEL_LABELS[bookmark.level]} — domanda ${bookmark.index + 1} di ${m.exercises[bookmark.level].length}`;
+  if (bookmark.section === 'quiz') return `Quiz finale — domanda ${bookmark.index + 1} di ${m.quiz.length}`;
+  return '';
+}
+function renderResumeSection(resumable) {
+  if (!resumable.length) return '';
+  const items = resumable.map(({ m, bookmark }) => `
+    <div class="diary-mistake">
+      <p class="diary-mistake__module">${m.icon} ${m.title}</p>
+      <p class="diary-mistake__q" style="margin-bottom:10px;">${resumeSectionLabel(m, bookmark)}</p>
+      <button class="btn btn--primary" data-action="resume-module" data-id="${m.id}" type="button">Riprendi →</button>
+    </div>`).join('');
+  return `
+    <h2 class="diary-section-title">Riprendi da dove hai lasciato</h2>
+    <div class="diary-mistakes">${items}</div>
+  `;
+}
 function renderDiario() {
   const stats = computeStats();
+  const resumable = resumableModules();
   if (stats.totalAttempts === 0) {
     return `
       <header class="topbar">
@@ -1107,6 +1234,7 @@ function renderDiario() {
           <p style="font-weight:800; font-size:16px; margin-bottom:6px;">Il diario è ancora vuoto</p>
           <p style="color:var(--muted); font-size:14px; line-height:1.5;">Inizia qualche esercizio in una tappa: qui vedrai i tuoi progressi e gli argomenti da ripassare.</p>
         </div>
+        ${renderResumeSection(resumable)}
       </div>
     `;
   }
@@ -1142,6 +1270,7 @@ function renderDiario() {
         <span class="diary-summary__big">${overallPct}%</span>
         <span class="diary-summary__label">risposte corrette su ${stats.totalAttempts} esercizi svolti in totale</span>
       </div>
+      ${renderResumeSection(resumable)}
       <h2 class="diary-section-title">Le tue tappe</h2>
       ${rows}
       <h2 class="diary-section-title">Argomenti da ripassare</h2>
@@ -1270,6 +1399,7 @@ appEl.addEventListener('click', (e) => {
     case 'quiz-option': selectQuizOption(Number(btn.dataset.index)); break;
     case 'quiz-next': quizNext(); break;
     case 'open-diario': state.view = 'diario'; render(); break;
+    case 'resume-module': resumeModule(btn.dataset.id); break;
     case 'start-ripasso': startRipassoMirato(); break;
     case 'ripasso-check': checkRipassoAnswer(); break;
     case 'ripasso-next': ripassoNext(); break;
