@@ -197,6 +197,29 @@ const CURIOSITA = [
     }
   },
   {
+    "id": "stella-buco-nero-mom-bh1",
+    "date": "2026-08-15",
+    "category": "spazio",
+    "icon": "🕳️",
+    "title": "Una 'stella buco nero' scoperta agli albori dell'universo",
+    "summary": "Gli astronomi hanno scoperto un nuovo tipo di oggetto cosmico, soprannominato 'stella buco nero': non è una vera stella, ma un buco nero avvolto da un'enorme nube di gas incandescente, grande come il nostro sistema solare. Si trova a soli 660 milioni di anni dal Big Bang, quindi lo vediamo come era agli albori dell'universo. Anche se non produce energia come le stelle normali, questo oggetto brilla con una potenza straordinaria. La scoperta, fatta con il telescopio spaziale James Webb, aiuta a spiegare misteriosi puntini rossi osservati nell'universo lontano.",
+    "source": {
+      "name": "NASA Science (James Webb Space Telescope)",
+      "url": "https://science.nasa.gov/missions/webb/nasa-webb-finds-strongest-evidence-yet-for-black-hole-stars/"
+    },
+    "quiz": {
+      "q": "Che cos'è la 'stella buco nero' scoperta dagli astronomi?",
+      "options": [
+        "Un buco nero avvolto da un'enorme nube di gas incandescente",
+        "Una stella normale ma più calda del Sole",
+        "Un pianeta con gli anelli come Saturno",
+        "Una cometa molto luminosa"
+      ],
+      "correct": 0,
+      "explanation": "Non è una vera stella: al centro c'è un buco nero circondato da una grande nube di gas che brilla intensamente."
+    }
+  },
+  {
     "id": "barriera-corallina-atlantico-record",
     "date": "2026-08-09",
     "category": "geografia",
