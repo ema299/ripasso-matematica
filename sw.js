@@ -9,6 +9,7 @@ const CORE_ASSETS = [
   './interactions.js',
   './generators.js',
   './help-engine.js',
+  './cloud-sync.js',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

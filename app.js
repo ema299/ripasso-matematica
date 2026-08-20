@@ -119,9 +119,11 @@ function sortedCuriosita() {
 }
 
 function logAttempt(entry) {
-  history.push({ ts: Date.now(), ...entry });
+  const full = { ts: Date.now(), ...entry };
+  history.push(full);
   if (history.length > HISTORY_MAX) history = history.slice(history.length - HISTORY_MAX);
   saveHistory();
+  if (typeof cloudSync === 'function') cloudSync(full);
 }
 
 function computeStats() {
