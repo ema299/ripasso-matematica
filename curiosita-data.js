@@ -241,5 +241,28 @@ const CURIOSITA = [
       "correct": 0,
       "explanation": "A quella profondità la luce del sole non arriva, quindi la fotosintesi non è possibile e i coralli si nutrono filtrando il cibo dall'acqua."
     }
+  },
+  {
+    "id": "motore-del-sonno-cervello",
+    "date": "2026-08-23",
+    "category": "corpo_umano",
+    "icon": "😴",
+    "title": "Scoperto nel cervello il 'motore' che ci fa venire sonno",
+    "summary": "Un gruppo di scienziati dell'Università di Basilea ha scoperto quali cellule del cervello ci fanno venire sonno quando restiamo svegli troppo a lungo. Sono due gruppi di neuroni, cioè cellule nervose, che si trovano in una parte profonda del cervello: più tempo passa da quando ci siamo svegliati, più questi neuroni diventano attivi, fino a farci sentire stanchi. Quando dormiamo, la loro attività torna a scendere. Attivando artificialmente queste cellule nei topi da laboratorio, i ricercatori sono riusciti a farli dormire più a lungo.",
+    "source": {
+      "name": "Università di Basilea",
+      "url": "https://www.unibas.ch/en/News-Events/News/Uni-Research/Why-do-we-get-sleepy-sleep-drive-sleep-regulation-neuroscience.html"
+    },
+    "quiz": {
+      "q": "Cosa succede ai neuroni scoperti dagli scienziati di Basilea quando restiamo svegli a lungo?",
+      "options": [
+        "Diventano sempre più attivi, fino a farci venire sonno",
+        "Smettono completamente di funzionare",
+        "Si spostano in un'altra parte del corpo",
+        "Diventano attivi solo mentre dormiamo"
+      ],
+      "correct": 0,
+      "explanation": "Il testo spiega che più tempo restiamo svegli, più questi neuroni si attivano, aumentando il bisogno di dormire; la loro attività scende di nuovo quando dormiamo."
+    }
   }
 ];
