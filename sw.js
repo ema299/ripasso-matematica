@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ripasso-mate-v13';
+const CACHE_NAME = 'ripasso-mate-v14';
 const CORE_ASSETS = [
   './',
   './index.html',

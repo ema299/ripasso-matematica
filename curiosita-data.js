@@ -264,5 +264,28 @@ const CURIOSITA = [
       "correct": 0,
       "explanation": "Il testo spiega che più tempo restiamo svegli, più questi neuroni si attivano, aumentando il bisogno di dormire; la loro attività scende di nuovo quando dormiamo."
     }
+  },
+  {
+    "id": "mega-terra-gj523b",
+    "date": "2026-09-14",
+    "category": "spazio",
+    "icon": "🪐",
+    "title": "Scoperta una gigantesca 'Mega-Terra' rocciosa",
+    "summary": "Un gruppo di astronomi ha scoperto un pianeta chiamato GJ 523b, soprannominato 'Mega-Terra': si trova a circa 87 anni luce da noi ed è fatto soprattutto di roccia, proprio come la Terra. È però enorme, con un raggio circa 2,5 volte più grande del nostro pianeta e una massa addirittura 23 volte maggiore. Di solito i pianeti così pesanti sono fatti di gas, come Giove: per questo GJ 523b sorprende gli scienziati e mette alla prova le teorie su come nascono i pianeti.",
+    "source": {
+      "name": "ANSA Scienza",
+      "url": "https://www.ansa.it/canale_scienza/notizie/spazio_astronomia/2026/08/21/scoperta-una-mega-terra-e-rocciosa-e-con-una-massa-23-volte-maggiore_946e4e1e-7f90-40f8-b9d3-f1e26a4cb6af.html"
+    },
+    "quiz": {
+      "q": "Perché il pianeta GJ 523b, la 'Mega-Terra', sorprende gli scienziati?",
+      "options": [
+        "Perché è fatto di roccia ma ha una massa tipica dei pianeti di gas",
+        "Perché è più piccolo della Luna",
+        "Perché è fatto interamente di ghiaccio",
+        "Perché orbita attorno alla Terra"
+      ],
+      "correct": 0,
+      "explanation": "I pianeti così massicci sono di solito giganti gassosi come Giove: GJ 523b invece è roccioso, una combinazione che mette in crisi i modelli sulla formazione dei pianeti."
+    }
   }
 ];
