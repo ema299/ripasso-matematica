@@ -287,5 +287,28 @@ const CURIOSITA = [
       "correct": 0,
       "explanation": "I pianeti così massicci sono di solito giganti gassosi come Giove: GJ 523b invece è roccioso, una combinazione che mette in crisi i modelli sulla formazione dei pianeti."
     }
+  },
+  {
+    "id": "saturno-decagono-polo-sud",
+    "date": "2026-09-15",
+    "category": "spazio",
+    "icon": "🪐",
+    "title": "Un misterioso decagono scoperto attorno a Saturno",
+    "summary": "Il telescopio spaziale Hubble ha individuato una nuova forma geometrica intorno al polo sud di Saturno: un decagono, cioè una figura con dieci lati, larga circa 170.000 chilometri. È una specie di grande onda che si muove nell'atmosfera del pianeta, spinta dai venti. Attorno al polo nord di Saturno c'è invece un esagono (sei lati), scoperto dalle sonde Voyager più di 40 anni fa e ancora presente oggi. Gli scienziati stanno studiando perché il pianeta formi queste strane figure regolari ai due poli.",
+    "source": {
+      "name": "NASA Science (Hubble Space Telescope)",
+      "url": "https://science.nasa.gov/missions/hubble/nasas-hubble-tracks-new-decagon-encircling-saturns-south-pole/"
+    },
+    "quiz": {
+      "q": "Che cos'è il 'decagono' scoperto dal telescopio Hubble attorno al polo sud di Saturno?",
+      "options": [
+        "Una grande onda nell'atmosfera del pianeta, a forma di figura con dieci lati",
+        "Un anello di rocce solide che gira intorno al pianeta",
+        "Una nuova luna di Saturno a forma di stella",
+        "Una zona dell'atmosfera dove non soffia mai il vento"
+      ],
+      "correct": 0,
+      "explanation": "Il decagono non è un oggetto solido: è un'onda nell'atmosfera di Saturno che disegna una figura a dieci lati intorno al polo sud."
+    }
   }
 ];
