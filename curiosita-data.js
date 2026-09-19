@@ -310,5 +310,28 @@ const CURIOSITA = [
       "correct": 0,
       "explanation": "Il decagono non è un oggetto solido: è un'onda nell'atmosfera di Saturno che disegna una figura a dieci lati intorno al polo sud."
     }
+  },
+  {
+    "id": "gatto-tilcayo-bolivia",
+    "date": "2026-09-19",
+    "category": "natura",
+    "icon": "🐆",
+    "title": "Un nuovo gatto selvatico scoperto in Bolivia",
+    "summary": "In una foresta nebbiosa della Bolivia chiamata Yungas, gli scienziati hanno riconosciuto una nuova specie di gatto selvatico mai classificata prima: si chiama Leopardus tilcayo, o 'gatto tilcayo'. È piccolo, pesa circa 1,5-2 chili ed è lungo poco più di 40 centimetri, con una pelliccia a macchie scure su sfondo chiaro. Non succedeva da più di 100 anni che si scoprisse un nuovo gatto selvatico vivente: gli scienziati ci sono riusciti confrontando il suo DNA con quello degli altri gatti selvatici sudamericani.",
+    "source": {
+      "name": "National Geographic",
+      "url": "https://www.nationalgeographic.com/animals/article/meet-the-first-new-cat-species-discovered-in-100-years"
+    },
+    "quiz": {
+      "q": "Come hanno fatto gli scienziati a capire che il gatto tilcayo era una specie nuova?",
+      "options": [
+        "Confrontando il suo DNA con quello degli altri gatti selvatici",
+        "Misurando la lunghezza dei suoi baffi",
+        "Ascoltando il suo verso",
+        "Contando le macchie sulla pelliccia"
+      ],
+      "correct": 0,
+      "explanation": "Gli scienziati hanno analizzato il DNA dell'animale, scoprendo che si trattava di una specie mai classificata prima, diversa dagli altri gatti selvatici sudamericani."
+    }
   }
 ];
